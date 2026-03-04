@@ -1,9 +1,7 @@
 <template>
   <div class="send-panel">
 
-    <!-- INPUT STATE -->
     <template v-if="!generatedCode">
-
       <label class="field-label" for="send-textarea">
         <span class="mono">&gt;</span> Your text, link, or note
       </label>
@@ -31,12 +29,9 @@
         <span v-if="loading">Generating...</span>
         <span v-else>Generate Code →</span>
       </button>
-
     </template>
 
-    <!-- RESULT STATE -->
     <template v-else>
-
       <p class="result-label">
         <span class="status-dot" /> Your code is ready
       </p>
@@ -57,29 +52,26 @@
           Send Another
         </button>
       </div>
-
     </template>
 
   </div>
 </template>
 
 <script setup>
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000'
+import { ref } from 'vue'
 
-const inputText    = ref('')
+const inputText     = ref('')
 const generatedCode = ref('')
-const loading      = ref(false)
-const errorMsg     = ref('')
-const copied       = ref(false)
+const loading       = ref(false)
+const errorMsg      = ref('')
+const copied        = ref(false)
 
 async function handleSend() {
   if (!inputText.value.trim() || loading.value) return
-
   loading.value  = true
   errorMsg.value = ''
-
   try {
-    const res = await $fetch(`${API_BASE}/api/share`, {
+    const res = await $fetch('/api/share', {
       method: 'POST',
       body: { text: inputText.value },
     })
@@ -94,19 +86,16 @@ async function handleSend() {
 async function doCopy() {
   try {
     await navigator.clipboard.writeText(generatedCode.value)
-    copied.value = true
-    setTimeout(() => { copied.value = false }, 2000)
   } catch {
-    // fallback
     const el = document.createElement('textarea')
     el.value = generatedCode.value
     document.body.appendChild(el)
     el.select()
     document.execCommand('copy')
     document.body.removeChild(el)
-    copied.value = true
-    setTimeout(() => { copied.value = false }, 2000)
   }
+  copied.value = true
+  setTimeout(() => { copied.value = false }, 2000)
 }
 
 function reset() {
@@ -118,11 +107,7 @@ function reset() {
 </script>
 
 <style scoped>
-.send-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
+.send-panel { display: flex; flex-direction: column; gap: 16px; }
 
 .field-label {
   font-family: var(--font-mono);
@@ -139,11 +124,7 @@ function reset() {
 
 .textarea-wrapper { position: relative; }
 
-.send-textarea {
-  min-height: 160px;
-  line-height: 1.6;
-  padding-bottom: 32px;
-}
+.send-textarea { min-height: 160px; line-height: 1.6; padding-bottom: 32px; }
 
 .char-count {
   position: absolute;
@@ -165,11 +146,7 @@ function reset() {
   border-radius: 8px;
 }
 
-.send-btn {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
+.send-btn { width: 100%; display: flex; justify-content: center; }
 
 .btn-disabled {
   opacity: 0.4;
@@ -177,7 +154,6 @@ function reset() {
   pointer-events: none;
 }
 
-/* Result */
 .result-label {
   font-family: var(--font-mono);
   font-size: 0.7rem;
@@ -203,31 +179,10 @@ function reset() {
   border-radius: var(--radius);
 }
 
-.code-hint {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  text-align: center;
-}
-
+.code-hint { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; text-align: center; }
 .accent { color: var(--accent); }
+.expiry-notice { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); text-align: center; }
 
-.expiry-notice {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  text-align: center;
-}
-
-.result-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.result-actions > * {
-  flex: 1;
-  min-width: 120px;
-  display: flex;
-  justify-content: center;
-}
+.result-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.result-actions > * { flex: 1; min-width: 120px; display: flex; justify-content: center; }
 </style>

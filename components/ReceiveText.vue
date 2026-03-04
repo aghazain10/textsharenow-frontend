@@ -1,9 +1,7 @@
 <template>
   <div class="receive-panel">
 
-    <!-- INPUT STATE -->
     <template v-if="!retrievedText">
-
       <label class="field-label" for="code-input">
         <span class="mono">&gt;</span> Enter your share code
       </label>
@@ -33,12 +31,9 @@
         <span v-if="loading">Retrieving...</span>
         <span v-else>Retrieve Text →</span>
       </button>
-
     </template>
 
-    <!-- RESULT STATE -->
     <template v-else>
-
       <div class="result-header">
         <span class="status-dot" />
         <span class="result-label">Text retrieved successfully</span>
@@ -59,41 +54,37 @@
       </div>
 
       <p class="auto-delete-notice">🗑 This text has been deleted from our servers.</p>
-
     </template>
 
   </div>
 </template>
 
 <script setup>
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000'
+import { ref } from 'vue'
 
-const codeInput    = ref('')
+const codeInput     = ref('')
 const retrievedText = ref('')
-const usedCode     = ref('')
-const loading      = ref(false)
-const errorMsg     = ref('')
-const copied       = ref(false)
+const usedCode      = ref('')
+const loading       = ref(false)
+const errorMsg      = ref('')
+const copied        = ref(false)
 
 function onInput(e) {
   codeInput.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '')
-  errorMsg.value = ''
+  errorMsg.value  = ''
 }
 
 async function handleReceive() {
   const code = codeInput.value.trim()
   if (code.length < 4 || loading.value) return
-
   loading.value  = true
   errorMsg.value = ''
-
   try {
-    const res = await $fetch(`${API_BASE}/api/share/${code}`)
-    usedCode.value     = code
+    const res = await $fetch(`/api/share/${code}`)
+    usedCode.value      = code
     retrievedText.value = res.text
   } catch (e) {
-    const status = e?.response?.status
-    errorMsg.value = status === 404
+    errorMsg.value = e?.response?.status === 404
       ? 'Code not found or expired. Please check and try again.'
       : e?.data?.message || 'Something went wrong. Please try again.'
   } finally {
@@ -104,8 +95,6 @@ async function handleReceive() {
 async function doCopy() {
   try {
     await navigator.clipboard.writeText(retrievedText.value)
-    copied.value = true
-    setTimeout(() => { copied.value = false }, 2200)
   } catch {
     const el = document.createElement('textarea')
     el.value = retrievedText.value
@@ -113,26 +102,22 @@ async function doCopy() {
     el.select()
     document.execCommand('copy')
     document.body.removeChild(el)
-    copied.value = true
-    setTimeout(() => { copied.value = false }, 2200)
   }
+  copied.value = true
+  setTimeout(() => { copied.value = false }, 2200)
 }
 
 function reset() {
-  codeInput.value    = ''
+  codeInput.value     = ''
   retrievedText.value = ''
-  usedCode.value     = ''
-  errorMsg.value     = ''
-  copied.value       = false
+  usedCode.value      = ''
+  errorMsg.value      = ''
+  copied.value        = false
 }
 </script>
 
 <style scoped>
-.receive-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
+.receive-panel { display: flex; flex-direction: column; gap: 16px; }
 
 .field-label {
   font-family: var(--font-mono);
@@ -158,11 +143,7 @@ function reset() {
   color: var(--accent);
 }
 
-.field-hint {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  text-align: center;
-}
+.field-hint { font-size: 0.78rem; color: var(--text-muted); text-align: center; }
 
 .error-msg {
   font-size: 0.82rem;
@@ -173,25 +154,11 @@ function reset() {
   border-radius: 8px;
 }
 
-.receive-btn {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
+.receive-btn { width: 100%; display: flex; justify-content: center; }
 
-.btn-disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  pointer-events: none;
-}
+.btn-disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
 
-/* Result */
-.result-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
+.result-header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
 .result-label {
   font-family: var(--font-mono);
@@ -201,11 +168,7 @@ function reset() {
   color: var(--accent-green);
 }
 
-.code-used {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  margin-left: auto;
-}
+.code-used { font-size: 0.7rem; color: var(--text-muted); margin-left: auto; }
 
 .retrieved-text-box {
   background: rgba(0, 0, 0, 0.35);
@@ -225,17 +188,8 @@ function reset() {
   word-break: break-all;
 }
 
-.retrieved-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.retrieved-actions > * {
-  flex: 1;
-  min-width: 120px;
-  display: flex;
-  justify-content: center;
-}
+.retrieved-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.retrieved-actions > * { flex: 1; min-width: 120px; display: flex; justify-content: center; }
 
 .auto-delete-notice {
   font-family: var(--font-mono);
