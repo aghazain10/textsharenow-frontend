@@ -1,0 +1,470 @@
+/* =========================================
+   TextShareNow — Global Styles
+   ========================================= */
+@import "tailwindcss";
+
+:root {
+    --bg-primary: #060a14;
+    --bg-secondary: #0a1120;
+    --bg-card: #0d1828;
+    --bg-card-hover: #111f35;
+    --accent: #00d4ff;
+    --accent-dim: rgba(0, 212, 255, 0.08);
+    --accent-border: rgba(0, 212, 255, 0.2);
+    --accent-green: #00ff87;
+    --accent-green-dim: rgba(0, 255, 135, 0.08);
+    --text-primary: #ddeeff;
+    --text-secondary: #6e88a4;
+    --text-muted: #3a4f65;
+    --border: rgba(255, 255, 255, 0.06);
+    --border-accent: rgba(0, 212, 255, 0.18);
+    --font-display: "Orbitron", sans-serif;
+    --font-body: "Exo 2", sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --radius: 12px;
+    --radius-lg: 20px;
+    --glow: 0 0 20px rgba(0, 212, 255, 0.15);
+    --glow-strong: 0 0 40px rgba(0, 212, 255, 0.3);
+}
+
+/* Base Reset */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* =========================================
+   Background Grid Pattern
+   ========================================= */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* =========================================
+   Typography
+   ========================================= */
+h1,
+h2,
+h3 {
+    font-family: var(--font-display);
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+}
+
+h4,
+h5,
+h6 {
+    font-family: var(--font-body);
+    font-weight: 600;
+}
+
+code,
+pre,
+.mono {
+    font-family: var(--font-mono);
+}
+
+/* =========================================
+   Scrollbar
+   ========================================= */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--accent-border);
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
+/* =========================================
+   Selection
+   ========================================= */
+::selection {
+    background: rgba(0, 212, 255, 0.25);
+    color: var(--text-primary);
+}
+
+/* =========================================
+   Glassmorphism Card
+   ========================================= */
+.glass-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(12px);
+    position: relative;
+    overflow: hidden;
+    transition:
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+}
+
+.glass-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 212, 255, 0.04) 0%,
+        transparent 60%
+    );
+    pointer-events: none;
+}
+
+.glass-card:hover {
+    box-shadow: var(--glow);
+    border-color: rgba(0, 212, 255, 0.35);
+}
+
+/* =========================================
+   Neon Glow Text
+   ========================================= */
+.glow-text {
+    color: var(--accent);
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
+.glow-text-green {
+    color: var(--accent-green);
+    text-shadow: 0 0 20px rgba(0, 255, 135, 0.5);
+}
+
+/* =========================================
+   Buttons
+   ========================================= */
+.btn-primary {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 212, 255, 0.15),
+        rgba(0, 212, 255, 0.08)
+    );
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.btn-primary:hover {
+    color: #060a14;
+    box-shadow: var(--glow-strong);
+}
+
+.btn-primary:hover::before {
+    opacity: 1;
+}
+
+.btn-primary span {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-secondary {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    background: transparent;
+    border: 1px solid var(--border-accent);
+    color: var(--text-secondary);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* =========================================
+   Input / Textarea
+   ========================================= */
+.input-field {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    padding: 14px 18px;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    outline: none;
+    resize: none;
+}
+
+.input-field::placeholder {
+    color: var(--text-muted);
+}
+
+.input-field:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+}
+
+/* =========================================
+   Tab Switcher
+   ========================================= */
+.tab-bar {
+    display: flex;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius);
+    padding: 4px;
+    gap: 4px;
+}
+
+.tab-btn {
+    flex: 1;
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: transparent;
+    color: var(--text-secondary);
+}
+
+.tab-btn.active {
+    background: linear-gradient(
+        135deg,
+        rgba(0, 212, 255, 0.2),
+        rgba(0, 212, 255, 0.1)
+    );
+    border: 1px solid var(--accent-border);
+    color: var(--accent);
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.1);
+}
+
+/* =========================================
+   Code Badge
+   ========================================= */
+.code-display {
+    font-family: var(--font-mono);
+    font-size: 2.5rem;
+    font-weight: 600;
+    letter-spacing: 0.4em;
+    color: var(--accent-green);
+    text-shadow: 0 0 30px rgba(0, 255, 135, 0.6);
+    text-align: center;
+    padding: 24px;
+    background: rgba(0, 255, 135, 0.04);
+    border: 1px solid rgba(0, 255, 135, 0.2);
+    border-radius: var(--radius);
+}
+
+/* =========================================
+   Animations
+   ========================================= */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes pulse-glow {
+    0%,
+    100% {
+        box-shadow: 0 0 12px rgba(0, 212, 255, 0.15);
+    }
+    50% {
+        box-shadow: 0 0 28px rgba(0, 212, 255, 0.35);
+    }
+}
+
+@keyframes scan-line {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(100vh);
+    }
+}
+
+@keyframes blink {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}
+
+.animate-fade-up {
+    animation: fadeInUp 0.6s ease both;
+}
+.animate-fade-up-1 {
+    animation: fadeInUp 0.6s 0.1s ease both;
+}
+.animate-fade-up-2 {
+    animation: fadeInUp 0.6s 0.2s ease both;
+}
+.animate-fade-up-3 {
+    animation: fadeInUp 0.6s 0.3s ease both;
+}
+.animate-fade-up-4 {
+    animation: fadeInUp 0.6s 0.4s ease both;
+}
+
+.pulse-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
+}
+
+/* =========================================
+   Section layout helpers
+   ========================================= */
+.section {
+    padding: 80px 0;
+    position: relative;
+    z-index: 1;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.section-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.section-label::before {
+    content: "";
+    width: 20px;
+    height: 1px;
+    background: var(--accent);
+}
+
+.section-title {
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    margin-bottom: 16px;
+}
+
+.section-subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+    max-width: 540px;
+    line-height: 1.7;
+}
+
+/* =========================================
+   Divider
+   ========================================= */
+.divider {
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--border-accent),
+        transparent
+    );
+    margin: 0;
+    border: none;
+}
+
+/* =========================================
+   Status dot
+   ========================================= */
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    box-shadow: 0 0 8px rgba(0, 255, 135, 0.8);
+    animation: pulse-glow 2s ease-in-out infinite;
+    display: inline-block;
+}
+
+/* =========================================
+   Responsive
+   ========================================= */
+@media (max-width: 768px) {
+    .section {
+        padding: 60px 0;
+    }
+    .code-display {
+        font-size: 1.8rem;
+        letter-spacing: 0.3em;
+    }
+}
