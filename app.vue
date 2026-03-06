@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Analytics } from "@vercel/analytics/nuxt";
+useSeo({});
 </script>
 
 <template>
@@ -7,7 +8,3 @@ import { Analytics } from "@vercel/analytics/nuxt";
         <NuxtPage />
     </NuxtLayout>
 </template>
-
-<script setup>
-useSeo({});
-</script>
