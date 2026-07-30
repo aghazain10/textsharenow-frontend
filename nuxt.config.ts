@@ -70,6 +70,13 @@ export default defineNuxtConfig({
                     href: "https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Exo+2:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap",
                 },
             ],
+            script: [
+                {
+                    src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6697676712322371",
+                    async: true,
+                    crossorigin: "anonymous",
+                },
+            ],
         },
     },
 
