@@ -58,7 +58,7 @@ export default defineNuxtConfig({
             ],
             link: [
                 { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
-                { rel: "canonical", href: "https://textsharenow.vercel.app" },
+                { rel: "canonical", href: "https://www.textsharenow.com" },
                 { rel: "preconnect", href: "https://fonts.googleapis.com" },
                 {
                     rel: "preconnect",

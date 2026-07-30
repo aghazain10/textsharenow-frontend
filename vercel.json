@@ -1,0 +1,15 @@
+{
+    "redirects": [
+        {
+            "source": "/:path*",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "textsharenow-frontend.vercel.app"
+                }
+            ],
+            "destination": "https://www.textsharenow.com/:path*",
+            "permanent": true
+        }
+    ]
+}
