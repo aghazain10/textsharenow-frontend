@@ -70,6 +70,21 @@
                                     }}</span>
                                     <p>{{ block.text }}</p>
                                 </div>
+                                <div
+                                    v-else-if="block.type === 'links'"
+                                    class="content-links"
+                                >
+                                    <span class="content-links-label">{{
+                                        block.label || "Related reading"
+                                    }}</span>
+                                    <NuxtLink
+                                        v-for="(link, k) in block.items"
+                                        :key="k"
+                                        :to="link.to"
+                                        class="content-link"
+                                        >{{ link.text }} →</NuxtLink
+                                    >
+                                </div>
                             </div>
                         </div>
 
@@ -330,6 +345,35 @@ watchEffect(() => {
     font-size: 0.88rem;
     color: var(--text-primary);
     line-height: 1.7;
+}
+
+.content-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 18px 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.content-links-label {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.content-link {
+    font-size: 0.86rem;
+    color: var(--accent);
+    text-decoration: none;
+    line-height: 1.6;
+}
+.content-link:hover {
+    opacity: 0.75;
 }
 
 /* Post CTA */

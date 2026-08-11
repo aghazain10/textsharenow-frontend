@@ -290,7 +290,381 @@ export const blogPosts = [
             { type: "h2", text: "The Bottom Line" },
             {
                 type: "p",
-                text: "Not every snippet deserves a gist, and not every fix deserves to live forever in your Slack history. For the in-between case — text you need on another device right now, and probably never again — a short, typeable code is the least friction of any option. It is one of the reasons this kind of tool got built in the first place; you can read more about the story behind TextShareNow on the about page.",
+                text: "Not every snippet deserves a gist, and not every fix deserves to live forever in your Slack history. For the in-between case — text you need on another device right now, and probably never again — a short, typeable code is the least friction of any option.",
+            },
+            {
+                type: "links",
+                items: [
+                    {
+                        to: "/blog/how-to-share-text-from-phone-to-laptop",
+                        text: "The fastest way to share text from phone to laptop",
+                    },
+                    { to: "/about", text: "The story behind TextShareNow" },
+                ],
+            },
+        ],
+    },
+    {
+        slug: "iphone-windows-text-transfer-without-icloud",
+        title: "How to Share Text Between an iPhone and a Windows PC (No iCloud Needed)",
+        excerpt:
+            "iCloud does not play nicely with Windows, and Apple's ecosystem tools mostly assume you own another Apple device. Here is how to move text across the divide anyway.",
+        tag: "Guide",
+        date: "August 2026",
+        readTime: "4 min read",
+        content: [
+            {
+                type: "p",
+                text: "If you have an iPhone and a Windows laptop, you have probably noticed that Apple does not make this combination easy. AirDrop does not exist on Windows. Handoff does not exist on Windows. Universal Clipboard does not exist on Windows. Every convenience feature Apple builds assumes the second device is also an Apple device.",
+            },
+            { type: "h2", text: "What iCloud for Windows Actually Does" },
+            {
+                type: "p",
+                text: "Apple does offer an iCloud app for Windows, and it can sync photos, bookmarks, and some files. But it is not built for quick, one-off text transfers — it is built for ongoing sync of specific data types, requires an Apple ID sign-in, and syncing is not instant. For grabbing a single note or link right now, it is the wrong tool for the job.",
+            },
+            { type: "h2", text: "Options That Actually Work Cross-Platform" },
+            { type: "h3", text: "Email or messaging apps" },
+            {
+                type: "p",
+                text: "Reliable, universally available, but slow for a single quick transfer — see our breakdown of why self-emailing wastes more time than it seems to.",
+            },
+            { type: "h3", text: "Browser-based clipboard sync extensions" },
+            {
+                type: "p",
+                text: "Some browser extensions sync clipboard content across devices if you are signed into the same account on both. Useful if you already live in one browser ecosystem, but another account and extension to manage.",
+            },
+            { type: "h3", text: "A short-code sharing tool" },
+            {
+                type: "p",
+                text: "Because it runs entirely in the browser, it does not care whether one device is an iPhone and the other is a Windows PC. Paste on the iPhone, type the code on the PC — the platform mismatch that breaks AirDrop and Handoff simply does not apply.",
+            },
+            {
+                type: "callout",
+                icon: "🔄",
+                text: "The core issue with iPhone-to-Windows transfers is always the same: Apple's built-in tools assume Apple hardware on both ends. Anything browser-based sidesteps that assumption entirely.",
+            },
+            { type: "h2", text: "The Bottom Line" },
+            {
+                type: "p",
+                text: "You do not need to set up iCloud for Windows or install a syncing extension just to move a link or a note. For that specific, common case, a browser-only tool that does not care what device you are on is the simplest fix.",
+            },
+            {
+                type: "links",
+                items: [
+                    {
+                        to: "/blog/why-you-should-stop-emailing-yourself",
+                        text: "Why you should stop emailing yourself",
+                    },
+                    {
+                        to: "/blog/airdrop-alternative-cross-platform",
+                        text: "The best AirDrop alternatives for cross-platform sharing",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        slug: "share-wifi-password-without-reading-aloud",
+        title: "Best Ways to Share a Wi-Fi Password Without Reading It Out Loud",
+        excerpt:
+            "Spelling out a 16-character Wi-Fi password to a guest is nobody's favorite moment. Here are better ways to hand it over.",
+        tag: "Guide",
+        date: "August 2026",
+        readTime: "3 min read",
+        content: [
+            {
+                type: "p",
+                text: 'Modern Wi-Fi passwords are long and deliberately hard to guess, which is great for security and terrible for the moment a guest asks for it and you have to read out a string like "Kb7#mQ2!vLpX9z" one character at a time.',
+            },
+            {
+                type: "h2",
+                text: "Common Ways to Share It (And Their Downsides)",
+            },
+            { type: "h3", text: "Reading it aloud" },
+            {
+                type: "p",
+                text: "Slow, error-prone, and mildly awkward for both people involved — especially with mixed-case letters and symbols that sound identical out loud.",
+            },
+            { type: "h3", text: "A printed card near the router" },
+            {
+                type: "p",
+                text: "Works well for a home you control, but is a static, low-effort solution that does not help when you are not physically near the router — at a friend's place, an office, or a rental.",
+            },
+            { type: "h3", text: "QR code Wi-Fi sharing" },
+            {
+                type: "p",
+                text: "Many phones can generate a scannable Wi-Fi QR code. This is genuinely excellent when the guest is standing there with a phone camera ready — one of the cases where QR codes clearly beat typing.",
+            },
+            { type: "h3", text: "A short text code" },
+            {
+                type: "p",
+                text: "For remote sharing — texting a password to someone before they arrive, or sending it from your phone to your own laptop when setting up a new device — a short code avoids both the read-aloud problem and the need for a camera. Paste the password, send a 5-character code, and the recipient types it in and copies the real password out, exactly as typed, no misheard characters.",
+            },
+            {
+                type: "callout",
+                icon: "🔐",
+                text: "One advantage worth noting for sensitive info like Wi-Fi passwords: the content auto-deletes after it is read once, so the password is not left sitting in a chat log indefinitely.",
+            },
+            { type: "h2", text: "Which to Use When" },
+            {
+                type: "ul",
+                items: [
+                    "Guest physically present with a phone: QR code, fastest and effortless",
+                    "Sharing remotely, before someone arrives: a short text code or a messaging app",
+                    "Setting up your own new device: a short code, since you likely do not have the QR image handy on the new device yet",
+                ],
+            },
+            {
+                type: "links",
+                items: [
+                    {
+                        to: "/blog/qr-codes-vs-short-codes-device-sharing",
+                        text: "QR codes vs short codes: which is better for device sharing",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        slug: "clipboard-manager-vs-text-sharing-tool",
+        title: "Clipboard Manager vs Cross-Device Text Sharing: What's the Difference?",
+        excerpt:
+            'Both promise to fix the "I need this text on another device" problem. They solve it very differently — here is which one actually fits your situation.',
+        tag: "Comparison",
+        date: "August 2026",
+        readTime: "4 min read",
+        content: [
+            {
+                type: "p",
+                text: "Search for a solution to moving text between devices and you will run into two very different categories of tool: clipboard managers with cross-device sync, and simple short-code sharing tools. They sound similar but are built for different jobs.",
+            },
+            { type: "h2", text: "What a Clipboard Manager Does" },
+            {
+                type: "p",
+                text: "A clipboard manager runs continuously in the background, keeps a history of everything you copy, and — in its cross-device versions — syncs that history to your other signed-in devices. It is a persistent, ongoing tool: install it, sign in everywhere, and every future copy is automatically available elsewhere.",
+            },
+            { type: "h2", text: "What a Short-Code Sharing Tool Does" },
+            {
+                type: "p",
+                text: "A short-code tool does one specific thing: you deliberately paste something, get a code, and retrieve it once on another device. Nothing runs in the background, nothing is stored beyond a single use, and there is no ongoing history to manage or worry about.",
+            },
+            { type: "h2", text: "Where Each One Wins" },
+            { type: "h3", text: "Clipboard managers are better when..." },
+            {
+                type: "ul",
+                items: [
+                    "You copy-paste between the same devices constantly, many times a day",
+                    'You want automatic syncing without a deliberate "send" step each time',
+                    "You are comfortable installing an app and keeping accounts signed in everywhere",
+                ],
+            },
+            { type: "h3", text: "A short-code tool is better when..." },
+            {
+                type: "ul",
+                items: [
+                    "You need a one-off transfer, not an ongoing sync relationship",
+                    "You are on a device you do not own — a library computer, a friend's laptop, a work machine",
+                    "You would rather not install anything or sign into an account",
+                    "You want the content gone after you use it, not sitting in a history log",
+                ],
+            },
+            {
+                type: "callout",
+                icon: "⚖️",
+                text: "A simple rule of thumb: if it is a device you use every day, a synced clipboard manager pays off. If it is a one-time transfer or a device you do not control, a short-code tool with nothing to install wins.",
+            },
+            { type: "h2", text: "The Bottom Line" },
+            {
+                type: "p",
+                text: "These are not really competitors — they solve overlapping but distinct problems. Plenty of people reasonably use both: a clipboard manager for their own daily-driver devices, and a short-code tool for the one-off cases those apps were never built for.",
+            },
+            {
+                type: "links",
+                items: [
+                    {
+                        to: "/blog/why-you-should-stop-emailing-yourself",
+                        text: "Why you should stop emailing yourself",
+                    },
+                    {
+                        to: "/blog/qr-codes-vs-short-codes-device-sharing",
+                        text: "QR codes vs short codes compared",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        slug: "share-long-urls-without-breaking-links",
+        title: "How to Send a Long URL Without It Getting Cut Off or Broken",
+        excerpt:
+            "Long URLs with tracking parameters and query strings break easily when copied through the wrong app. Here is how to avoid it.",
+        tag: "Guide",
+        date: "August 2026",
+        readTime: "3 min read",
+        content: [
+            {
+                type: "p",
+                text: "Modern URLs are often much longer than they look — a product page, a document link, or a search result can carry hundreds of characters once tracking parameters and session tokens are appended. Send that link the wrong way and it can get truncated, wrapped, or split across lines in a way that breaks it entirely.",
+            },
+            { type: "h2", text: "Where Long URLs Commonly Break" },
+            {
+                type: "ul",
+                items: [
+                    "SMS text messages, which sometimes split long messages and can corrupt the link at the seam",
+                    "Some chat apps that auto-shorten or preview-strip a link, losing part of the original",
+                    "Printed or handwritten notes, where a wrapped line makes it unclear if a character was a hyphen or a line break",
+                    "Voice dictation, for obvious reasons",
+                ],
+            },
+            { type: "h2", text: "How to Send One Safely" },
+            {
+                type: "p",
+                text: 'The safest transfer methods are ones that treat the URL as plain text with no reformatting, resizing, or "smart" link handling in between. Copy-pasting through a plain text field — rather than a messaging app that tries to preview or shorten the link — preserves every character exactly.',
+            },
+            {
+                type: "p",
+                text: "A short-code text-sharing tool works well here specifically because it does nothing clever with the content: what you paste is exactly what comes out the other end, character for character, regardless of length (up to the tool's character limit).",
+            },
+            {
+                type: "callout",
+                icon: "🔗",
+                text: "If you are ever unsure whether a link survived a transfer intact, paste it somewhere plain — a notes app or a text field — before clicking, so you can visually check it has not been truncated.",
+            },
+            { type: "h2", text: "The Bottom Line" },
+            {
+                type: "p",
+                text: "Long URLs are fragile in exactly the apps most people default to for quick sharing. A plain-text transfer method, without link previews or auto-formatting getting in the way, is the safest way to make sure the link that arrives is the link you sent.",
+            },
+            {
+                type: "links",
+                items: [
+                    {
+                        to: "/blog/how-to-share-text-from-phone-to-laptop",
+                        text: "The fastest way to share text from phone to laptop",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        slug: "signs-you-need-better-device-sharing",
+        title: "5 Signs You Need a Better Way to Move Text Between Your Devices",
+        excerpt:
+            "If any of these sound familiar, your current method of getting text between devices is costing you more time than you realize.",
+        tag: "Productivity",
+        date: "August 2026",
+        readTime: "3 min read",
+        content: [
+            {
+                type: "p",
+                text: "Most people never actually evaluate how they move text between devices — it is just a habit formed years ago and never revisited. Here are five signs that habit is worth changing.",
+            },
+            {
+                type: "h2",
+                text: "1. Your inbox has dozens of emails from yourself",
+            },
+            {
+                type: "p",
+                text: "If you search your own email address in your inbox and the results go back years, that is a lot of accumulated 30-60 second detours that a faster tool would have saved entirely.",
+            },
+            {
+                type: "h2",
+                text: "2. You keep a messaging app open just to message yourself",
+            },
+            {
+                type: "p",
+                text: "A self-chat in WhatsApp or Telegram used purely as a file-transfer workaround is a sign the app is being repurposed for a job it was not built for.",
+            },
+            {
+                type: "h2",
+                text: "3. You have retyped something you could have copied",
+            },
+            {
+                type: "p",
+                text: "If a link or note was too annoying to transfer properly, so you just typed it out again by hand, that is the clearest possible signal your current method has too much friction.",
+            },
+            { type: "h2", text: "4. You avoid switching devices mid-task" },
+            {
+                type: "p",
+                text: "If you finish a task on the same device you started it on purely to avoid the hassle of moving your progress notes or a link across, your workflow is being shaped around a tooling gap rather than what is actually convenient.",
+            },
+            {
+                type: "h2",
+                text: '5. "I\'ll just do it later on my laptop" happens a lot',
+            },
+            {
+                type: "p",
+                text: "Deferring a task because transferring the relevant text is annoying enough to postpone it is a small but real productivity cost that adds up over a week.",
+            },
+            {
+                type: "callout",
+                icon: "📊",
+                text: "None of these are dramatic on their own — a minute here, thirty seconds there. The cost is in how often they repeat, day after day, across months.",
+            },
+            { type: "h2", text: "The Fix" },
+            {
+                type: "p",
+                text: "None of this requires a complex solution. A short, typeable code that moves plain text between any two devices in seconds removes the friction behind all five signs above, without an account, an app install, or a habit change beyond opening a browser tab.",
+            },
+            {
+                type: "links",
+                items: [
+                    {
+                        to: "/blog/why-you-should-stop-emailing-yourself",
+                        text: "Why you should stop emailing yourself",
+                    },
+                    { to: "/", text: "Try TextShareNow" },
+                ],
+            },
+        ],
+    },
+    {
+        slug: "share-text-privately-without-chat-history",
+        title: "How to Share Text Privately Without It Living in Your Chat History Forever",
+        excerpt:
+            "Every message you send yourself sits in a chat log indefinitely. Here is how to move text between devices without leaving a permanent trail.",
+        tag: "Guide",
+        date: "August 2026",
+        readTime: "3 min read",
+        content: [
+            {
+                type: "p",
+                text: "Every time you email or message yourself something, it does not just get delivered — it stays. It sits in your sent folder, your inbox, and your chat history indefinitely, searchable and backed up, long after you needed it. For most transfers that is a harmless side effect. For some, it is worth avoiding on purpose.",
+            },
+            { type: "h2", text: "Why This Adds Up" },
+            {
+                type: "p",
+                text: "A single self-sent message is not a privacy problem. Years of them, covering everything from meeting notes to personal reminders to half-finished thoughts, is a fairly detailed archive that most people never intended to build and rarely think to clean up.",
+            },
+            { type: "h2", text: 'What "Auto-Deleting" Actually Means' },
+            {
+                type: "p",
+                text: "A text-sharing tool built around temporary, single-use codes works differently by design: the content is stored only long enough to be retrieved once, then deleted — typically within minutes, and immediately after the first successful read. There is no persistent copy left behind to search, back up, or forget about.",
+            },
+            {
+                type: "callout",
+                icon: "🗑️",
+                text: "This is a good fit for day-to-day transfers you do not need a record of. It is not a substitute for encrypted messaging or a password manager when the content is genuinely sensitive, like credentials — see our note on that distinction in our guide for developers sharing code snippets.",
+            },
+            { type: "h2", text: "A Simple Way to Think About It" },
+            {
+                type: "p",
+                text: "Ask whether you actually want a permanent record of what you are sending. If yes — an important document, something you will reference again — email or a notes app that keeps history is the right call. If no — a link you needed once, a note that is done being useful the moment it is read — a tool that deletes itself afterward fits better and leaves less behind.",
+            },
+            { type: "h2", text: "The Bottom Line" },
+            {
+                type: "p",
+                text: "Most day-to-day text transfers do not need to be permanent, even though the tools most people default to make everything permanent by default. Choosing a tool that deletes content after use is a small change with a real reduction in digital clutter and exposure over time.",
+            },
+            {
+                type: "links",
+                items: [
+                    { to: "/privacy", text: "Read our Privacy Policy" },
+                    {
+                        to: "/blog/share-code-snippets-between-devices-for-developers",
+                        text: "How developers can safely move code snippets between devices",
+                    },
+                ],
             },
         ],
     },
