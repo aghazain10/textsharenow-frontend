@@ -60,10 +60,9 @@ export const blogPosts = [
                     "Screenshot/OCR: Text that cannot be copied from the source app",
                 ],
             },
-            { type: "h2", text: "The Bottom Line" },
             {
                 type: "p",
-                text: "For pure speed and simplicity, a tool built specifically for this task wins every time. TextShareNow requires nothing but a browser and the ability to type five characters.",
+                text: 'None of these methods are wrong, exactly — they are just built for jobs other than "get this text over there, right now." For pure speed on a one-off transfer, a tool built specifically for that task wins every time, mostly because it does not have to be anything else.',
             },
         ],
     },
@@ -163,10 +162,9 @@ export const blogPosts = [
                     "No internet connection at all: Bluetooth, despite the slower speed",
                 ],
             },
-            { type: "h2", text: "The Bottom Line" },
             {
                 type: "p",
-                text: "There is no single perfect AirDrop replacement, because AirDrop bundles file transfer and cross-device convenience into one Apple-only feature. Splitting the problem — a dedicated tool for quick text and links, cloud storage for large files you want to keep — ends up faster than forcing one tool to do everything.",
+                text: "There is no single perfect AirDrop replacement, mainly because AirDrop bundles file transfer and cross-device convenience into one Apple-only feature. Splitting the problem apart — a dedicated tool for quick text and links, cloud storage for the large files you actually want to keep — tends to end up faster in practice than forcing one tool to do everything.",
             },
         ],
     },
@@ -218,15 +216,10 @@ export const blogPosts = [
                     "Bidirectional sharing, since the same short code works either direction",
                 ],
             },
-            {
-                type: "callout",
-                icon: "🔍",
-                text: "The honest takeaway: QR codes and short codes solve overlapping but different problems. QR codes are best when a phone camera can do the work; short codes are best when the phone is where the content starts.",
-            },
-            { type: "h2", text: "The Bottom Line" },
+            { type: "h2", text: "So, Which Should You Use?" },
             {
                 type: "p",
-                text: "If you are sending something to a phone, a QR code is often the fastest option. If you are sending something from a phone — particularly to a laptop — a short, typeable code avoids the awkward scanning problem entirely. TextShareNow uses this exact approach for text and links.",
+                text: "The honest answer is that it depends on which direction the content is moving. If you are sending something to a phone, a QR code is often the fastest option — let the camera do the work. If you are sending something from a phone, particularly to a laptop, a short, typeable code avoids the awkward scanning problem entirely. TextShareNow leans on that second case specifically.",
             },
         ],
     },
@@ -287,7 +280,7 @@ export const blogPosts = [
                     "Quick config changes: move a one-line fix without the overhead of a commit or a gist",
                 ],
             },
-            { type: "h2", text: "The Bottom Line" },
+            { type: "h2", text: "Where This Leaves You" },
             {
                 type: "p",
                 text: "Not every snippet deserves a gist, and not every fix deserves to live forever in your Slack history. For the in-between case — text you need on another device right now, and probably never again — a short, typeable code is the least friction of any option.",
@@ -336,14 +329,9 @@ export const blogPosts = [
             { type: "h3", text: "A short-code sharing tool" },
             {
                 type: "p",
-                text: "Because it runs entirely in the browser, it does not care whether one device is an iPhone and the other is a Windows PC. Paste on the iPhone, type the code on the PC — the platform mismatch that breaks AirDrop and Handoff simply does not apply.",
+                text: "Because it runs entirely in the browser, it does not care whether one device is an iPhone and the other is a Windows PC. Paste on the iPhone, type the code on the PC — the platform mismatch that breaks AirDrop and Handoff simply does not apply. The core issue with iPhone-to-Windows transfers is always the same: Apple's built-in tools assume Apple hardware on both ends, and anything browser-based sidesteps that assumption entirely.",
             },
-            {
-                type: "callout",
-                icon: "🔄",
-                text: "The core issue with iPhone-to-Windows transfers is always the same: Apple's built-in tools assume Apple hardware on both ends. Anything browser-based sidesteps that assumption entirely.",
-            },
-            { type: "h2", text: "The Bottom Line" },
+            { type: "h2", text: "What to Actually Do" },
             {
                 type: "p",
                 text: "You do not need to set up iCloud for Windows or install a syncing extension just to move a link or a note. For that specific, common case, a browser-only tool that does not care what device you are on is the simplest fix.",
@@ -468,15 +456,10 @@ export const blogPosts = [
                     "You want the content gone after you use it, not sitting in a history log",
                 ],
             },
-            {
-                type: "callout",
-                icon: "⚖️",
-                text: "A simple rule of thumb: if it is a device you use every day, a synced clipboard manager pays off. If it is a one-time transfer or a device you do not control, a short-code tool with nothing to install wins.",
-            },
-            { type: "h2", text: "The Bottom Line" },
+            { type: "h2", text: "Which One Fits You" },
             {
                 type: "p",
-                text: "These are not really competitors — they solve overlapping but distinct problems. Plenty of people reasonably use both: a clipboard manager for their own daily-driver devices, and a short-code tool for the one-off cases those apps were never built for.",
+                text: "A simple rule of thumb: if it is a device you use every day, a synced clipboard manager pays off over time. If it is a one-time transfer or a device you do not control, a short-code tool with nothing to install wins. These are not really competitors — plenty of people reasonably use both, a clipboard manager for their own daily-driver devices and a short-code tool for the one-off cases those apps were never built for.",
             },
             {
                 type: "links",
@@ -530,7 +513,6 @@ export const blogPosts = [
                 icon: "🔗",
                 text: "If you are ever unsure whether a link survived a transfer intact, paste it somewhere plain — a notes app or a text field — before clicking, so you can visually check it has not been truncated.",
             },
-            { type: "h2", text: "The Bottom Line" },
             {
                 type: "p",
                 text: "Long URLs are fragile in exactly the apps most people default to for quick sharing. A plain-text transfer method, without link previews or auto-formatting getting in the way, is the safest way to make sure the link that arrives is the link you sent.",
@@ -646,15 +628,10 @@ export const blogPosts = [
                 icon: "🗑️",
                 text: "This is a good fit for day-to-day transfers you do not need a record of. It is not a substitute for encrypted messaging or a password manager when the content is genuinely sensitive, like credentials — see our note on that distinction in our guide for developers sharing code snippets.",
             },
-            { type: "h2", text: "A Simple Way to Think About It" },
+            { type: "h2", text: "Worth Deciding Once" },
             {
                 type: "p",
-                text: "Ask whether you actually want a permanent record of what you are sending. If yes — an important document, something you will reference again — email or a notes app that keeps history is the right call. If no — a link you needed once, a note that is done being useful the moment it is read — a tool that deletes itself afterward fits better and leaves less behind.",
-            },
-            { type: "h2", text: "The Bottom Line" },
-            {
-                type: "p",
-                text: "Most day-to-day text transfers do not need to be permanent, even though the tools most people default to make everything permanent by default. Choosing a tool that deletes content after use is a small change with a real reduction in digital clutter and exposure over time.",
+                text: "Ask whether you actually want a permanent record of what you are sending. If yes — an important document, something you will reference again — email or a notes app that keeps history is the right call. If no — a link you needed once, a note that is done being useful the moment it is read — a tool that deletes itself afterward fits better and leaves less behind. Most day-to-day text transfers fall into the second category, even though the tools most people default to make everything permanent by default.",
             },
             {
                 type: "links",

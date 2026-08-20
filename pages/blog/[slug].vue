@@ -22,6 +22,12 @@
                                 }}</span>
                             </div>
                             <h1 class="post-title">{{ post.title }}</h1>
+                            <p class="post-byline">
+                                Written by
+                                <NuxtLink to="/about" class="byline-link">{{
+                                    post.author || "Zain Rizvee"
+                                }}</NuxtLink>
+                            </p>
                             <p class="post-lead">{{ post.excerpt }}</p>
                         </header>
 
@@ -256,8 +262,22 @@ watchEffect(() => {
 
 .post-title {
     font-size: clamp(1.4rem, 3vw, 2rem);
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     line-height: 1.3;
+}
+
+.post-byline {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+}
+
+.byline-link {
+    color: var(--accent);
+    text-decoration: none;
+}
+.byline-link:hover {
+    opacity: 0.75;
 }
 
 .post-lead {
