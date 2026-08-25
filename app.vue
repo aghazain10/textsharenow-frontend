@@ -7,4 +7,5 @@ useSeo({});
     <NuxtLayout>
         <NuxtPage />
     </NuxtLayout>
+    <Analytics />
 </template>

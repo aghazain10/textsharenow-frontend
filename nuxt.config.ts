@@ -10,7 +10,7 @@ export default defineNuxtConfig({
         plugins: [tailwindcss() as unknown as Plugin],
     },
 
-    css: ["~/assets/css/main.css"],
+    css: ["~/assets/css/fonts.css", "~/assets/css/main.css"],
 
     // ── Server-side env vars (never exposed to browser) ──────────────────────
     runtimeConfig: {
@@ -59,21 +59,33 @@ export default defineNuxtConfig({
             link: [
                 { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
                 { rel: "canonical", href: "https://www.textsharenow.com" },
-                { rel: "preconnect", href: "https://fonts.googleapis.com" },
                 {
-                    rel: "preconnect",
-                    href: "https://fonts.gstatic.com",
+                    rel: "preload",
+                    href: "/fonts/orbitron-latin.woff2",
+                    as: "font",
+                    type: "font/woff2",
                     crossorigin: "",
                 },
                 {
-                    rel: "stylesheet",
-                    href: "https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Exo+2:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap",
+                    rel: "preload",
+                    href: "/fonts/exo2-latin.woff2",
+                    as: "font",
+                    type: "font/woff2",
+                    crossorigin: "",
+                },
+                {
+                    rel: "preload",
+                    href: "/fonts/jetbrains-mono-latin.woff2",
+                    as: "font",
+                    type: "font/woff2",
+                    crossorigin: "",
                 },
             ],
             script: [
                 {
                     src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6697676712322371",
                     async: true,
+                    defer: true,
                     crossorigin: "anonymous",
                 },
             ],

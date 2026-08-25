@@ -468,3 +468,82 @@ pre,
         letter-spacing: 0.3em;
     }
 }
+
+/* =========================================
+   FAQ Section (consolidated from FaqSection.vue)
+   ========================================= */
+.faq-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 60px;
+    align-items: start;
+}
+
+@media (max-width: 768px) {
+    .faq-layout { grid-template-columns: 1fr; gap: 40px; }
+}
+
+.faq-header {
+    position: sticky;
+    top: 100px;
+}
+
+.view-all-link {
+    display: inline-block;
+    margin-top: 20px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    text-decoration: none;
+}
+.view-all-link:hover { opacity: 0.7; }
+
+.faq-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.faq-item {
+    border-bottom: 1px solid var(--border);
+}
+
+.faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 0;
+    text-align: left;
+}
+
+.faq-q-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+.faq-icon {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    color: var(--accent);
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+}
+
+.faq-answer {
+    padding-bottom: 20px;
+}
+
+.faq-answer p {
+    font-size: 0.87rem;
+    color: var(--text-secondary);
+    line-height: 1.72;
+    font-weight: 300;
+}
