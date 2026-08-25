@@ -47,6 +47,11 @@
                         class="inline-link"
                         >Why email-to-self is worth quitting →</NuxtLink
                     >
+                    <NuxtLink
+                        to="/blog/airdrop-alternative-cross-platform"
+                        class="inline-link"
+                        >Best AirDrop alternatives for cross-platform sharing →</NuxtLink
+                    >
                 </div>
             </div>
         </div>

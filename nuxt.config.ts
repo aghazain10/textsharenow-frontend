@@ -86,9 +86,13 @@ export default defineNuxtConfig({
         "/": { prerender: true },
         "/about": { prerender: true },
         "/privacy": { prerender: true },
+        "/terms": { prerender: true },
         "/faq": { prerender: true },
+        "/contact": { prerender: true },
         "/blog": { prerender: true },
         "/how-it-works": { prerender: true },
+        "/blog/airdrop-alternative-cross-platform": { prerender: true },
+        "/blog/airdrop-alternative-for-windows": { prerender: true },
         "/api/**": { cors: true },
     },
 

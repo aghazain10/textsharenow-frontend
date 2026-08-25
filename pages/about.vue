@@ -36,7 +36,15 @@
                     <p>
                         TextShareNow is the answer: a short, typeable code that
                         works in both directions, across any network, on any
-                        device, with zero setup.
+                        device, with zero setup. If you are coming from Apple's
+                        ecosystem and missing AirDrop on your Windows or Android
+                        device, our guide on
+                        <NuxtLink
+                            to="/blog/airdrop-alternative-cross-platform"
+                            class="about-link"
+                            >AirDrop alternatives that work across platforms</NuxtLink
+                        >
+                        covers the landscape in detail.
                     </p>
 
                     <hr class="content-divider" />
@@ -348,5 +356,13 @@ const sidebarStats = [
     width: 100%;
     display: flex;
     justify-content: center;
+}
+
+.about-link {
+    color: var(--accent);
+    text-decoration: none;
+}
+.about-link:hover {
+    opacity: 0.75;
 }
 </style>

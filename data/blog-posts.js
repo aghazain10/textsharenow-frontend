@@ -64,6 +64,13 @@ export const blogPosts = [
                 type: "p",
                 text: 'None of these methods are wrong, exactly — they are just built for jobs other than "get this text over there, right now." For pure speed on a one-off transfer, a tool built specifically for that task wins every time, mostly because it does not have to be anything else.',
             },
+            {
+                type: "links",
+                items: [
+                    { to: "/blog/airdrop-alternative-cross-platform", text: "The best AirDrop alternatives for cross-platform sharing" },
+                    { to: "/blog/share-text-privately-without-chat-history", text: "How to share text privately without leaving a chat trail" },
+                ],
+            },
         ],
     },
     {
@@ -96,12 +103,19 @@ export const blogPosts = [
             { type: "h2", text: "The Better Alternatives" },
             {
                 type: "p",
-                text: "For quick transfers, a purpose-built tool like TextShareNow is faster and cleaner. For keeping notes between sessions, a synced clipboard tool or a notes app (Notion, Apple Notes, Google Keep) is more appropriate.",
+                text: "For quick transfers, a purpose-built tool like TextShareNow is faster and cleaner. For keeping notes between sessions, a synced clipboard tool or a notes app (Notion, Apple Notes, Google Keep) is more appropriate. If you are moving between Apple and non-Apple devices, our guide to the best AirDrop alternatives covers cross-platform options in depth.",
             },
             {
                 type: "callout",
                 icon: "💡",
                 text: "The key distinction: if you are transferring something right now and do not need to keep it, use a transfer tool. If you need to archive it, use a notes app.",
+            },
+            {
+                type: "links",
+                items: [
+                    { to: "/blog/airdrop-alternative-cross-platform", text: "The best AirDrop alternatives for cross-platform sharing" },
+                    { to: "/blog/how-to-share-text-from-phone-to-laptop", text: "The fastest way to share text from phone to laptop" },
+                ],
             },
         ],
     },
@@ -152,6 +166,22 @@ export const blogPosts = [
                 icon: "📎",
                 text: "Worth noting: TextShareNow is built for text and links, not photos or large files — it is a focused fix for the specific AirDrop gap around quick text transfers, not a full file-sharing replacement.",
             },
+            { type: "h2", text: "Quick Picks by Device Pair" },
+            { type: "h3", text: "Android to iPhone" },
+            {
+                type: "p",
+                text: "This is the most common cross-platform gap. Nearby Share cannot send to iPhone, AirDrop cannot receive from Android, and cloud storage requires accounts on both ends. For a quick text or link transfer, a browser-based short code tool is the only option that works on both sides without installing anything. For files, Google Drive or a shared cloud folder is the realistic fallback.",
+            },
+            { type: "h3", text: "Windows to iPhone (and vice versa)" },
+            {
+                type: "p",
+                text: "Apple's ecosystem tools — AirDrop, Handoff, Universal Clipboard — simply do not exist on Windows. iCloud for Windows can sync some file types but is not built for quick one-off transfers. A browser-based short code sidesteps this entirely: paste on the iPhone, type the code on Windows, and the text appears. No Apple ID sync, no iCloud app, no third-party software.",
+            },
+            { type: "h3", text: "Windows to Android" },
+            {
+                type: "p",
+                text: "Nearby Share now works between Windows and Android via Google's companion app, so file transfers are reasonably covered. For text and links specifically, a short-code tool is still faster since it skips the app install and account sign-in that Nearby Share requires.",
+            },
             { type: "h2", text: "Which One Should You Actually Use" },
             {
                 type: "ul",
@@ -159,12 +189,21 @@ export const blogPosts = [
                     "Large files, same platform: AirDrop (Apple) or Nearby Share (Android)",
                     "Large files, mixed platforms: Cloud storage, accepting the extra steps",
                     "Text, links, or notes, any platform combination: A short-code tool like TextShareNow",
+                    "Android to iPhone specifically: No native option works — a browser-based tool is the fastest path",
+                    "Windows to iPhone specifically: Apple's tools do not exist on Windows — see the device-pair breakdown above",
                     "No internet connection at all: Bluetooth, despite the slower speed",
                 ],
             },
             {
                 type: "p",
                 text: "There is no single perfect AirDrop replacement, mainly because AirDrop bundles file transfer and cross-device convenience into one Apple-only feature. Splitting the problem apart — a dedicated tool for quick text and links, cloud storage for the large files you actually want to keep — tends to end up faster in practice than forcing one tool to do everything.",
+            },
+            {
+                type: "links",
+                items: [
+                    { to: "/blog/airdrop-alternative-for-windows", text: "AirDrop alternative for Windows: 3 ways to send files and text" },
+                    { to: "/blog/iphone-windows-text-transfer-without-icloud", text: "iPhone to Windows text transfer without iCloud" },
+                ],
             },
         ],
     },
@@ -299,7 +338,7 @@ export const blogPosts = [
     },
     {
         slug: "iphone-windows-text-transfer-without-icloud",
-        title: "How to Share Text Between an iPhone and a Windows PC (No iCloud Needed)",
+        title: "iPhone to Windows Text Transfer Without iCloud — 3 Fast Ways (2026)",
         excerpt:
             "iCloud does not play nicely with Windows, and Apple's ecosystem tools mostly assume you own another Apple device. Here is how to move text across the divide anyway.",
         tag: "Guide",
@@ -339,6 +378,10 @@ export const blogPosts = [
             {
                 type: "links",
                 items: [
+                    {
+                        to: "/blog/airdrop-alternative-for-windows",
+                        text: "AirDrop alternative for Windows: 3 ways to send files and text",
+                    },
                     {
                         to: "/blog/why-you-should-stop-emailing-yourself",
                         text: "Why you should stop emailing yourself",
@@ -478,7 +521,7 @@ export const blogPosts = [
     },
     {
         slug: "share-long-urls-without-breaking-links",
-        title: "How to Send a Long URL Without It Getting Cut Off or Broken",
+        title: "How to Share Long URLs Without Breaking Links or Losing Characters",
         excerpt:
             "Long URLs with tracking parameters and query strings break easily when copied through the wrong app. Here is how to avoid it.",
         tag: "Guide",
@@ -602,7 +645,7 @@ export const blogPosts = [
     },
     {
         slug: "share-text-privately-without-chat-history",
-        title: "How to Share Text Privately Without It Living in Your Chat History Forever",
+        title: "How to Share Text Privately Without Leaving It in Your Chat History",
         excerpt:
             "Every message you send yourself sits in a chat log indefinitely. Here is how to move text between devices without leaving a permanent trail.",
         tag: "Guide",
@@ -641,6 +684,73 @@ export const blogPosts = [
                         to: "/blog/share-code-snippets-between-devices-for-developers",
                         text: "How developers can safely move code snippets between devices",
                     },
+                ],
+            },
+        ],
+    },
+    {
+        slug: "airdrop-alternative-for-windows",
+        title: "AirDrop Alternative for Windows: 3 Ways to Send Files and Text",
+        excerpt:
+            "AirDrop does not exist on Windows. Here are three real alternatives for sending files and text from your iPhone or Android to a Windows PC — ranked by speed.",
+        tag: "Guide",
+        date: "August 2026",
+        readTime: "4 min read",
+        content: [
+            {
+                type: "p",
+                text: "If you have ever tried to AirDrop something from your phone to a Windows laptop, you already know the answer: it does not work. AirDrop is Apple-only, built into iOS and macOS, and there is no version for Windows. If your daily setup includes a Windows PC and an iPhone or Android phone, you need a different approach entirely.",
+            },
+            { type: "h2", text: "Why AirDrop Does Not Come to Windows" },
+            {
+                type: "p",
+                text: "AirDrop uses a proprietary combination of Bluetooth for device discovery and a peer-to-peer Wi-Fi connection for the actual transfer. Apple has never opened this protocol to other platforms, and there is no technical way to enable it on Windows — not even through third-party apps. The only AirDrop-like experience on Windows would require Apple to actively support it, which they have shown no signs of doing.",
+            },
+            { type: "h2", text: "3 Real Alternatives for Windows" },
+            { type: "h3", text: "1. Nearby Share (Google, now Quick Share)" },
+            {
+                type: "p",
+                text: "Google's file-sharing feature, now rebranded as Quick Share, works between Android phones and Windows PCs via a companion app. Install the app on your Windows machine, sign in with your Google account, and you can send files and some text content from your Android phone directly to your PC. It is the closest thing to AirDrop for the Android-to-Windows combination.",
+            },
+            {
+                type: "callout",
+                icon: "⚠️",
+                text: "Quick Share does not work with iPhone. If your phone is an iPhone, this option is not available to you.",
+            },
+            { type: "h3", text: "2. Cloud Storage (Google Drive, OneDrive, Dropbox)" },
+            {
+                type: "p",
+                text: "A shared folder in Google Drive, OneDrive, or Dropbox works across every platform — upload on one device, access on the other. The downside is the overhead: you need an account on both ends, the upload takes time, and for a single quick text transfer it is significantly slower than a direct method. Cloud storage is better suited for files you want to keep, not a link you want to glance at once.",
+            },
+            { type: "h3", text: "3. Browser-Based Short Code (TextShareNow)" },
+            {
+                type: "p",
+                text: "For text and links specifically, a browser-based short-code tool is the fastest option on Windows. Paste your text on your phone, get a 5-character code, type that code on your Windows laptop, and the content appears. No app install, no account, no cloud sync — just a browser tab on each device. The entire process typically takes under 10 seconds.",
+            },
+            {
+                type: "callout",
+                icon: "⚡",
+                text: "TextShareNow is built for text and links, not photos or large files. For those, cloud storage or Quick Share is the better fit.",
+            },
+            { type: "h2", text: "Which Should You Pick" },
+            {
+                type: "ul",
+                items: [
+                    "iPhone to Windows, text or links: A short-code browser tool is the only option that works without accounts or app installs",
+                    "Android to Windows, files: Quick Share (Google) is the closest AirDrop equivalent",
+                    "Any phone to Windows, large files: Cloud storage, accepting the extra steps",
+                    "Any phone to Windows, quick text: A short-code tool, since it skips every setup step",
+                ],
+            },
+            {
+                type: "p",
+                text: "The core problem with AirDrop on Windows is not that no one has built a clone — it is that Apple's protocol is closed, so nothing can replicate it. The practical alternatives are tools that sidestep the problem entirely: cloud storage for files, browser-based tools for text, and Quick Share for Android-to-Windows transfers. Each solves a specific piece of what AirDrop bundles into one Apple-only feature.",
+            },
+            {
+                type: "links",
+                items: [
+                    { to: "/blog/airdrop-alternative-cross-platform", text: "The full comparison of AirDrop alternatives across all platforms" },
+                    { to: "/blog/iphone-windows-text-transfer-without-icloud", text: "iPhone to Windows text transfer without iCloud" },
                 ],
             },
         ],

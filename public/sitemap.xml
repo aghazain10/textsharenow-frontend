@@ -4,59 +4,106 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
-
 
 <url>
-  <loc>https://textsharenow-frontend.vercel.app/</loc>
-  <lastmod>2026-03-09T19:28:39+00:00</lastmod>
+  <loc>https://www.textsharenow.com/</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
-  <loc>https://textsharenow-frontend.vercel.app/how-it-works</loc>
-  <lastmod>2026-03-09T19:28:40+00:00</lastmod>
+  <loc>https://www.textsharenow.com/about</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://textsharenow-frontend.vercel.app/faq</loc>
-  <lastmod>2026-03-09T19:28:40+00:00</lastmod>
+  <loc>https://www.textsharenow.com/how-it-works</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://textsharenow-frontend.vercel.app/blog</loc>
-  <lastmod>2026-03-09T19:28:40+00:00</lastmod>
+  <loc>https://www.textsharenow.com/faq</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://textsharenow-frontend.vercel.app/about</loc>
-  <lastmod>2026-03-09T19:28:41+00:00</lastmod>
+  <loc>https://www.textsharenow.com/contact</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://www.textsharenow.com/privacy</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <priority>0.60</priority>
+</url>
+<url>
+  <loc>https://www.textsharenow.com/terms</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <priority>0.60</priority>
+</url>
+<url>
+  <loc>https://www.textsharenow.com/blog</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://textsharenow-frontend.vercel.app/privacy</loc>
-  <lastmod>2026-03-09T19:28:41+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://textsharenow-frontend.vercel.app/blog/how-to-share-text-from-phone-to-laptop</loc>
-  <lastmod>2026-03-09T19:28:42+00:00</lastmod>
+  <loc>https://www.textsharenow.com/blog/how-to-share-text-from-phone-to-laptop</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://textsharenow-frontend.vercel.app/blog/why-you-should-stop-emailing-yourself</loc>
-  <lastmod>2026-03-09T19:28:42+00:00</lastmod>
+  <loc>https://www.textsharenow.com/blog/why-you-should-stop-emailing-yourself</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://textsharenow-frontend.vercel.app/blog/airdrop-alternative-cross-platform</loc>
-  <lastmod>2026-03-09T19:28:42+00:00</lastmod>
+  <loc>https://www.textsharenow.com/blog/airdrop-alternative-cross-platform</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://www.textsharenow.com/blog/airdrop-alternative-for-windows</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://www.textsharenow.com/blog/qr-codes-vs-short-codes-device-sharing</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://textsharenow-frontend.vercel.app/blog/qr-codes-vs-short-codes-device-sharing</loc>
-  <lastmod>2026-03-09T19:28:42+00:00</lastmod>
+  <loc>https://www.textsharenow.com/blog/share-code-snippets-between-devices-for-developers</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
   <priority>0.64</priority>
 </url>
-
+<url>
+  <loc>https://www.textsharenow.com/blog/iphone-windows-text-transfer-without-icloud</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <priority>0.68</priority>
+</url>
+<url>
+  <loc>https://www.textsharenow.com/blog/share-wifi-password-without-reading-aloud</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://www.textsharenow.com/blog/clipboard-manager-vs-text-sharing-tool</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://www.textsharenow.com/blog/share-long-urls-without-breaking-links</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://www.textsharenow.com/blog/signs-you-need-better-device-sharing</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://www.textsharenow.com/blog/share-text-privately-without-chat-history</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <priority>0.68</priority>
+</url>
 
 </urlset>
