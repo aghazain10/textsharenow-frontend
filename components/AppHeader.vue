@@ -23,8 +23,8 @@
 
             <!-- Status + Mobile Toggle -->
             <div class="header-right">
-                <div class="status-badge" aria-label="Service status: online">
-                    <span class="status-dot" />
+                <div class="status-badge">
+                    <span class="status-dot" aria-hidden="true" />
                     <span class="status-text">Online</span>
                 </div>
 
