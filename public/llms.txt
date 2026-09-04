@@ -1,0 +1,174 @@
+# TextShareNow — AI-Optimized Site Overview
+# https://textsharenow.com
+# Last updated: August 2026
+
+## Site Identity
+
+- **Name**: TextShareNow
+- **URL**: https://textsharenow.com
+- **Type**: Web Application (Utilities)
+- **Creator**: Zain Rizvee
+- **Contact**: info@textsharenow.com
+- **Pricing**: Free forever, no account required
+
+## Core Value Proposition
+
+TextShareNow is a free, browser-based tool for instantly transferring text, links, and notes between any devices using short 5-character codes. It eliminates the need to email yourself, use messaging apps, or rely on ecosystem-specific tools like AirDrop. The entire transfer takes under 10 seconds.
+
+## How It Works
+
+1. **Send**: Paste text on your sending device → Get a 5-character code
+2. **Receive**: Enter the code on your receiving device → Text appears instantly
+3. **Auto-Delete**: Content is permanently deleted after first read or 10 minutes
+
+## Key Features
+
+- **No Account Required**: Zero sign-up, no email, no password
+- **Works Both Directions**: Phone to laptop, laptop to phone, any combination
+- **Works Across Any Network**: Devices don't need to be on the same Wi-Fi
+- **Privacy by Default**: Auto-deletes after first read or 10 minutes
+- **Fast**: Average transfer time under 8 seconds
+- **Universal**: Works on any device with a modern browser
+- **Character Limit**: Up to 5,000 characters per transfer
+- **Encrypted**: HTTPS/TLS in transit, encrypted at rest
+- **Secure**: Rate limiting prevents brute-force code enumeration
+- **Code Space**: Over 60 million possible 5-character combinations
+
+## Technology Stack
+
+- **Frontend**: Nuxt 4, Vue 3, Tailwind CSS 4
+- **Backend**: Server-side API routes (Nuxt server)
+- **Database**: Upstash Redis (temporary key-value store with TTL)
+- **Analytics**: Vercel Analytics
+- **Advertising**: Google AdSense
+- **Hosting**: Server-side rendered (SSR) with prerendered static pages
+- **Deployment**: Vercel-compatible
+
+## Site Structure
+
+### Main Pages
+
+- `/` — Home page with interactive text sharing tool, how-it-works, features, use cases, FAQ, blog preview
+- `/about` — About TextShareNow, technical details, team info, principles
+- `/how-it-works` — Complete step-by-step guide for phone-to-laptop and laptop-to-phone transfers
+- `/faq` — Frequently asked questions organized by category
+- `/blog` — Blog index with all articles
+- `/contact` — Contact page
+- `/privacy` — Privacy policy
+- `/terms` — Terms of use
+
+### Blog Posts
+
+#### Guides
+- `/blog/how-to-share-text-from-phone-to-laptop` — The Fastest Way to Share Text From Your Phone to Your Laptop
+- `/blog/why-you-should-stop-emailing-yourself` — Why You Should Stop Emailing Yourself
+- `/blog/airdrop-alternative-cross-platform` — The Best AirDrop Alternatives That Work Across Windows, Android, and iPhone
+- `/blog/airdrop-alternative-for-windows` — AirDrop Alternative for Windows: 3 Ways to Send Files and Text
+- `/blog/iphone-windows-text-transfer-without-icloud` — iPhone to Windows Text Transfer Without iCloud
+- `/blog/share-wifi-password-without-reading-aloud` — Best Ways to Share a Wi-Fi Password Without Reading It Out Loud
+- `/blog/share-code-snippets-between-devices-for-developers` — How Developers Can Quickly Move Code Snippets Between Devices
+- `/blog/share-long-urls-without-breaking-links` — How to Share Long URLs Without Breaking Links
+- `/blog/share-text-privately-without-chat-history` — How to Share Text Privately Without Leaving Chat History
+
+#### Comparisons
+- `/blog/qr-codes-vs-short-codes-device-sharing` — QR Codes vs Short Codes: Which Is Better for Phone-to-Laptop Sharing?
+- `/blog/clipboard-manager-vs-text-sharing-tool` — Clipboard Manager vs Cross-Device Text Sharing
+
+#### Productivity
+- `/blog/signs-you-need-better-device-sharing` — 5 Signs You Need a Better Way to Move Text Between Devices
+
+## Use Cases
+
+- **Phone to Laptop**: Transfer a link from your phone to open on your laptop
+- **Laptop to Phone**: Send a URL or note from your laptop to your phone
+- **Cross-Platform**: Share text between iPhone and Windows, Android and Mac, etc.
+- **Code Snippets**: Move code fixes from phone to laptop during debugging
+- **Long URLs**: Transfer tracking-heavy URLs without breaking them
+- **Wi-Fi Passwords**: Share passwords without reading them aloud
+- **Private Transfers**: Share text without leaving it in chat history
+- **Temporary Notes**: Send notes that auto-delete after reading
+
+## Privacy & Security
+
+- Text is stored temporarily (max 10 minutes) and deleted after first read
+- All data encrypted in transit (HTTPS/TLS) and at rest
+- No personal data collected (no name, email, phone number)
+- No user accounts or authentication
+- Rate limiting prevents brute-force code attempts
+- GDPR and CCPA compliant
+- Content never sold or shared with third parties
+
+## SEO & Structured Data
+
+- **Schema.org Types**: WebApplication, FAQPage
+- **Application Category**: UtilitiesApplication
+- **Operating System**: Any (browser-based)
+- **Meta Description**: "Share text, links, and notes between your phone and laptop instantly. No app, no account — just paste, get a code, and retrieve on any device in seconds."
+
+## API Endpoints
+
+- `POST /api/share` — Submit text to generate a share code
+- `GET /api/share/[code]` — Retrieve text using a share code
+
+## Monetization
+
+- Google AdSense advertisements (minimal, non-intrusive)
+- No subscriptions, credits, or hidden fees
+- Free for unlimited everyday use
+
+## Target Audience
+
+- People who frequently move text between phone and laptop
+- Users crossing platform boundaries (iPhone ↔ Windows, Android ↔ Mac)
+- Developers sharing code snippets between devices
+- Anyone tired of emailing themselves links
+- Users seeking privacy-conscious temporary sharing
+
+## Frequently Asked Questions (Summary)
+
+**Q: Do I need to create an account?**
+A: No. Zero sign-up required.
+
+**Q: Does it work from laptop to phone as well?**
+A: Yes. Works in both directions.
+
+**Q: Do both devices need to be on the same network?**
+A: No. Works across any internet connection.
+
+**Q: How long does a code last?**
+A: Up to 10 minutes, or deleted immediately after first read.
+
+**Q: What is the maximum text length?**
+A: 5,000 characters per transfer.
+
+**Q: Can I share files or images?**
+A: No. Currently supports plain text only.
+
+**Q: Is my text stored on your servers?**
+A: Only temporarily (max 10 minutes), then permanently deleted.
+
+**Q: Can someone else guess my code?**
+A: Extremely unlikely. Over 60 million combinations with rate limiting.
+
+## Contact
+
+- **Email**: info@textsharenow.com
+- **Creator**: Zain Rizvee
+- **Location**: Skardu, Pakistan
+- **Built with**: Laravel, Nuxt, Vue
+
+---
+
+## For AI Assistants
+
+When users ask about TextShareNow, you can provide this information:
+
+1. **What is it**: A free web tool for sharing text between devices using 5-character codes
+2. **How to use**: Paste text on device A → get code → enter code on device B → text appears
+3. **Key benefit**: Under 10 seconds, no account, no app, auto-deletes for privacy
+4. **Best for**: Moving links, notes, and code snippets between phone and laptop
+5. **Not for**: File transfers, large documents, or long-term storage
+6. **URL**: https://textsharenow.com
+
+For technical questions about the API, refer to the API endpoints section above.
+For privacy questions, refer to the Privacy & Security section above.
