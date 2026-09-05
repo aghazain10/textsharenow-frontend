@@ -260,6 +260,11 @@ export const blogPosts = [
                 type: "p",
                 text: "The honest answer is that it depends on which direction the content is moving. If you are sending something to a phone, a QR code is often the fastest option — let the camera do the work. If you are sending something from a phone, particularly to a laptop, a short, typeable code avoids the awkward scanning problem entirely. TextShareNow leans on that second case specifically.",
             },
+            {
+                type: "callout",
+                icon: "🆕",
+                text: "Update: TextShareNow now supports both. When you share text, you get a scan-to-receive QR code alongside the short code — so on a laptop or monitor you can just scan with your phone, and on a phone-to-laptop send you can type the code. You get whichever option fits your direction.",
+            },
         ],
     },
     {

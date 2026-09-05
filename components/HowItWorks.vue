@@ -62,8 +62,8 @@ const steps = [
   {
     id: 3,
     icon: '⌨️',
-    title: 'Type the Code',
-    description: 'On your other device, open the same site, go to Receive, and type in the short code.',
+    title: 'Receive It',
+    description: 'On your other device, scan the QR code with your phone camera — or open the site and type the short code.',
   },
   {
     id: 4,

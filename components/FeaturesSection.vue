@@ -120,6 +120,7 @@ const comparisonRows = [
   { feature: 'Works phone → laptop', us: true,   email: true,   qr: '⚠️',  wa: true  },
   { feature: 'Works laptop → phone', us: true,   email: true,   qr: true,   wa: true  },
   { feature: 'Under 10 seconds',     us: true,   email: false,  qr: '⚠️',  wa: false },
+  { feature: 'QR scan to receive',   us: true,   email: false,  qr: true,   wa: false },
   { feature: 'Auto-deletes data',    us: true,   email: false,  qr: false,  wa: false },
   { feature: 'Short, typeable code', us: true,   email: false,  qr: false,  wa: false },
   { feature: 'Works cross-network',  us: true,   email: true,   qr: '⚠️',  wa: true  },
