@@ -60,7 +60,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+
+const props = defineProps({
+  initialCode: { type: String, default: '' },
+})
 
 const codeInput     = ref('')
 const retrievedText = ref('')
@@ -85,12 +89,22 @@ async function handleReceive() {
     retrievedText.value = res.text
   } catch (e) {
     errorMsg.value = e?.response?.status === 404
-      ? 'Code not found or expired. Please check and try again.'
+      ? props.initialCode
+        ? 'This share has expired (10-min limit) or was already opened. Please ask the sender again.'
+        : 'Code not found or expired. Please check and try again.'
       : e?.data?.message || 'Something went wrong. Please try again.'
   } finally {
     loading.value = false
   }
 }
+
+onMounted(() => {
+  const code = (props.initialCode || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '')
+  if (code.length >= 4) {
+    codeInput.value = code
+    handleReceive()
+  }
+})
 
 async function doCopy() {
   try {

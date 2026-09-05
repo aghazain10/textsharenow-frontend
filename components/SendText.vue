@@ -38,8 +38,13 @@
 
       <div class="code-display">{{ generatedCode }}</div>
 
+      <div class="qr-wrap">
+        <QrCode :text="qrUrl" :size="168" />
+      </div>
+      <p class="qr-hint">📱 Scan to receive on your other device</p>
+
       <p class="code-hint">
-        Go to <strong class="accent">Receive Text</strong> on your other device and enter this code.
+        Or go to <strong class="accent">Receive Text</strong> on your other device and enter this code.
       </p>
 
       <div class="expiry-notice">⏱ Expires in 10 minutes or after first read</div>
@@ -62,6 +67,7 @@ import { ref } from 'vue'
 
 const inputText     = ref('')
 const generatedCode = ref('')
+const qrUrl         = ref('')
 const loading       = ref(false)
 const errorMsg      = ref('')
 const copied        = ref(false)
@@ -76,6 +82,10 @@ async function handleSend() {
       body: { text: inputText.value },
     })
     generatedCode.value = res.code
+    const origin = typeof window !== 'undefined'
+      ? window.location.origin
+      : 'https://www.textsharenow.com'
+    qrUrl.value = `${origin}/?code=${res.code}`
   } catch (e) {
     errorMsg.value = e?.data?.message || 'Something went wrong. Please try again.'
   } finally {
@@ -101,6 +111,7 @@ async function doCopy() {
 function reset() {
   inputText.value     = ''
   generatedCode.value = ''
+  qrUrl.value         = ''
   errorMsg.value      = ''
   copied.value        = false
 }
@@ -182,6 +193,26 @@ function reset() {
 .code-hint { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; text-align: center; }
 .accent { color: var(--accent); }
 .expiry-notice { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); text-align: center; }
+
+.qr-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+  border-radius: var(--radius);
+}
+
+.qr-wrap :deep(.qr-canvas) {
+  width: 168px;
+  height: 168px;
+  outline: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.qr-hint {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: -6px;
+}
 
 .result-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 .result-actions > * { flex: 1; min-width: 120px; display: flex; justify-content: center; }

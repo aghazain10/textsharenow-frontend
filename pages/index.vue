@@ -92,7 +92,7 @@
                                 <SendText />
                             </div>
                             <div v-else id="panel-receive" role="tabpanel">
-                                <ReceiveText />
+                                <ReceiveText :initial-code="scannedCode" />
                             </div>
                         </div>
                     </div>
@@ -189,6 +189,24 @@ useHead({
 });
 
 const activeTab = ref("send");
+
+const route = useRoute();
+const router = useRouter();
+
+// Code captured from a scanned QR (`/?code=XXXXX`) — kept in a local ref
+// so it survives the URL cleanup below.
+const scannedCode = ref("");
+
+onMounted(() => {
+    const c = (route.query.code || "").toString();
+    const code = c.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (code.length >= 4) {
+        scannedCode.value = code;
+        activeTab.value = "receive";
+        // Clean the URL so a manual refresh doesn't re-run the flow.
+        router.replace({ query: {} });
+    }
+});
 
 const scrollToTool = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
