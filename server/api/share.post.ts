@@ -11,6 +11,7 @@ const CHARSET     = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 const CODE_LENGTH = 5
 const TTL_SECONDS = 600
 const KEY_PREFIX  = 'share:'
+const COUNT_KEY   = 'stats:shares'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -89,6 +90,14 @@ export default defineEventHandler(async (event) => {
 
   // Store in Redis with TTL
   await upstashRequest(redisUrl, redisToken, ['SETEX', KEY_PREFIX + code, TTL_SECONDS, text])
+
+  // Increment the aggregate, anonymous all-time share counter
+  // (Redis INCR creates the key at 0 if it doesn't exist).
+  try {
+    await upstashRequest(redisUrl, redisToken, ['INCR', COUNT_KEY])
+  } catch {
+    // Counters are non-critical — a failure here must not block the share.
+  }
 
   return { code }
 })

@@ -30,6 +30,11 @@
 
                     <div class="hero-stats animate-fade-up-3">
                         <div class="stat">
+                            <span class="stat-value glow-text"><UsageCounter /></span>
+                            <span class="stat-label">texts shared using textsharenow</span>
+                        </div>
+                        <div class="stat-divider" />
+                        <div class="stat">
                             <span class="stat-value glow-text">~8s</span>
                             <span class="stat-label">avg. transfer time</span>
                         </div>
