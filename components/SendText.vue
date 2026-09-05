@@ -202,8 +202,6 @@ function reset() {
 }
 
 .qr-wrap :deep(.qr-canvas) {
-  width: 168px;
-  height: 168px;
   outline: 1px solid rgba(255, 255, 255, 0.9);
 }
 
