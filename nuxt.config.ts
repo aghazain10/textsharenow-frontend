@@ -103,6 +103,7 @@ export default defineNuxtConfig({
         "/contact": { prerender: true },
         "/blog": { prerender: true },
         "/how-it-works": { prerender: true },
+        "/online-text-sharing": { prerender: true },
         "/blog/airdrop-alternative-cross-platform": { prerender: true },
         "/blog/airdrop-alternative-for-windows": { prerender: true },
         "/api/**": { cors: true },

@@ -1,5 +1,5 @@
 <template>
-  <section class="section" aria-labelledby="faq-title">
+  <section class="section" aria-labelledby="faq-title" itemscope itemtype="https://schema.org/FAQPage">
     <div class="container">
       <div class="faq-layout">
 
@@ -17,15 +17,15 @@
 
         <!-- Right accordion -->
         <div class="faq-list">
-          <div v-for="(item, i) in faqs" :key="i" class="faq-item">
+          <div v-for="(item, i) in faqs" :key="i" class="faq-item" itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
 
             <button class="faq-question" @click="toggle(i)">
-              <span class="faq-q-text">{{ item.question }}</span>
+              <span class="faq-q-text" itemprop="name">{{ item.question }}</span>
               <span class="faq-icon">{{ openIndex === i ? '−' : '+' }}</span>
             </button>
 
-            <div v-show="openIndex === i" class="faq-answer">
-              <p>{{ item.answer }}</p>
+            <div v-show="openIndex === i" class="faq-answer" itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer">
+              <p itemprop="text">{{ item.answer }}</p>
             </div>
 
           </div>
@@ -37,6 +37,8 @@
 </template>
 
 <script setup>
+import { useHead } from 'nuxt/app'
+
 const openIndex = ref(0)
 
 function toggle(i) {
@@ -69,6 +71,27 @@ const faqs = [
     answer: 'You can share up to 5,000 characters per transfer — enough for most URLs, notes, code snippets, and short messages.',
   },
 ]
+
+// FAQPage structured data for rich snippets
+useHead({
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map(faq => ({
+          '@type': 'Question',
+          name: faq.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: faq.answer
+          }
+        }))
+      }),
+    },
+  ],
+})
 </script>
 
 

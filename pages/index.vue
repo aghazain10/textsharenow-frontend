@@ -17,6 +17,7 @@
                     </div>
 
                     <h1 id="hero-title" class="hero-title animate-fade-up-1">
+                        Online Text Sharing —<br />
                         Share Text Between<br />
                         <span class="glow-text">Any Devices</span><br />
                         In Seconds
@@ -162,9 +163,9 @@
 <script setup>
 // SEO
 useSeo({
-    title: "Share Text Between Phone and Laptop Instantly",
+    title: "Online Text Sharing — Share Text Between Devices Instantly",
     description:
-        "Transfer text, links, and notes between any devices in seconds using a short code. No app, no sign-up, completely free. Works phone to laptop and back.",
+        "Online text sharing tool to transfer text, links, and notes between any devices in seconds using a short code. No app, no sign-up, completely free. Works phone to laptop and back.",
     pagePath: "/",
 });
 

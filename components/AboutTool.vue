@@ -20,8 +20,9 @@
                         you need one.
                     </p>
                     <p>
-                        TextShareNow was built to remove every one of those
-                        steps. Paste your text, get a short 5-character code,
+                        TextShareNow is a fast, free tool for
+                        <strong>online text sharing</strong> between any two
+                        devices. Paste your text, get a short 5-character code,
                         type that code on your other device, and your content
                         appears — typically in under 8 seconds. There's no
                         account to create, no app to install, and no history

@@ -38,23 +38,15 @@
 
           <hr class="guide-divider" />
 
-          <h2 class="guide-heading">Technical Details</h2>
+          <h2 class="guide-heading">Online Text Sharing: The Browser-Based Alternative</h2>
           <p class="guide-p">
-            TextShareNow uses a simple key-value store with time-to-live (TTL) expiry.
-            When you submit text, a 5-character alphanumeric code is generated — your content
-            becomes the value, the code becomes the key. The code is valid for up to 10 minutes
-            or until first retrieval, whichever comes first.
+            Looking for a deeper dive on <strong>online text sharing</strong> — why browser-based tools
+            beat apps for cross-platform transfers, comparison tables, and more use cases?
+            <NuxtLink to="/online-text-sharing" class="guide-link">
+              Read our dedicated online text sharing guide →
+            </NuxtLink>
           </p>
-          <p class="guide-p">
-            All data is encrypted in transit (HTTPS/TLS) and at rest. Rate limiting on code
-            retrieval prevents brute-force enumeration. With over 60 million possible code
-            combinations and a 10-minute window, the probability of collision or interception
-            is negligible for everyday use.
-          </p>
-          <p class="guide-p">
-            The tool works across any internet connection — both devices do not need to be on
-            the same network. Mobile data, office Wi-Fi, and home broadband all work.
-          </p>
+
         </div>
       </div>
     </section>
@@ -162,5 +154,14 @@ const laptopToPhoneSteps = [
   color: var(--text-secondary);
   line-height: 1.82;
   font-weight: 300;
+}
+
+.guide-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+.guide-link:hover {
+  opacity: 0.75;
 }
 </style>
