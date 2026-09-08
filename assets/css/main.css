@@ -486,6 +486,15 @@ pre,
 .faq-header {
     position: sticky;
     top: 100px;
+    z-index: 1;
+    background: var(--bg-primary);
+    padding-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .faq-header {
+        position: static;
+    }
 }
 
 .view-all-link {
