@@ -112,32 +112,32 @@
         <hr class="divider" />
 
         <!-- How It Works -->
-        <HowItWorks />
+        <LazyHowItWorks />
 
         <hr class="divider" />
 
         <!-- About This Tool (prose) -->
-        <AboutTool />
+        <LazyAboutTool />
 
         <hr class="divider" />
 
         <!-- Features -->
-        <FeaturesSection />
+        <LazyFeaturesSection />
 
         <hr class="divider" />
 
         <!-- Use Cases (prose) -->
-        <UseCases />
+        <LazyUseCases />
 
         <hr class="divider" />
 
         <!-- Blog Preview -->
-        <BlogPreview />
+        <LazyBlogPreview />
 
         <hr class="divider" />
 
         <!-- FAQ -->
-        <FaqSection />
+        <LazyFaqSection />
 
         <!-- CTA Banner -->
         <section class="cta-section section">
@@ -161,6 +161,8 @@
 </template>
 
 <script setup>
+import { defineAsyncComponent } from 'vue'
+
 // SEO
 useSeo({
     title: "Online Text Sharing — Share Text Between Devices Instantly",
@@ -188,6 +190,13 @@ useHead({
         },
     ],
 });
+
+const LazyHowItWorks = defineAsyncComponent(() => import('~/components/HowItWorks.vue'))
+const LazyAboutTool = defineAsyncComponent(() => import('~/components/AboutTool.vue'))
+const LazyFeaturesSection = defineAsyncComponent(() => import('~/components/FeaturesSection.vue'))
+const LazyUseCases = defineAsyncComponent(() => import('~/components/UseCases.vue'))
+const LazyBlogPreview = defineAsyncComponent(() => import('~/components/BlogPreview.vue'))
+const LazyFaqSection = defineAsyncComponent(() => import('~/components/FaqSection.vue'))
 
 const activeTab = ref("send");
 

@@ -60,6 +60,15 @@ export default defineNuxtConfig({
                 { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
                 { rel: "canonical", href: "https://www.textsharenow.com" },
                 {
+                    rel: "preconnect",
+                    href: "https://pagead2.googlesyndication.com",
+                    crossorigin: "",
+                },
+                {
+                    rel: "dns-prefetch",
+                    href: "https://pagead2.googlesyndication.com",
+                },
+                {
                     rel: "preload",
                     href: "/fonts/orbitron-latin.woff2",
                     as: "font",
@@ -79,14 +88,6 @@ export default defineNuxtConfig({
                     as: "font",
                     type: "font/woff2",
                     crossorigin: "",
-                },
-            ],
-            script: [
-                {
-                    src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6697676712322371",
-                    async: true,
-                    defer: true,
-                    crossorigin: "anonymous",
                 },
             ],
         },
