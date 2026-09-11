@@ -43,6 +43,13 @@
                     <NuxtLink to="/terms" class="footer-link"
                         >Terms of Use</NuxtLink
                     >
+                    <a
+                        href="https://wise.com/pay/me/syedm198"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="footer-link"
+                        aria-label="Support TextShareNow with a donation via Wise"
+                    >☕ Support this project</a>
                 </div>
             </nav>
         </div>

@@ -101,6 +101,27 @@
 
                     <hr class="content-divider" />
 
+                    <h2 class="about-section-heading">Keep This Free</h2>
+                    <p>
+                        TextShareNow is free to use, and that's not changing.
+                        Running it costs a little in hosting and time, though
+                        — if it's saved you a few minutes here and there, you
+                        can support it directly. No account or subscription
+                        needed on your end, just a one-time show of support
+                        if you'd like to.
+                    </p>
+                    <a
+                        href="https://wise.com/pay/me/syedm198"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="btn-secondary support-about-btn"
+                        aria-label="Support TextShareNow with a donation via Wise"
+                    >
+                        <span>Support via Wise →</span>
+                    </a>
+
+                    <hr class="content-divider" />
+
                     <h2 class="about-section-heading">Our Principles</h2>
                     <div class="principles-grid">
                         <div
@@ -364,5 +385,11 @@ const sidebarStats = [
 }
 .about-link:hover {
     opacity: 0.75;
+}
+
+.support-about-btn {
+    width: fit-content;
+    display: flex;
+    justify-content: center;
 }
 </style>

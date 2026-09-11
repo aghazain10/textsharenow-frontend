@@ -54,6 +54,16 @@
       </div>
 
       <p class="auto-delete-notice">🗑 This text has been deleted from our servers.</p>
+
+      <a
+        href="https://wise.com/pay/me/syedm198"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="support-inline-link"
+        aria-label="Support TextShareNow with a donation via Wise"
+      >
+        ☕ If this saved you a step, you can support the project →
+      </a>
     </template>
 
   </div>
@@ -210,5 +220,18 @@ function reset() {
   font-size: 0.68rem;
   color: var(--text-muted);
   text-align: center;
+}
+
+.support-inline-link {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--accent);
+  text-align: center;
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.support-inline-link:hover {
+  opacity: 1;
 }
 </style>
