@@ -28,36 +28,36 @@ export default defineNuxtConfig({
             htmlAttrs: { lang: "en" },
             charset: "utf-8",
             viewport: "width=device-width, initial-scale=1",
-            title: "TextShareNow — Instant Text Sharing Between Devices",
+            title: "TextShareNow — Instant Text and File Sharing Between Devices",
             meta: [
                 {
                     name: "description",
                     content:
-                        "Share text, links, and notes between your phone and laptop instantly. No app, no account — just paste, get a code, and retrieve on any device in seconds.",
+                        "Share text, files, links, and notes between your phone and laptop instantly. No app, no account — just paste, get a code, and retrieve on any device in seconds.",
                 },
                 { name: "theme-color", content: "#060a14" },
                 { property: "og:type", content: "website" },
                 {
                     property: "og:title",
                     content:
-                        "TextShareNow — Instant Text Sharing Between Devices",
+                        "TextShareNow — Instant Text and File Sharing Between Devices",
                 },
                 {
                     property: "og:description",
                     content:
-                        "Share text, links, and notes between your phone and laptop instantly using a short code. No sign-up needed.",
+                        "Share text, files, links, and notes between your phone and laptop instantly using a short code. No sign-up needed.",
                 },
                 { property: "og:site_name", content: "TextShareNow" },
                 { name: "twitter:card", content: "summary_large_image" },
                 {
                     name: "twitter:title",
                     content:
-                        "TextShareNow — Instant Text Sharing Between Devices",
+                        "TextShareNow — Instant Text and File Sharing Between Devices",
                 },
                 {
                     name: "twitter:description",
                     content:
-                        "Share text between devices in seconds with a short code. Free, private, no account needed.",
+                        "Share text and files between devices in seconds with a short code. Free, private, no account needed.",
                 },
                 { name: "robots", content: "index, follow" },
             ],
@@ -110,6 +110,7 @@ export default defineNuxtConfig({
         "/blog": { prerender: true },
         "/how-it-works": { prerender: true },
         "/online-text-sharing": { prerender: true },
+        "/share-files-online": { prerender: true },
         "/blog/airdrop-alternative-cross-platform": { prerender: true },
         "/blog/airdrop-alternative-for-windows": { prerender: true },
         "/api/**": { cors: true },

@@ -98,7 +98,7 @@
                         <div class="post-cta glass-card">
                             <h3>Ready to try it?</h3>
                             <p>
-                                Share text between your phone and laptop in
+                                Share text or files between your phone and laptop in
                                 under 10 seconds — no sign-up.
                             </p>
                             <NuxtLink to="/" class="btn-primary">
@@ -112,7 +112,7 @@
                         <div class="sidebar-widget glass-card">
                             <h4 class="widget-title">Try the Tool</h4>
                             <p class="widget-desc">
-                                Share text between any devices in seconds.
+                                Share text and files between any devices in seconds.
                             </p>
                             <NuxtLink to="/" class="btn-primary sidebar-btn">
                                 <span>Open Tool →</span>

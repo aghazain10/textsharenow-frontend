@@ -38,6 +38,15 @@
 
           <hr class="guide-divider" />
 
+          <h2 class="guide-heading">How to Share Files Between Devices</h2>
+          <ol class="guide-steps">
+            <li v-for="step in fileShareSteps" :key="step.title">
+              <strong>{{ step.title }}</strong> — {{ step.detail }}
+            </li>
+          </ol>
+
+          <hr class="guide-divider" />
+
           <h2 class="guide-heading">Online Text Sharing: The Browser-Based Alternative</h2>
           <p class="guide-p">
             Looking for a deeper dive on <strong>online text sharing</strong> — why browser-based tools
@@ -58,9 +67,9 @@
 
 <script setup>
 useSeo({
-  title: 'How It Works — Share Text Between Devices',
+  title: 'How It Works — Share Text and Files Between Devices',
   description:
-    'A complete guide to how TextShareNow transfers text between your phone and laptop using short codes. Step-by-step instructions and technical details.',
+    'A complete guide to how TextShareNow transfers text and files between your phone and laptop using short codes. Step-by-step instructions and technical details.',
   pagePath: '/how-it-works',
 })
 
@@ -79,6 +88,14 @@ const laptopToPhoneSteps = [
   { title: 'Click Generate Code', detail: 'A 5-character code is created, valid for 10 minutes.' },
   { title: 'Open TextShareNow on your phone', detail: 'Open textsharenow.com in your mobile browser.' },
   { title: 'Go to Receive and type the code', detail: 'Enter the code — the text appears and is automatically copied to your clipboard.' },
+]
+
+const fileShareSteps = [
+  { title: 'Open TextShareNow and switch to the Share Files tab', detail: 'Click "Share Files" at the top of the tool on your sending device.' },
+  { title: 'Select Send File', detail: 'Drag and drop a file or click to browse. Accepted types: PNG, JPEG, WebP, MP4, WebM (max 10 MB).' },
+  { title: 'Upload and get your code', detail: 'The file is uploaded, scanned for malware, and a 5-character code is generated. Valid for 15 minutes.' },
+  { title: 'Open Share Files on the receiving device', detail: 'Switch to the Share Files tab on the other device.' },
+  { title: 'Select Receive File and enter the code', detail: 'Type the code and click Download. The file downloads directly to your device with the correct filename.' },
 ]
 </script>
 

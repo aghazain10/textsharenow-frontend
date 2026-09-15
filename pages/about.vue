@@ -69,6 +69,38 @@
 
                     <hr class="content-divider" />
 
+                    <h2 class="about-section-heading">
+                        File Sharing — Beyond Text
+                    </h2>
+                    <p>
+                        Text sharing solved the daily friction of moving links
+                        and notes between devices. But the same problem exists
+                        for files — photos, videos, documents. AirDrop only
+                        works between Apple devices. Bluetooth is slow and
+                        requires pairing. Cloud storage means uploading
+                        someone else's server, creating an account, and managing
+                        shared links.
+                    </p>
+                    <p>
+                        So we added file sharing to TextShareNow. The workflow
+                        is the same: upload a file on one device, get a short
+                        code, type it on the other device, and the file
+                        downloads. No accounts, no apps, no cloud storage
+                        sitting around. Files are scanned for malware before
+                        becoming available, and automatically deleted after the
+                        first download or 15 minutes — whichever comes first.
+                    </p>
+                    <p>
+                        Supported formats include PNG, JPEG, WebP, MP4, and
+                        WebM, with a 10 MB size limit per file. Images are
+                        re-encoded from raw pixels for security. Every file is
+                        stored on a dedicated server with strict access
+                        controls — never served as static files, never indexed
+                        by search engines.
+                    </p>
+
+                    <hr class="content-divider" />
+
                     <h2 class="about-section-heading">Who Built This</h2>
                     <p>
                         TextShareNow is an independent project built and
@@ -186,7 +218,7 @@
 useSeo({
     title: "About — Why We Built TextShareNow",
     description:
-        "Learn why TextShareNow was built — to solve the frustrating problem of transferring text between phone and laptop without cables, apps, or accounts.",
+        "Learn why TextShareNow was built — to solve the frustrating problem of transferring text and files between phone and laptop without cables, apps, or accounts.",
     pagePath: "/about",
 });
 
@@ -204,7 +236,7 @@ const principles = [
     {
         icon: "🎯",
         title: "One Thing, Done Well",
-        desc: "We are not building a platform. We solve one problem: quick text sharing between devices.",
+        desc: "We are not building a platform. We solve one problem: quick text and file sharing between devices.",
     },
     {
         icon: "🌍",

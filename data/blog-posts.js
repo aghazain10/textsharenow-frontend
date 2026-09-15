@@ -165,7 +165,7 @@ export const blogPosts = [
             {
                 type: "callout",
                 icon: "📎",
-                text: "Worth noting: TextShareNow is built for text and links, not photos or large files — it is a focused fix for the specific AirDrop gap around quick text transfers, not a full file-sharing replacement.",
+                text: "TextShareNow now supports file sharing too — photos, videos, and documents up to 10 MB, with malware scanning and auto-delete after download. See the full guide at textsharenow.com/share-files-online.",
             },
             { type: "h2", text: "Quick Picks by Device Pair" },
             { type: "h3", text: "Android to iPhone" },
@@ -203,6 +203,7 @@ export const blogPosts = [
                 type: "links",
                 items: [
                     { to: "/online-text-sharing", text: "Try free online text sharing — no app, no account" },
+                    { to: "/share-files-online", text: "Share files online — free, no sign-up, auto-delete" },
                     { to: "/blog/airdrop-alternative-for-windows", text: "AirDrop alternative for Windows: 3 ways to send files and text" },
                     { to: "/blog/iphone-windows-text-transfer-without-icloud", text: "iPhone to Windows text transfer without iCloud" },
                 ],
@@ -879,7 +880,7 @@ export const blogPosts = [
             {
                 type: "callout",
                 icon: "⚡",
-                text: "TextShareNow is built for text and links, not photos or large files. For those, cloud storage or Quick Share is the better fit.",
+                text: "TextShareNow now also supports file sharing — photos, videos, and documents up to 10 MB, with auto-delete after download. Try it at textsharenow.com/share-files-online.",
             },
             { type: "h2", text: "Which Should You Pick" },
             {
@@ -898,6 +899,7 @@ export const blogPosts = [
             {
                 type: "links",
                 items: [
+                    { to: "/share-files-online", text: "Share files online between devices — free, no sign-up" },
                     { to: "/blog/airdrop-alternative-cross-platform", text: "The full comparison of AirDrop alternatives across all platforms" },
                     { to: "/blog/iphone-windows-text-transfer-without-icloud", text: "iPhone to Windows text transfer without iCloud" },
                 ],

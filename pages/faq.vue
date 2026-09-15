@@ -7,7 +7,7 @@
           Frequently Asked <span class="glow-text">Questions</span>
         </h1>
         <p class="section-subtitle animate-fade-up-1">
-          Everything you need to know about sharing text between devices with TextShareNow.
+          Everything you need to know about sharing text and files between devices with TextShareNow.
         </p>
       </div>
     </section>
@@ -86,6 +86,14 @@ useHead({
             acceptedAnswer: {
               '@type': 'Answer',
               text: 'Yes, TextShareNow is completely free with no sign-up required.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'Can I share files with TextShareNow?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Yes. TextShareNow supports file sharing for PNG, JPEG, WebP, MP4, and WebM files up to 10 MB. Upload a file, get a short code, and the recipient downloads it with that code. Files auto-delete after the first download or 15 minutes.',
             },
           },
         ],
@@ -172,6 +180,36 @@ const categories = [
     ],
   },
   {
+    title: 'File Sharing',
+    items: [
+      {
+        question: 'What file types can I share?',
+        answer:
+          'TextShareNow supports PNG, JPEG, WebP, MP4, and WebM files. Images are re-encoded from raw pixels for security before being stored. SVG files are explicitly rejected.',
+      },
+      {
+        question: 'What is the maximum file size?',
+        answer:
+          'Files can be up to 10 MB. If your file is larger, try compressing it or splitting it into smaller parts before sharing.',
+      },
+      {
+        question: 'How long do files stay on the server?',
+        answer:
+          'Files are available for 15 minutes or until the first download — whichever comes first. After that, both the file and its metadata are permanently deleted. Files are never archived or backed up.',
+      },
+      {
+        question: 'Are files scanned for malware?',
+        answer:
+          'Yes. Every uploaded file is scanned with ClamAV before becoming available for download. Files that fail the scan are immediately rejected and deleted — they are never stored or served.',
+      },
+      {
+        question: 'Can I download the same file more than once?',
+        answer:
+          'No. File codes are single-use. After the first successful download, the file and its code are immediately deleted. Ask the sender to generate a new code if you need the file again.',
+      },
+    ],
+  },
+  {
     title: 'Limitations',
     items: [
       {
@@ -182,7 +220,7 @@ const categories = [
       {
         question: 'Can I share files or images?',
         answer:
-          'Currently TextShareNow supports plain text only — including links, notes, and code snippets. File and image sharing is not supported at this time.',
+          'Yes. TextShareNow supports file sharing alongside text. You can upload PNG, JPEG, WebP, MP4, and WebM files up to 10 MB. Switch to the "Share Files" tab to send a file, and use the "Receive File" tab on the other device to download it with a short code.',
       },
       {
         question: 'Does it work without an internet connection?',

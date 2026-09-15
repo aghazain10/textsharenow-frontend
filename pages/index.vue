@@ -200,7 +200,7 @@ import { defineAsyncComponent } from 'vue'
 useSeo({
     title: "Share Text and Files Between Any Devices",
     description:
-        "Share text, links, notes, and files between any devices instantly using a short code. No app, no sign-up, completely free. Works phone to laptop and back.",
+        "Share text, links, notes, and files between any devices instantly using a short code. No app, no sign-up, free. Works phone to laptop and back. Files auto-delete after download.",
     pagePath: "/",
 });
 
