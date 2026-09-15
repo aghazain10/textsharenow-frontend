@@ -55,71 +55,79 @@
                 <!-- Right — Tool Widget -->
                 <div class="hero-tool animate-fade-up-3">
                     <div class="tool-card glass-card pulse-glow">
-                        <!-- Tabs -->
+                        <!-- Top-level Tabs -->
                         <div
-                            class="tab-bar"
+                            class="tab-bar tab-bar-main"
                             role="tablist"
-                            aria-label="Send or receive text or files"
+                            aria-label="Share text or files"
                         >
                             <button
                                 class="tab-btn"
-                                :class="{ active: activeTab === 'send' }"
+                                :class="{ active: mainTab === 'text' }"
                                 role="tab"
-                                :aria-selected="activeTab === 'send'"
-                                aria-controls="panel-send"
-                                @click="activeTab = 'send'"
+                                :aria-selected="mainTab === 'text'"
+                                aria-controls="panel-text"
+                                @click="mainTab = 'text'"
                             >
-                                ↑ Send Text
+                                Share Text
                             </button>
                             <button
                                 class="tab-btn"
-                                :class="{ active: activeTab === 'receive' }"
+                                :class="{ active: mainTab === 'file' }"
                                 role="tab"
-                                :aria-selected="activeTab === 'receive'"
-                                aria-controls="panel-receive"
-                                @click="activeTab = 'receive'"
+                                :aria-selected="mainTab === 'file'"
+                                aria-controls="panel-file"
+                                @click="mainTab = 'file'"
                             >
-                                ↓ Receive Text
-                            </button>
-                            <button
-                                class="tab-btn"
-                                :class="{ active: activeTab === 'send-file' }"
-                                role="tab"
-                                :aria-selected="activeTab === 'send-file'"
-                                aria-controls="panel-send-file"
-                                @click="activeTab = 'send-file'"
-                            >
-                                ↑ Send File
-                            </button>
-                            <button
-                                class="tab-btn"
-                                :class="{ active: activeTab === 'receive-file' }"
-                                role="tab"
-                                :aria-selected="activeTab === 'receive-file'"
-                                aria-controls="panel-receive-file"
-                                @click="activeTab = 'receive-file'"
-                            >
-                                ↓ Receive File
+                                Share Files
                             </button>
                         </div>
 
-                        <!-- Tab Panels -->
-                        <div class="tab-content">
-                            <div
-                                v-if="activeTab === 'send'"
-                                id="panel-send"
-                                role="tabpanel"
-                            >
-                                <SendText />
+                        <!-- Share Text Panel -->
+                        <div v-if="mainTab === 'text'" id="panel-text" role="tabpanel" class="tab-content">
+                            <div class="tab-bar tab-bar-sub">
+                                <button
+                                    class="tab-btn tab-btn-sub"
+                                    :class="{ active: textSubTab === 'send' }"
+                                    @click="textSubTab = 'send'"
+                                >
+                                    ↑ Send Text
+                                </button>
+                                <button
+                                    class="tab-btn tab-btn-sub"
+                                    :class="{ active: textSubTab === 'receive' }"
+                                    @click="textSubTab = 'receive'"
+                                >
+                                    ↓ Receive Text
+                                </button>
                             </div>
-                            <div v-else-if="activeTab === 'receive'" id="panel-receive" role="tabpanel">
-                                <ReceiveText :initial-code="scannedCode" />
+                            <div class="sub-tab-content">
+                                <SendText v-if="textSubTab === 'send'" />
+                                <ReceiveText v-else :initial-code="scannedCode" />
                             </div>
-                            <div v-else-if="activeTab === 'send-file'" id="panel-send-file" role="tabpanel">
-                                <LazySendFile />
+                        </div>
+
+                        <!-- Share Files Panel -->
+                        <div v-else id="panel-file" role="tabpanel" class="tab-content">
+                            <div class="tab-bar tab-bar-sub">
+                                <button
+                                    class="tab-btn tab-btn-sub"
+                                    :class="{ active: fileSubTab === 'send' }"
+                                    @click="fileSubTab = 'send'"
+                                >
+                                    ↑ Send File
+                                </button>
+                                <button
+                                    class="tab-btn tab-btn-sub"
+                                    :class="{ active: fileSubTab === 'receive' }"
+                                    @click="fileSubTab = 'receive'"
+                                >
+                                    ↓ Receive File
+                                </button>
                             </div>
-                            <div v-else-if="activeTab === 'receive-file'" id="panel-receive-file" role="tabpanel">
-                                <LazyReceiveFile :initial-code="scannedFileCode" />
+                            <div class="sub-tab-content">
+                                <LazySendFile v-if="fileSubTab === 'send'" />
+                                <LazyReceiveFile v-else :initial-code="scannedFileCode" />
                             </div>
                         </div>
                     </div>
@@ -226,7 +234,9 @@ const LazyFaqSection = defineAsyncComponent(() => import('~/components/FaqSectio
 const LazySendFile = defineAsyncComponent(() => import('~/components/SendFile.vue'))
 const LazyReceiveFile = defineAsyncComponent(() => import('~/components/ReceiveFile.vue'))
 
-const activeTab = ref("send");
+const mainTab = ref("text");
+const textSubTab = ref("send");
+const fileSubTab = ref("send");
 
 const route = useRoute();
 const router = useRouter();
@@ -242,7 +252,8 @@ onMounted(() => {
     const code = c.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
     if (code.length >= 4) {
         scannedCode.value = code;
-        activeTab.value = "receive";
+        mainTab.value = "text";
+        textSubTab.value = "receive";
         router.replace({ query: {} });
         return;
     }
@@ -251,7 +262,8 @@ onMounted(() => {
     const fcode = fc.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
     if (fcode.length >= 4) {
         scannedFileCode.value = fcode;
-        activeTab.value = "receive-file";
+        mainTab.value = "file";
+        fileSubTab.value = "receive";
         router.replace({ query: {} });
     }
 });
@@ -391,6 +403,24 @@ const scrollToTool = () => {
 
 .tab-content {
     margin-top: 24px;
+}
+
+.tab-bar-main {
+    margin-bottom: 0;
+}
+
+.tab-bar-sub {
+    margin-top: 16px;
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.tab-btn-sub {
+    font-size: 0.65rem;
+    padding: 8px 16px;
+}
+
+.sub-tab-content {
+    margin-top: 16px;
 }
 
 /* Security notice */
