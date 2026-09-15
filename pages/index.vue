@@ -59,7 +59,7 @@
                         <div
                             class="tab-bar"
                             role="tablist"
-                            aria-label="Send or receive text"
+                            aria-label="Send or receive text or files"
                         >
                             <button
                                 class="tab-btn"
@@ -81,6 +81,26 @@
                             >
                                 ↓ Receive Text
                             </button>
+                            <button
+                                class="tab-btn"
+                                :class="{ active: activeTab === 'send-file' }"
+                                role="tab"
+                                :aria-selected="activeTab === 'send-file'"
+                                aria-controls="panel-send-file"
+                                @click="activeTab = 'send-file'"
+                            >
+                                ↑ Send File
+                            </button>
+                            <button
+                                class="tab-btn"
+                                :class="{ active: activeTab === 'receive-file' }"
+                                role="tab"
+                                :aria-selected="activeTab === 'receive-file'"
+                                aria-controls="panel-receive-file"
+                                @click="activeTab = 'receive-file'"
+                            >
+                                ↓ Receive File
+                            </button>
                         </div>
 
                         <!-- Tab Panels -->
@@ -92,8 +112,14 @@
                             >
                                 <SendText />
                             </div>
-                            <div v-else id="panel-receive" role="tabpanel">
+                            <div v-else-if="activeTab === 'receive'" id="panel-receive" role="tabpanel">
                                 <ReceiveText :initial-code="scannedCode" />
+                            </div>
+                            <div v-else-if="activeTab === 'send-file'" id="panel-send-file" role="tabpanel">
+                                <LazySendFile />
+                            </div>
+                            <div v-else-if="activeTab === 'receive-file'" id="panel-receive-file" role="tabpanel">
+                                <LazyReceiveFile :initial-code="scannedFileCode" />
                             </div>
                         </div>
                     </div>
@@ -102,7 +128,7 @@
                     <div class="security-notice">
                         <span class="security-icon">🔒</span>
                         <span
-                            >Text auto-deletes after first read or 10 min</span
+                            >Text auto-deletes after first read or 10 min · Files after first download or 15 min</span
                         >
                     </div>
                 </div>
@@ -197,6 +223,8 @@ const LazyFeaturesSection = defineAsyncComponent(() => import('~/components/Feat
 const LazyUseCases = defineAsyncComponent(() => import('~/components/UseCases.vue'))
 const LazyBlogPreview = defineAsyncComponent(() => import('~/components/BlogPreview.vue'))
 const LazyFaqSection = defineAsyncComponent(() => import('~/components/FaqSection.vue'))
+const LazySendFile = defineAsyncComponent(() => import('~/components/SendFile.vue'))
+const LazyReceiveFile = defineAsyncComponent(() => import('~/components/ReceiveFile.vue'))
 
 const activeTab = ref("send");
 
@@ -206,6 +234,8 @@ const router = useRouter();
 // Code captured from a scanned QR (`/?code=XXXXX`) — kept in a local ref
 // so it survives the URL cleanup below.
 const scannedCode = ref("");
+// File code from QR scan (`/?fcode=XXXXX`)
+const scannedFileCode = ref("");
 
 onMounted(() => {
     const c = (route.query.code || "").toString();
@@ -213,7 +243,15 @@ onMounted(() => {
     if (code.length >= 4) {
         scannedCode.value = code;
         activeTab.value = "receive";
-        // Clean the URL so a manual refresh doesn't re-run the flow.
+        router.replace({ query: {} });
+        return;
+    }
+
+    const fc = (route.query.fcode || "").toString();
+    const fcode = fc.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (fcode.length >= 4) {
+        scannedFileCode.value = fcode;
+        activeTab.value = "receive-file";
         router.replace({ query: {} });
     }
 });

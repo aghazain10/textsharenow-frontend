@@ -81,6 +81,7 @@ const sections = [
                 type: "ul",
                 items: [
                     "Text content you submit is temporarily stored only to fulfil the transfer request.",
+                    "File uploads (images and videos) are temporarily stored only to fulfil the transfer request and are scanned for malware before becoming available.",
                     "We do not collect your name, email address, phone number, or any personally identifying information to use the tool.",
                     "We may collect anonymised server metrics such as request counts and response times for performance monitoring.",
                     "Standard web server logs (IP addresses, timestamps) may be retained for up to 7 days for security purposes.",
@@ -89,7 +90,7 @@ const sections = [
         ],
     },
     {
-        title: "2. How Your Text Is Stored",
+        title: "2. How Your Content Is Stored",
         content: [
             {
                 type: "p",
@@ -97,11 +98,15 @@ const sections = [
             },
             {
                 type: "p",
-                text: "Upon first successful retrieval, the content is immediately and permanently deleted. If not retrieved within 10 minutes, it is automatically deleted by the TTL mechanism.",
+                text: "When you upload a file, it is stored on a dedicated server with a TTL of 15 minutes. All uploaded files are scanned for malware using ClamAV before becoming available for download. Files that fail the malware scan are immediately deleted and are never served.",
             },
             {
                 type: "p",
-                text: "We do not archive, back up, or retain any copies of submitted text beyond the TTL window.",
+                text: "Upon first successful retrieval (text) or download (file), the content is immediately and permanently deleted. If not retrieved within the respective TTL window, it is automatically deleted.",
+            },
+            {
+                type: "p",
+                text: "We do not archive, back up, or retain any copies of submitted text or uploaded files beyond the TTL window.",
             },
         ],
     },
@@ -145,7 +150,11 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "All data in transit is encrypted using HTTPS/TLS. Stored text is encrypted at rest in our temporary data store.",
+                text: "All data in transit is encrypted using HTTPS/TLS. Stored text is encrypted at rest in our temporary data store. Uploaded files are stored on a dedicated server with strict access controls and are never served as static files.",
+            },
+            {
+                type: "p",
+                text: "All uploaded files are automatically scanned for malware using ClamAV before becoming available for download. Files that fail the scan are immediately deleted.",
             },
             {
                 type: "p",
@@ -158,7 +167,7 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "We do not sell, rent, or share your submitted text with any third parties. Your content is used solely to fulfil your transfer request and is then deleted.",
+                text: "We do not sell, rent, or share your submitted text or uploaded files with any third parties. Your content is used solely to fulfil your transfer request and is then deleted.",
             },
             {
                 type: "p",

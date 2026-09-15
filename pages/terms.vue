@@ -70,11 +70,15 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "TextShareNow is a free, browser-based tool that lets users transfer short pieces of text between devices using a temporary, single-use code. The Service does not require account creation and does not permanently store submitted content.",
+                text: "TextShareNow is a free, browser-based tool that lets users transfer short pieces of text or files between devices using a temporary, single-use code. The Service does not require account creation and does not permanently store submitted content.",
             },
             {
                 type: "p",
-                text: "Submitted text is automatically deleted after first retrieval or after 10 minutes, whichever occurs first, as described in our Privacy Policy.",
+                text: "Submitted text is automatically deleted after first retrieval or after 10 minutes, whichever occurs first. Uploaded files are automatically deleted after first download or after 15 minutes, whichever occurs first, as described in our Privacy Policy.",
+            },
+            {
+                type: "p",
+                text: "Accepted file types for the file sharing feature are limited to PNG, JPEG, WebP, MP4, and WebM, with a maximum size of 10 MB per file. All uploaded files are scanned for malware before becoming available for download.",
             },
         ],
     },
@@ -90,6 +94,8 @@ const sections = [
                 items: [
                     "Transmit content that is illegal, defamatory, obscene, or infringes on the rights of others.",
                     "Distribute malware, phishing links, or other malicious content.",
+                    "Upload files containing viruses, trojans, or other harmful code — all uploads are scanned and rejected if malware is detected.",
+                    "Upload files that exceed 10 MB or are not in an accepted format (PNG, JPEG, WebP, MP4, WebM).",
                     "Attempt to overwhelm, disrupt, or gain unauthorised access to the Service or its infrastructure.",
                     "Attempt to brute-force, guess, or otherwise access another user's code or content.",
                     "Use the Service for spam, bulk automated transfers, or any activity that abuses its intended purpose.",
