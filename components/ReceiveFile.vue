@@ -89,14 +89,6 @@ function onInput(e) {
   errorMsg.value  = ''
 }
 
-const MIME_EXT = {
-  'image/png': '.png',
-  'image/jpeg': '.jpg',
-  'image/webp': '.webp',
-  'video/mp4': '.mp4',
-  'video/webm': '.webm',
-}
-
 async function handleDownload() {
   const code = codeInput.value.trim()
   if (code.length < 4 || loading.value) return
@@ -104,41 +96,23 @@ async function handleDownload() {
   errorMsg.value = ''
 
   try {
-    const response = await fetch(`${API_URL}/download/${code}`)
+    // HEAD validates without consuming the single-read file
+    const headResp = await fetch(`${API_URL}/download/${code}`, { method: 'HEAD' })
 
-    if (!response.ok) {
-      if (response.status === 404) {
+    if (!headResp.ok) {
+      if (headResp.status === 404) {
         errorMsg.value = props.initialCode
           ? 'This share has expired (15-min limit) or was already downloaded. Please ask the sender again.'
           : 'Code not found or expired. Please check and try again.'
       } else {
-        const data = await response.json().catch(() => ({}))
-        errorMsg.value = data.message || 'Download failed. Please try again.'
+        errorMsg.value = 'Download failed. Please try again.'
       }
       return
     }
 
-    const blob = await response.blob()
-    const fileMime = response.headers.get('X-File-Mime') || response.headers.get('Content-Type') || ''
-    const disposition = response.headers.get('Content-Disposition') || ''
-    const filenameMatch = disposition.match(/filename="?([^";\n]+)"?/)
-    let filename = filenameMatch ? filenameMatch[1] : null
-
-    const ext = MIME_EXT[fileMime] || ''
-    if (!filename || !filename.includes('.')) {
-      filename = filename || `file-${code}`
-      const base = filename.replace(/\.[^.]+$/, '')
-      filename = base + ext
-    }
-
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = filename
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
+    // HEAD succeeded — file exists. Open native download link.
+    // The browser respects Content-Disposition filename natively (not via blob).
+    window.location.href = `${API_URL}/download/${code}`
 
     usedCode.value   = code
     downloaded.value = true
