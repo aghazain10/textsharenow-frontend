@@ -9,7 +9,7 @@
             <div class="glow-blob glow-blob--2" aria-hidden="true" />
 
             <div class="container hero-inner">
-                <!-- Copy — centered above tool -->
+                <!-- Left — Copy -->
                 <div class="hero-copy">
                     <div class="hero-badge animate-fade-up">
                         <span class="status-dot" />
@@ -17,9 +17,8 @@
                     </div>
 
                     <h1 id="hero-title" class="hero-title animate-fade-up-1">
-                        Online Text Sharing —<br />
-                        Share Text Between<br />
-                        <span class="glow-text">Any Devices</span><br />
+                        Share Text and Files<br />
+                        Between <span class="glow-text">Any Devices</span><br />
                         In Seconds
                     </h1>
 
@@ -52,7 +51,7 @@
                     </div>
                 </div>
 
-                <!-- Tool — full width below copy -->
+                <!-- Right — Tool Widget -->
                 <div class="hero-tool animate-fade-up-3">
                     <!-- Top-level Tabs — OUTSIDE the card -->
                     <div
@@ -199,9 +198,9 @@ import { defineAsyncComponent } from 'vue'
 
 // SEO
 useSeo({
-    title: "Online Text Sharing — Share Text Between Devices Instantly",
+    title: "Share Text and Files Between Any Devices",
     description:
-        "Online text sharing tool to transfer text, links, and notes between any devices in seconds using a short code. No app, no sign-up, completely free. Works phone to laptop and back.",
+        "Share text, links, notes, and files between any devices instantly using a short code. No app, no sign-up, completely free. Works phone to laptop and back.",
     pagePath: "/",
 });
 
@@ -285,10 +284,17 @@ const scrollToTool = () => {
 }
 
 .hero-inner {
-    display: flex;
-    flex-direction: column;
-    gap: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
     align-items: center;
+}
+
+@media (max-width: 900px) {
+    .hero-inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+    }
 }
 
 /* Glow blobs */
@@ -317,10 +323,6 @@ const scrollToTool = () => {
 }
 
 .hero-copy {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 .hero-badge {
@@ -394,8 +396,6 @@ const scrollToTool = () => {
 /* Tool widget */
 .hero-tool {
     position: relative;
-    width: 100%;
-    max-width: 720px;
 }
 
 .tool-card {
@@ -408,7 +408,6 @@ const scrollToTool = () => {
 
 .tab-bar-main {
     margin-bottom: 16px;
-    max-width: 720px;
     width: 100%;
 }
 

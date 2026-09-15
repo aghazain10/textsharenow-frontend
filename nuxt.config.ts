@@ -12,15 +12,16 @@ export default defineNuxtConfig({
 
     css: ["~/assets/css/fonts.css", "~/assets/css/main.css"],
 
-    // ── Public env vars (exposed to browser) ─────────────────────────────────
+    // ── Env vars ─────────────────────────────────────────────────────────────
     runtimeConfig: {
+        // Server-only (not exposed to browser)
+        UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL || "",
+        UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN || "",
+        // Public (exposed to browser)
         public: {
             FILES_API_URL: process.env.NUXT_PUBLIC_FILES_API_URL || "https://files.textsharenow.com",
         },
     },
-
-    // ── Server-side env vars (never exposed to browser) ──────────────────────
-    // (upstream secrets kept here if needed later)
 
     app: {
         head: {
