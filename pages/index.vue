@@ -9,7 +9,7 @@
             <div class="glow-blob glow-blob--2" aria-hidden="true" />
 
             <div class="container hero-inner">
-                <!-- Left — Copy -->
+                <!-- Copy — centered above tool -->
                 <div class="hero-copy">
                     <div class="hero-badge animate-fade-up">
                         <span class="status-dot" />
@@ -52,37 +52,37 @@
                     </div>
                 </div>
 
-                <!-- Right — Tool Widget -->
+                <!-- Tool — full width below copy -->
                 <div class="hero-tool animate-fade-up-3">
-                    <div class="tool-card glass-card pulse-glow">
-                        <!-- Top-level Tabs -->
-                        <div
-                            class="tab-bar tab-bar-main"
-                            role="tablist"
-                            aria-label="Share text or files"
+                    <!-- Top-level Tabs — OUTSIDE the card -->
+                    <div
+                        class="tab-bar tab-bar-main"
+                        role="tablist"
+                        aria-label="Share text or files"
+                    >
+                        <button
+                            class="tab-btn"
+                            :class="{ active: mainTab === 'text' }"
+                            role="tab"
+                            :aria-selected="mainTab === 'text'"
+                            aria-controls="panel-text"
+                            @click="mainTab = 'text'"
                         >
-                            <button
-                                class="tab-btn"
-                                :class="{ active: mainTab === 'text' }"
-                                role="tab"
-                                :aria-selected="mainTab === 'text'"
-                                aria-controls="panel-text"
-                                @click="mainTab = 'text'"
-                            >
-                                Share Text
-                            </button>
-                            <button
-                                class="tab-btn"
-                                :class="{ active: mainTab === 'file' }"
-                                role="tab"
-                                :aria-selected="mainTab === 'file'"
-                                aria-controls="panel-file"
-                                @click="mainTab = 'file'"
-                            >
-                                Share Files
-                            </button>
-                        </div>
+                            Share Text
+                        </button>
+                        <button
+                            class="tab-btn"
+                            :class="{ active: mainTab === 'file' }"
+                            role="tab"
+                            :aria-selected="mainTab === 'file'"
+                            aria-controls="panel-file"
+                            @click="mainTab = 'file'"
+                        >
+                            Share Files
+                        </button>
+                    </div>
 
+                    <div class="tool-card glass-card pulse-glow">
                         <!-- Share Text Panel -->
                         <div v-if="mainTab === 'text'" id="panel-text" role="tabpanel" class="tab-content">
                             <div class="tab-bar tab-bar-sub">
@@ -285,17 +285,10 @@ const scrollToTool = () => {
 }
 
 .hero-inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
     align-items: center;
-}
-
-@media (max-width: 900px) {
-    .hero-inner {
-        grid-template-columns: 1fr;
-        gap: 48px;
-    }
 }
 
 /* Glow blobs */
@@ -323,7 +316,13 @@ const scrollToTool = () => {
     right: 0;
 }
 
-/* Copy side */
+.hero-copy {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .hero-badge {
     display: inline-flex;
     align-items: center;
@@ -395,6 +394,8 @@ const scrollToTool = () => {
 /* Tool widget */
 .hero-tool {
     position: relative;
+    width: 100%;
+    max-width: 720px;
 }
 
 .tool-card {
@@ -402,11 +403,13 @@ const scrollToTool = () => {
 }
 
 .tab-content {
-    margin-top: 24px;
+    margin-top: 20px;
 }
 
 .tab-bar-main {
-    margin-bottom: 0;
+    margin-bottom: 16px;
+    max-width: 720px;
+    width: 100%;
 }
 
 .tab-bar-sub {
