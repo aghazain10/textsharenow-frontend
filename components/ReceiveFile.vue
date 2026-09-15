@@ -89,6 +89,14 @@ function onInput(e) {
   errorMsg.value  = ''
 }
 
+const MIME_EXT = {
+  'image/png': '.png',
+  'image/jpeg': '.jpg',
+  'image/webp': '.webp',
+  'video/mp4': '.mp4',
+  'video/webm': '.webm',
+}
+
 async function handleDownload() {
   const code = codeInput.value.trim()
   if (code.length < 4 || loading.value) return
@@ -111,9 +119,17 @@ async function handleDownload() {
     }
 
     const blob = await response.blob()
+    const fileMime = response.headers.get('X-File-Mime') || response.headers.get('Content-Type') || ''
     const disposition = response.headers.get('Content-Disposition') || ''
     const filenameMatch = disposition.match(/filename="?([^";\n]+)"?/)
-    const filename = filenameMatch ? filenameMatch[1] : `file-${code}`
+    let filename = filenameMatch ? filenameMatch[1] : null
+
+    const ext = MIME_EXT[fileMime] || ''
+    if (!filename || !filename.includes('.')) {
+      filename = filename || `file-${code}`
+      const base = filename.replace(/\.[^.]+$/, '')
+      filename = base + ext
+    }
 
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
