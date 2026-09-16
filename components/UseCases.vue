@@ -53,6 +53,12 @@ const useCases = [
         description:
             "Setting up a new phone or laptop often means retyping Wi-Fi passwords, license keys, and account details from your old device. A short code makes that a few seconds of copy-paste instead.",
     },
+    {
+        icon: "📸",
+        title: "Sharing a Screenshot or Quick Photo",
+        description:
+            "Took a screenshot on your phone and need it on your laptop? Upload it, get a code, download on the other device — no WhatsApp compression, no email attachment limits, no cloud upload.",
+    },
 ];
 </script>
 

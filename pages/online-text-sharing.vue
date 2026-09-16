@@ -202,6 +202,20 @@
                 <td><span class="cross">✗ No (install blocked)</span></td>
                 <td><span class="check">✓ Yes</span></td>
               </tr>
+              <tr>
+                <td class="feature-name">Share images / small videos</td>
+                <td class="highlight-col"><span class="check">✓ Yes (up to 10 MB)</span></td>
+                <td><span class="check">✓ Yes (file size varies)</span></td>
+                <td><span class="neutral">⚠ Limited by app</span></td>
+                <td><span class="cross">✗ Compresses / limits</span></td>
+              </tr>
+              <tr>
+                <td class="feature-name">File size limit</td>
+                <td class="highlight-col"><span class="neutral">10 MB per file</span></td>
+                <td><span class="check">~Several GB</span></td>
+                <td><span class="neutral">~Varies</span></td>
+                <td><span class="cross">25 MB (Gmail) / varies</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -312,6 +326,11 @@
             <span class="use-case-icon">🛠️</span>
             <h3 class="use-case-title">Anyone Setting Up a New Device</h3>
             <p class="use-case-desc">Setting up a new phone or laptop often means retyping Wi-Fi passwords, license keys, and account details from your old device. A short code makes that a few seconds of copy-paste instead.</p>
+          </article>
+          <article class="use-case-card glass-card">
+            <span class="use-case-icon">📸</span>
+            <h3 class="use-case-title">Sharing a Screenshot or Quick Photo</h3>
+            <p class="use-case-desc">Took a screenshot on your phone and need it on your laptop? Upload it, get a code, download on the other device — no WhatsApp compression, no email attachment limits, no cloud upload.</p>
           </article>
           <article class="use-case-card glass-card">
             <span class="use-case-icon">🔗</span>
