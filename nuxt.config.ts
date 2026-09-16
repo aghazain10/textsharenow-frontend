@@ -60,6 +60,7 @@ export default defineNuxtConfig({
                         "Share text and files between devices in seconds with a short code. Free, private, no account needed.",
                 },
                 { name: "robots", content: "index, follow" },
+                { name: "google-adsense-account", content: "ca-pub-6697676712322371" },
             ],
             link: [
                 { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
@@ -93,6 +94,13 @@ export default defineNuxtConfig({
                     as: "font",
                     type: "font/woff2",
                     crossorigin: "",
+                },
+            ],
+            script: [
+                {
+                    src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6697676712322371",
+                    async: true,
+                    crossorigin: "anonymous",
                 },
             ],
         },
