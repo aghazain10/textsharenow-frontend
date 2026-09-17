@@ -7,22 +7,22 @@
 
 <url>
   <loc>https://www.textsharenow.com/</loc>
-  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
   <loc>https://www.textsharenow.com/about</loc>
-  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://www.textsharenow.com/how-it-works</loc>
-  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://www.textsharenow.com/faq</loc>
-  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
@@ -32,17 +32,27 @@
 </url>
 <url>
   <loc>https://www.textsharenow.com/privacy</loc>
-  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
   <priority>0.60</priority>
 </url>
 <url>
   <loc>https://www.textsharenow.com/terms</loc>
-  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
   <priority>0.60</priority>
 </url>
 <url>
+  <loc>https://www.textsharenow.com/online-text-sharing</loc>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
+  <priority>0.90</priority>
+</url>
+<url>
+  <loc>https://www.textsharenow.com/share-files-online</loc>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
+  <priority>0.90</priority>
+</url>
+<url>
   <loc>https://www.textsharenow.com/blog</loc>
-  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
@@ -57,12 +67,12 @@
 </url>
 <url>
   <loc>https://www.textsharenow.com/blog/airdrop-alternative-cross-platform</loc>
-  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
   <priority>0.70</priority>
 </url>
 <url>
   <loc>https://www.textsharenow.com/blog/airdrop-alternative-for-windows</loc>
-  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
   <priority>0.70</priority>
 </url>
 <url>
@@ -77,7 +87,7 @@
 </url>
 <url>
   <loc>https://www.textsharenow.com/blog/iphone-windows-text-transfer-without-icloud</loc>
-  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
   <priority>0.68</priority>
 </url>
 <url>
@@ -104,6 +114,36 @@
   <loc>https://www.textsharenow.com/blog/share-text-privately-without-chat-history</loc>
   <lastmod>2026-08-25T00:00:00+00:00</lastmod>
   <priority>0.68</priority>
+</url>
+<url>
+  <loc>https://www.textsharenow.com/blog/transfer-text-from-android-to-mac</loc>
+  <lastmod>2026-08-25T00:00:00+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://www.textsharenow.com/blog/online-text-sharing-vs-apps</loc>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
+  <priority>0.68</priority>
+</url>
+<url>
+  <loc>https://www.textsharenow.com/blog/how-to-send-photo-without-losing-quality</loc>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://www.textsharenow.com/blog/free-temporary-file-sharing</loc>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://www.textsharenow.com/blog/how-to-send-small-video-without-email-limits</loc>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://www.textsharenow.com/blog/screenshot-to-second-device-in-seconds</loc>
+  <lastmod>2026-09-17T00:00:00+00:00</lastmod>
+  <priority>0.70</priority>
 </url>
 
 </urlset>
