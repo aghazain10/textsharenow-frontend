@@ -108,10 +108,10 @@ const paddleLoaded = ref(false);
 const loading = ref(false);
 let paddle = null;
 
-// Price IDs from Paddle sandbox
+// Price IDs from Paddle live
 const prices = {
-    monthly: "pri_01m350qcktrxjqd09c6c6hkqrf",
-    yearly: "pri_01m350qd1s5mrs8wj87q743kpk",
+    monthly: "pri_01m35488tqdy2pnnvh533vwfx1",
+    yearly: "pri_01m35489m5w416gkynf6nz9ezm",
 };
 
 onMounted(async () => {
@@ -141,7 +141,7 @@ function openCheckout() {
         settings: {
             variant: "one-page",
             theme: "dark",
-            successUrl: "https://textsharenow.com/pricing?success=true",
+            successUrl: "https://textsharenow-frontend-mo0pr2xdg-zain-rizvees-projects.vercel.app/pricing?success=true",
         },
     });
 
