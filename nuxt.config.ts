@@ -17,9 +17,13 @@ export default defineNuxtConfig({
         // Server-only (not exposed to browser)
         UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL || "",
         UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN || "",
+        PADDLE_API_KEY: process.env.PADDLE_API_KEY || "",
+        PADDLE_WEBHOOK_SECRET: process.env.PADDLE_WEBHOOK_SECRET || "",
         // Public (exposed to browser)
         public: {
             FILES_API_URL: process.env.NUXT_PUBLIC_FILES_API_URL || "https://files.textsharenow.com",
+            PADDLE_ENV: process.env.PADDLE_ENV || "sandbox",
+            PADDLE_CLIENT_TOKEN: process.env.PADDLE_CLIENT_TOKEN || "",
         },
     },
 

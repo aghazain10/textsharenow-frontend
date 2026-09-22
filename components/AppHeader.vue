@@ -17,6 +17,7 @@
                 >
                 <NuxtLink to="/faq" class="nav-link">FAQ</NuxtLink>
                 <NuxtLink to="/blog" class="nav-link">Blog</NuxtLink>
+                <NuxtLink to="/pricing" class="nav-link">Pricing</NuxtLink>
                 <NuxtLink to="/about" class="nav-link">About</NuxtLink>
                 <NuxtLink to="/contact" class="nav-link">Contact</NuxtLink>
             </nav>
@@ -76,6 +77,12 @@
                     class="mobile-link"
                     @click="menuOpen = false"
                     >About</NuxtLink
+                >
+                <NuxtLink
+                    to="/pricing"
+                    class="mobile-link"
+                    @click="menuOpen = false"
+                    >Pricing</NuxtLink
                 >
             </nav>
         </Transition>

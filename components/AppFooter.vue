@@ -29,6 +29,7 @@
                 <div class="footer-col">
                     <h3 class="footer-col-title">Info</h3>
                     <NuxtLink to="/faq" class="footer-link">FAQ</NuxtLink>
+                    <NuxtLink to="/pricing" class="footer-link">Pricing</NuxtLink>
                     <NuxtLink to="/blog" class="footer-link">Blog</NuxtLink>
                     <NuxtLink to="/about" class="footer-link">About</NuxtLink>
                     <NuxtLink to="/contact" class="footer-link"
