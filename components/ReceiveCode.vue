@@ -39,14 +39,24 @@
                 <p class="mt-0.5 text-ink/75">{{ error.body }}</p>
             </div>
 
-            <button type="submit" class="btn-primary mt-6 w-full max-w-xs" :disabled="value.length < 5 || loading">
-                {{ loading ? "Opening…" : "Receive" }}
-            </button>
+            <div class="mx-auto mt-6 flex w-full max-w-xs flex-col gap-2">
+                <button type="submit" class="btn-primary w-full" :disabled="value.length < 5 || loading">
+                    {{ loading ? "Opening…" : "Receive" }}
+                </button>
+                <button v-if="canPaste && !value" type="button" class="btn-ghost w-full" @click="pasteCode">
+                    <TsnIcon name="clipboard" class="h-4 w-4" />Paste code
+                </button>
+            </div>
+            <p v-if="pasteHint" class="mt-3 text-[13px] text-muted">{{ pasteHint }}</p>
             <p class="mt-4 text-[13px] text-muted">Text is copied to your clipboard as soon as it opens.</p>
         </form>
 
         <div v-else>
             <div class="rounded-lg border border-line p-5 sm:p-7">
+                <p class="mb-5 flex items-start gap-2.5 rounded-lg border border-line bg-surface-2/50 px-3.5 py-2.5 text-left text-[13px]">
+                    <TsnIcon name="trash" class="mt-px h-4 w-4 shrink-0" stroke="1.8" />
+                    <span><strong class="font-semibold text-ink">Deleted from our server.</strong> <span class="text-muted">{{ result.type === "text" ? "It was removed the moment you opened it" : "It was removed as the download started" }}, and code {{ result.code }} won't work again.</span></span>
+                </p>
                 <!-- Text -->
                 <template v-if="result.type === 'text'">
                     <div class="flex flex-wrap items-center justify-between gap-3">
@@ -67,7 +77,20 @@
                     <button type="button" class="btn-primary mt-4 w-full" :disabled="flash" @click="copyAgain">
                         <TsnIcon :name="flash ? 'check' : 'copy'" class="h-[18px] w-[18px]" />{{ flash ? "Copied" : "Copy text" }}
                     </button>
-                    <p class="mt-3 text-center text-[13px] text-muted">This text has now been deleted from our server. Copy it before you leave.</p>
+                    <!-- 5. Links in the text open in one tap -->
+                    <div v-if="links.length" class="mt-2 grid gap-2" :class="links.length > 1 ? 'sm:grid-cols-2' : ''">
+                        <a
+                            v-for="l in links"
+                            :key="l.href"
+                            :href="l.href"
+                            target="_blank"
+                            rel="noopener noreferrer nofollow"
+                            class="btn-ghost w-full min-w-0"
+                        >
+                            <TsnIcon name="external" class="h-4 w-4 shrink-0" /><span class="truncate">{{ links.length > 1 ? l.host : "Open link" }}</span>
+                        </a>
+                    </div>
+                    <p class="mt-3 text-center text-[13px] text-muted">Copy it before you leave this page.</p>
                 </template>
 
                 <!-- File -->
@@ -83,7 +106,7 @@
                             <TsnIcon name="check" class="h-5 w-5 text-ok" stroke="2.4" />
                         </li>
                     </ul>
-                    <p class="mt-3 text-[13px] text-muted">Original quality and file names are kept. The file has now been deleted from our server.</p>
+                    <p class="mt-3 text-[13px] text-muted">Original quality and file names are kept.</p>
                 </template>
 
                 <button type="button" class="btn-ghost mt-4 w-full" @click="reset">Enter another code</button>
@@ -119,6 +142,43 @@ const flash = ref(false);
 const inputEl = ref(null);
 const textEl = ref(null);
 const slots = ref([]);
+
+const canPaste = ref(false);
+const pasteHint = ref("");
+
+// Every http(s) link in the received text, up to 3, for one-tap opening
+const links = computed(() => {
+    if (result.value?.type !== "text") return [];
+    const found = result.value.text.match(/https?:\/\/[^\s<>"']+/g) || [];
+    const seen = new Set();
+    return found
+        .map((u) => u.replace(/[).,;:!?]+$/, ""))
+        .filter((u) => !seen.has(u) && seen.add(u))
+        .slice(0, 3)
+        .map((href) => {
+            try { return { href, host: new URL(href).host.replace(/^www\./, "") }; } catch { return null; }
+        })
+        .filter(Boolean);
+});
+
+// Paste a code (or a copied share link) from the clipboard, then open it
+async function pasteCode() {
+    pasteHint.value = "";
+    try {
+        const clip = (await navigator.clipboard.readText()) || "";
+        const fromLink = clip.match(/[?&]f?code=([A-Za-z0-9]{5})/);
+        const code = clean(fromLink ? fromLink[1] : clip);
+        if (code.length < 5) {
+            pasteHint.value = "There's no 5-character code on your clipboard.";
+            return;
+        }
+        value.value = code;
+        receive(fromLink && /fcode=/.test(fromLink[0]) ? "file" : "");
+    } catch {
+        pasteHint.value = "Your browser blocked the clipboard. Tap the boxes and paste instead.";
+        inputEl.value?.focus();
+    }
+}
 
 const clean = (s) => s.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 5);
 
@@ -212,7 +272,10 @@ function openInitial() {
         receive(props.initialKind);
     }
 }
-onMounted(openInitial);
+onMounted(() => {
+    canPaste.value = !!navigator.clipboard?.readText;
+    openInitial();
+});
 watch(() => props.initialCode, openInitial);
 
 defineExpose({ focus: () => inputEl.value?.focus({ preventScroll: true }) });

@@ -7,6 +7,7 @@
             <label for="send-textarea" class="sr-only">Text, link or note to share</label>
             <textarea
                 id="send-textarea"
+                ref="area"
                 v-model="text"
                 maxlength="5000"
                 rows="8"
@@ -25,6 +26,15 @@
                         :class="text.length >= 5000 ? 'font-semibold text-bad' : text.length >= 4500 ? 'font-semibold text-ink' : 'text-muted'"
                         aria-live="polite"
                     >{{ text.length.toLocaleString("en-US") }} / 5,000</span>
+                    <button
+                        v-if="canPaste && !text.length"
+                        type="button"
+                        class="inline-flex items-center gap-1.5 rounded-md border border-line px-2 py-1 font-medium text-ink hover:bg-surface-2"
+                        @click="pasteIn"
+                    >
+                        <TsnIcon name="clipboard" class="h-3.5 w-3.5" />Paste
+                    </button>
+                    <span v-if="pasteHint" class="text-muted">{{ pasteHint }}</span>
                     <button
                         v-if="text.length"
                         type="button"
@@ -55,10 +65,29 @@ const qrUrl = ref("");
 const loading = ref(false);
 const error = ref("");
 const shortcut = ref("Ctrl Enter");
+const area = ref(null);
+const canPaste = ref(false);
+const pasteHint = ref("");
 
 onMounted(() => {
-    if (/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) shortcut.value = "⌘ Enter";
+    const mac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+    if (mac) shortcut.value = "⌘ Enter";
+    canPaste.value = !!navigator.clipboard?.readText;
 });
+
+// One-tap paste from the clipboard (the browser may ask for permission first)
+async function pasteIn() {
+    pasteHint.value = "";
+    try {
+        const clip = await navigator.clipboard.readText();
+        if (clip) text.value = clip.slice(0, 5000);
+        else pasteHint.value = "Your clipboard is empty.";
+    } catch {
+        // Permission refused or not supported: fall back to the keyboard
+        pasteHint.value = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) ? "Press ⌘ V to paste." : "Press Ctrl V to paste.";
+    }
+    area.value?.focus();
+}
 
 async function send() {
     if (!text.value.trim() || loading.value) return;
@@ -67,7 +96,7 @@ async function send() {
     try {
         const res = await $fetch(`${API_BASE}/api/share`, { method: "POST", body: { text: text.value } });
         code.value = res.code;
-        qrUrl.value = `${window.location.origin}/?code=${res.code}`;
+        qrUrl.value = `${window.location.origin}/r?code=${res.code}`;
         text.value = "";
     } catch (e) {
         error.value = e?.data?.message || "Couldn't create a code. Check your connection and try again.";

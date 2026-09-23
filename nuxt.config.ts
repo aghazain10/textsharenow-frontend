@@ -113,6 +113,7 @@ export default defineNuxtConfig({
         "/how-it-works": { prerender: true },
         "/online-text-sharing": { prerender: true },
         "/share-files-online": { prerender: true },
+        "/r": { prerender: true },
         "/blog/airdrop-alternative-cross-platform": { prerender: true },
         "/blog/airdrop-alternative-for-windows": { prerender: true },
         "/blog/how-to-share-text-from-phone-to-laptop": { prerender: true },

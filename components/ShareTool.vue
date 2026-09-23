@@ -25,7 +25,7 @@
             <SendText />
         </div>
         <div v-show="tab === 'files'" id="panel-files" role="tabpanel" aria-labelledby="tab-files" class="mt-3">
-            <SendFile />
+            <SendFile ref="sender" />
         </div>
         <div v-show="tab === 'receive'" id="panel-receive" role="tabpanel" aria-labelledby="tab-receive" class="mt-3">
             <ReceiveCode ref="receiver" :initial-code="initialCode" :initial-kind="initialKind" />
@@ -49,6 +49,22 @@ const TABS = [
 const tab = ref(props.initialTab);
 const tabEls = ref([]);
 const receiver = ref(null);
+const sender = ref(null);
+
+// Paste a screenshot anywhere on the page: switch to Send files and pick it up
+const IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"];
+function onPaste(e) {
+    const item = Array.from(e.clipboardData?.items || []).find((i) => i.kind === "file" && IMAGE_TYPES.includes(i.type));
+    const file = item?.getAsFile();
+    if (!file) return;
+    e.preventDefault();
+    tab.value = "files";
+    // Screenshots arrive as "image.png"; give them a clearer name
+    const named = file.name && file.name !== "image.png" ? file : new File([file], `screenshot-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.${file.type.split("/")[1]}`, { type: file.type });
+    nextTick(() => sender.value?.take(named));
+}
+onMounted(() => document.addEventListener("paste", onPaste));
+onBeforeUnmount(() => document.removeEventListener("paste", onPaste));
 const index = computed(() => TABS.findIndex((t) => t.id === tab.value));
 
 watch(() => props.initialTab, (t) => (tab.value = t));

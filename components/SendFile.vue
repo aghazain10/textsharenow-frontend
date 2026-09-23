@@ -13,13 +13,18 @@
                 <span class="grid h-12 w-12 place-items-center rounded-lg border border-line bg-bg text-ink shadow-card">
                     <TsnIcon name="upload" class="h-7 w-7" />
                 </span>
-                <span class="mt-4 text-[17px] font-semibold tracking-[-0.01em]">Drop files here, or <span class="underline underline-offset-4">browse</span></span>
+                <span class="mt-4 text-[17px] font-semibold tracking-[-0.01em]">Drop a file here, or <span class="underline underline-offset-4">browse</span></span>
                 <span class="mt-1 text-[14px] text-muted">Screenshots, photos and short videos, in original quality</span>
-                <span class="mt-1 text-[13px] text-muted">PNG, JPEG, WebP, MP4 or WebM, up to 10 MB</span>
+                <span class="mt-3 inline-flex flex-wrap items-center justify-center gap-1.5 text-[12px] font-medium">
+                    <span class="rounded-md border border-line bg-bg px-2 py-0.5">1 file at a time</span>
+                    <span class="rounded-md border border-line bg-bg px-2 py-0.5">Up to 10 MB</span>
+                    <span class="rounded-md border border-line bg-bg px-2 py-0.5">PNG, JPEG, WebP, MP4, WebM</span>
+                </span>
+                <span class="mt-3 hidden text-[12px] text-muted sm:block">Tip: you can also paste a screenshot anywhere on this page</span>
                 <input id="file-input" ref="input" type="file" class="sr-only" :accept="ACCEPT" @change="onPick" />
             </label>
 
-            <ul v-if="file" class="mt-3 grid gap-2" aria-label="Selected files">
+            <ul v-if="file" class="mt-3 grid gap-2" aria-label="Selected file">
                 <li class="flex items-center gap-3 rounded-lg border border-line px-3 py-2.5">
                     <span class="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-surface-2 text-ink"><TsnIcon name="file" class="h-5 w-5" stroke="1.9" /></span>
                     <span class="min-w-0 flex-1">
@@ -89,6 +94,8 @@ function onDrop(e) {
     dragging.value = false;
     take(e.dataTransfer.files?.[0]);
 }
+defineExpose({ take: (f) => { if (!code.value && !uploading.value) take(f); } });
+
 function clear() {
     file.value = null;
     error.value = "";
@@ -121,7 +128,7 @@ async function upload() {
             xhr.send(form);
         });
         code.value = result;
-        qrUrl.value = `${window.location.origin}/?fcode=${result}`;
+        qrUrl.value = `${window.location.origin}/r?fcode=${result}`;
     } catch (e) {
         error.value = e?.message || "Upload failed. Please try again.";
     } finally {
