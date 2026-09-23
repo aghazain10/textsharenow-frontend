@@ -11,7 +11,7 @@
                 <h3 class="text-[14px] font-semibold">{{ col.title }}</h3>
                 <ul class="mt-3 grid gap-2 text-[14px] text-muted">
                     <li v-for="l in col.links" :key="l.label">
-                        <a v-if="l.href" class="hover:text-ink" :href="l.href" target="_blank" rel="noopener noreferrer">{{ l.label }}</a>
+                        <a v-if="l.href" class="hover:text-ink" :href="l.href" target="_blank" rel="noopener noreferrer" @click="countTipClick">{{ l.label }}</a>
                         <NuxtLink v-else class="hover:text-ink" :to="l.to">{{ l.label }}</NuxtLink>
                     </li>
                 </ul>
@@ -26,6 +26,8 @@
 
 <script setup>
 const year = new Date().getFullYear();
+const apiBase = useRuntimeConfig().public.API_BASE;
+const countTipClick = () => trackTip("click", "footer", apiBase);
 const COLS = [
     {
         title: "Tool",

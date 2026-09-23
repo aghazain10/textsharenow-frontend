@@ -13,6 +13,7 @@
                         rel="noopener noreferrer"
                         class="btn border border-on-brand/25 text-on-brand hover:bg-on-brand/10"
                         aria-label="Support TextShareNow with a tip via PayPal"
+                        @click="countTipClick"
                     >
                         <TsnIcon name="heart" class="h-[18px] w-[18px]" />Support this project
                     </a>
@@ -31,4 +32,6 @@
 
 <script setup>
 const tipUrl = TIP_URL;
+const apiBase = useRuntimeConfig().public.API_BASE;
+const countTipClick = () => trackTip("click", "banner", apiBase);
 </script>

@@ -123,6 +123,7 @@
                         rel="noopener noreferrer"
                         class="btn-ghost mt-6"
                         aria-label="Support TextShareNow with a donation via PayPal"
+                        @click="countTipClick"
                     >
                         <TsnIcon name="heart" class="h-4 w-4" />
                         Support via PayPal
@@ -172,6 +173,8 @@
 
 <script setup>
 const tipUrl = TIP_URL;
+const apiBase = useRuntimeConfig().public.API_BASE;
+const countTipClick = () => trackTip("click", "about", apiBase);
 useSeo({
     title: "About — Why We Built TextShareNow",
     description:
