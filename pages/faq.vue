@@ -217,7 +217,7 @@ const categories = [
       {
         question: 'What is the maximum amount of text I can share?',
         answer:
-          'You can share up to 5,000 characters per transfer. This covers most URLs, short notes, code snippets, and messages. For larger content, split it into multiple transfers.',
+          'You can share up to 10,000 characters per transfer. This covers most URLs, short notes, code snippets, and messages. For larger content, split it into multiple transfers.',
       },
       {
         question: 'Can I share files or images?',

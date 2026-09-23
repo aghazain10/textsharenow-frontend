@@ -9,9 +9,9 @@
                 id="send-textarea"
                 ref="area"
                 v-model="text"
-                maxlength="5000"
+                maxlength="10000"
                 rows="8"
-                placeholder="Paste a link, a note, an address… anything up to 5,000 characters."
+                placeholder="Paste a link, a note, an address… anything up to 10,000 characters."
                 class="block w-full resize-none rounded-t-lg bg-transparent px-5 pb-2 pt-5 text-[17px] leading-relaxed placeholder:text-muted/70 !outline-none focus:!outline-none focus-visible:!outline-none"
                 @keydown.enter.meta.prevent="send"
                 @keydown.enter.ctrl.prevent="send"
@@ -23,9 +23,9 @@
                 <div class="flex items-center gap-3 text-[13px]">
                     <span
                         class="tabular-nums"
-                        :class="text.length >= 5000 ? 'font-semibold text-bad' : text.length >= 4500 ? 'font-semibold text-ink' : 'text-muted'"
+                        :class="text.length >= 10000 ? 'font-semibold text-bad' : text.length >= 9000 ? 'font-semibold text-ink' : 'text-muted'"
                         aria-live="polite"
-                    >{{ text.length.toLocaleString("en-US") }} / 5,000</span>
+                    >{{ text.length.toLocaleString("en-US") }} / 10,000</span>
                     <button
                         v-if="canPaste && !text.length"
                         type="button"
@@ -80,7 +80,7 @@ async function pasteIn() {
     pasteHint.value = "";
     try {
         const clip = await navigator.clipboard.readText();
-        if (clip) text.value = clip.slice(0, 5000);
+        if (clip) text.value = clip.slice(0, 10000);
         else pasteHint.value = "Your clipboard is empty.";
     } catch {
         // Permission refused or not supported: fall back to the keyboard

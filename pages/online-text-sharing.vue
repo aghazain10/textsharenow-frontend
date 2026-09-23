@@ -222,7 +222,7 @@ const faqs = [
   },
   {
     question: 'Is there a limit on how much text I can share online?',
-    answer: 'Up to 5,000 characters per transfer — enough for long URLs, code snippets, notes, and short messages.',
+    answer: 'Up to 10,000 characters per transfer — enough for long URLs, code snippets, notes, and short messages.',
   },
   {
     question: 'Do I need to create an account to use online text sharing?',

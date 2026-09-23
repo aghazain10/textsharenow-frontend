@@ -52,7 +52,7 @@ useSeo({
 const phoneToLaptopSteps = [
   { title: 'Open TextShareNow on your phone', detail: 'No app needed — just open textsharenow.com in any mobile browser.' },
   { title: 'Go to the Send tab', detail: 'Tap the "Send Text" tab at the top of the tool.' },
-  { title: 'Paste or type your content', detail: 'Paste the link, note, or text you want to transfer. Up to 5,000 characters.' },
+  { title: 'Paste or type your content', detail: 'Paste the link, note, or text you want to transfer. Up to 10,000 characters.' },
   { title: 'Tap Generate Code', detail: 'A unique 5-character code appears (e.g. Z7K4P) — it is valid for 10 minutes.' },
   { title: 'Open the site on your laptop', detail: 'Go to textsharenow.com in your laptop browser.' },
   { title: 'Go to the Receive tab and enter the code', detail: 'Type the 5-character code and click Retrieve. Your text appears instantly.' },

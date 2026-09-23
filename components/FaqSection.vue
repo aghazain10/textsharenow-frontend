@@ -54,7 +54,7 @@ const faqs = [
     },
     {
         question: "What is the maximum text size I can share?",
-        answer: "You can share up to 5,000 characters per transfer — enough for most URLs, notes, code snippets, and short messages.",
+        answer: "You can share up to 10,000 characters per transfer — enough for most URLs, notes, code snippets, and short messages.",
     },
 ];
 

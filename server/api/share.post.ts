@@ -54,8 +54,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 422, message: 'Please provide text to share.' })
   }
 
-  if (text.length > 5000) {
-    throw createError({ statusCode: 422, message: 'Text cannot exceed 5,000 characters.' })
+  if (text.length > 10000) {
+    throw createError({ statusCode: 422, message: 'Text cannot exceed 10,000 characters.' })
   }
 
   // Rate limiting — 10 sends per minute per IP

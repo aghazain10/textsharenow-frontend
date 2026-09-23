@@ -206,6 +206,6 @@ const sidebarStats = [
     { value: "5", label: "Characters in every code" },
     { value: "10 min", label: "Maximum data retention" },
     { value: "0", label: "Accounts needed" },
-    { value: "5,000", label: "Max characters per transfer" },
+    { value: "10,000", label: "Max characters per transfer" },
 ];
 </script>

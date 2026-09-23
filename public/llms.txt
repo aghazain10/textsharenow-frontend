@@ -29,7 +29,7 @@ TextShareNow is a free, browser-based tool for instantly transferring text, link
 - **Privacy by Default**: Auto-deletes after first read or 10 minutes
 - **Fast**: Average transfer time under 8 seconds
 - **Universal**: Works on any device with a modern browser
-- **Character Limit**: Up to 5,000 characters per transfer
+- **Character Limit**: Up to 10,000 characters per transfer
 - **Encrypted**: HTTPS/TLS in transit, encrypted at rest
 - **Secure**: Rate limiting prevents brute-force code enumeration
 - **Code Space**: Over 60 million possible 5-character combinations
@@ -139,7 +139,7 @@ A: No. Works across any internet connection.
 A: Up to 10 minutes, or deleted immediately after first read.
 
 **Q: What is the maximum text length?**
-A: 5,000 characters per transfer.
+A: 10,000 characters per transfer.
 
 **Q: Can I share files or images?**
 A: No. Currently supports plain text only.
