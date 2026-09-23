@@ -2,7 +2,7 @@
     <header class="sticky top-[env(safe-area-inset-top,0px)] z-40 border-b border-line bg-bg/80 px-4 backdrop-blur-xl">
         <div class="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3">
             <NuxtLink to="/" class="flex items-center gap-2 text-[16px] font-bold tracking-[-0.03em]" aria-label="TextShareNow home">
-                <span class="flap flap-xs !text-[13px]" aria-hidden="true">T</span>
+                <TsnLogo class="h-7 w-7 shrink-0" />
                 TextShareNow
             </NuxtLink>
 

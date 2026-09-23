@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- TextShareNow mark: one split-flap tile with a T -->
+  <defs><clipPath id="c"><rect width="64" height="64" rx="14"/></clipPath></defs>
+  <g clip-path="url(#c)">
+    <rect fill="#09090b" width="64" height="64"/>
+    <rect fill="#1f1f23" width="64" height="31.25"/>
+    <rect fill="#fafafa" x="16" y="15" width="32" height="8" rx="2"/>
+    <rect fill="#fafafa" x="28" y="15" width="8" height="34" rx="2"/>
+    <rect fill="#09090b" y="31.25" width="64" height="1.5"/>
+  </g>
+</svg>

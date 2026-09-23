@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- TextShareNow mark: one split-flap tile with a T. Inverts in dark browser UI. -->
+  <style>
+    .tile { fill: #09090b } .top { fill: #1f1f23 } .glyph { fill: #fafafa }
+    @media (prefers-color-scheme: dark) { .tile { fill: #f4f4f5 } .top { fill: #ffffff } .glyph { fill: #09090b } }
+  </style>
+  <defs><clipPath id="c"><rect width="64" height="64" rx="14"/></clipPath></defs>
+  <g clip-path="url(#c)">
+    <rect class="tile" width="64" height="64"/>
+    <rect class="top" width="64" height="31.25"/>
+    <rect class="glyph" x="16" y="15" width="32" height="8" rx="2"/>
+    <rect class="glyph" x="28" y="15" width="8" height="34" rx="2"/>
+    <rect class="tile" y="31.25" width="64" height="1.5"/>
+  </g>
+</svg>

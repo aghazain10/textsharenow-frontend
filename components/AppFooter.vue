@@ -3,7 +3,7 @@
         <div class="mx-auto grid max-w-6xl gap-10 py-14 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
             <div>
                 <NuxtLink to="/" class="flex items-center gap-2 text-[16px] font-bold tracking-[-0.03em]">
-                    <span class="flap flap-xs !text-[13px]" aria-hidden="true">T</span>TextShareNow
+                    <TsnLogo class="h-7 w-7 shrink-0" />TextShareNow
                 </NuxtLink>
                 <p class="mt-3 max-w-[32ch] text-[14px] text-muted">Instant text transfer between any devices.<br />No app. No account. Just a code.</p>
             </div>

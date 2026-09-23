@@ -85,10 +85,10 @@ export default defineNuxtConfig({
                 },
             ],
             script: [
-                // Apply the saved light/dark choice before first paint (no flash)
+                // Dark by default; a saved light/dark choice wins. Runs before first paint (no flash).
                 {
                     innerHTML:
-                        'try{var t=localStorage.getItem("tsn-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}',
+                        'var t="dark";try{t=localStorage.getItem("tsn-theme")||"dark"}catch(e){}document.documentElement.dataset.theme=t',
                     tagPosition: "head",
                 },
                 {
