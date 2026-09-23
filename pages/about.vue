@@ -118,14 +118,14 @@
                         if you'd like to.
                     </p>
                     <a
-                        href="https://wise.com/pay/me/syedm198"
+                        :href="tipUrl"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="btn-ghost mt-6"
-                        aria-label="Support TextShareNow with a donation via Wise"
+                        aria-label="Support TextShareNow with a donation via PayPal"
                     >
                         <TsnIcon name="heart" class="h-4 w-4" />
-                        Support via Wise
+                        Support via PayPal
                     </a>
 
                     <h2 class="mt-12 border-t border-line pt-12 text-[26px] font-semibold tracking-[-0.03em] text-ink">Our Principles</h2>
@@ -171,6 +171,7 @@
 </template>
 
 <script setup>
+const tipUrl = TIP_URL;
 useSeo({
     title: "About — Why We Built TextShareNow",
     description:

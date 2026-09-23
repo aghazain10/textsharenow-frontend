@@ -11,18 +11,19 @@
     <!-- Dismissed just now -->
     <p v-else-if="state === 'later'" class="mt-3 text-center text-[13px] text-muted">
         No problem. You can tip anytime from
-        <a class="text-link" :href="TIP_URL" target="_blank" rel="noopener noreferrer">Support this project</a>.
+        <a class="text-link" :href="tipUrl" target="_blank" rel="noopener noreferrer">Support this project</a>.
     </p>
 
     <!-- Small nudge (already tipped recently, or said "maybe later" this visit) -->
     <p v-else-if="state === 'compact'" class="tip-in mt-3 flex items-center justify-center gap-1.5 text-[13px] text-muted">
         <TsnIcon name="heart" class="h-[18px] w-[18px]" />
         <span>Enjoying TextShareNow?
-            <a class="text-link" :href="TIP_URL" target="_blank" rel="noopener noreferrer" @click="markTipped">Leave a tip</a></span>
+            <a class="text-link" :href="tipUrl" target="_blank" rel="noopener noreferrer" @click="markTipped">Leave a tip</a></span>
     </p>
 
     <!-- Full card -->
-    <div v-else class="tip-in mt-3 rounded-lg border border-line bg-surface-2/50 p-5">
+    <div v-else class="tip-in mt-3 flex gap-5 rounded-lg border border-line bg-surface-2/50 p-5">
+        <div class="min-w-0 flex-1">
         <div class="flex items-start gap-3">
             <span class="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-brand text-on-brand">
                 <TsnIcon name="heart" class="h-[18px] w-[18px]" />
@@ -46,7 +47,7 @@
                     {{ CURRENCY }}{{ a }}
                 </button>
             </div>
-            <a class="btn-primary" :href="TIP_URL" target="_blank" rel="noopener noreferrer" @click="markTipped">
+            <a class="btn-primary" :href="tipUrl" target="_blank" rel="noopener noreferrer" @click="markTipped">
                 <TsnIcon name="heart" class="h-[18px] w-[18px]" />Tip {{ CURRENCY }}{{ amount }}
             </a>
             <button
@@ -57,21 +58,28 @@
                 Maybe later
             </button>
         </div>
-        <p class="mt-3 text-[12px] text-muted">Optional. TextShareNow stays free either way. Paid securely through Wise.</p>
+        <p class="mt-3 text-[12px] text-muted">Optional. TextShareNow stays free either way. Pay securely with card or PayPal.</p>
+        </div>
+        <figure class="hidden shrink-0 flex-col items-center gap-1.5 md:flex">
+            <div class="w-24 overflow-hidden rounded-md border border-line bg-white p-1 [&_canvas]:!h-auto [&_canvas]:!w-full">
+                <QrCode :text="tipUrl" :size="92" />
+            </div>
+            <figcaption class="text-[11px] text-muted">Scan to tip</figcaption>
+        </figure>
     </div>
 </template>
 
 <script setup>
 /*
  * Tip nudge shown after a share or receive works. Never blocks anything.
- * The Wise link doesn't take an amount, so the buttons set the label and
- * people confirm the amount on the Wise page.
+ * The PayPal link doesn't take an amount, so the buttons set the label and
+ * people confirm the amount on the PayPal page.
  */
 const props = defineProps({
     where: { type: String, default: "share" }, // "share" | "receive"
 });
 
-const TIP_URL = "https://wise.com/pay/me/syedm198";
+const tipUrl = TIP_URL;
 const CURRENCY = "$";
 const AMOUNTS = [2, 5, 10];
 const amount = ref(5);

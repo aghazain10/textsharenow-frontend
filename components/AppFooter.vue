@@ -51,7 +51,7 @@ const COLS = [
         links: [
             { label: "Privacy Policy", to: "/privacy" },
             { label: "Terms of Use", to: "/terms" },
-            { label: "Support this project", href: "https://wise.com/pay/me/syedm198" },
+            { label: "Support this project", href: TIP_URL },
         ],
     },
 ];

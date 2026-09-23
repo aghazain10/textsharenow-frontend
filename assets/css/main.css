@@ -210,11 +210,6 @@ h1, h2, h3 { text-wrap: balance; }
 @keyframes flow { to { stroke-dashoffset: -20; } }
 .stamp { transform: rotate(-9deg); }
 
-/* Blog covers: simple generated artwork, grayscale */
-.cover-a { background: radial-gradient(circle at 78% 30%, var(--bg) 0 16%, transparent 16.5%), var(--ink); }
-.cover-b { background: repeating-linear-gradient(90deg, var(--ink) 0 22px, color-mix(in srgb, var(--ink) 82%, var(--bg)) 22px 44px); }
-.cover-c { background: radial-gradient(circle at 25% 75%, var(--ink) 0 28%, transparent 28.5%), var(--surface-2); border: 1px solid var(--line); }
-
 /* ---------- FAQ (details/summary) ---------- */
 .faq summary { list-style: none; cursor: pointer; }
 .faq summary::-webkit-details-marker { display: none; }
