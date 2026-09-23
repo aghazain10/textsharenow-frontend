@@ -1,5 +1,5 @@
 <template>
-  <canvas ref="canvasEl" class="qr-canvas" aria-hidden="true" />
+  <canvas ref="canvasEl" class="block rounded-md" aria-hidden="true" />
 </template>
 
 <script setup>
@@ -60,12 +60,3 @@ function draw() {
 onMounted(draw)
 watch(() => props.text, draw)
 </script>
-
-<style scoped>
-/* Intrinsic size is set inline by draw() (CSS pixels at device resolution);
-   width/height here are only a safety floor before draw() runs. */
-.qr-canvas {
-  display: block;
-  border-radius: 8px;
-}
-</style>

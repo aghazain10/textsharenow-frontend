@@ -1,240 +1,84 @@
 <template>
-  <div class="send-panel">
+    <div>
+        <div
+            v-if="!code"
+            class="rounded-lg border border-line bg-bg"
+        >
+            <label for="send-textarea" class="sr-only">Text, link or note to share</label>
+            <textarea
+                id="send-textarea"
+                v-model="text"
+                maxlength="5000"
+                rows="8"
+                placeholder="Paste a link, a note, an address… anything up to 5,000 characters."
+                class="block w-full resize-none rounded-t-lg bg-transparent px-5 pb-2 pt-5 text-[17px] leading-relaxed placeholder:text-muted/70 !outline-none focus:!outline-none focus-visible:!outline-none"
+                @keydown.enter.meta.prevent="send"
+                @keydown.enter.ctrl.prevent="send"
+            />
+            <p v-if="error" class="mx-5 mb-2 flex items-center gap-2 text-[14px] text-bad" role="alert">
+                <TsnIcon name="alert" class="h-4 w-4 shrink-0" />{{ error }}
+            </p>
+            <div class="flex flex-wrap items-center justify-between gap-3 px-3 pb-3 pl-5">
+                <div class="flex items-center gap-3 text-[13px]">
+                    <span
+                        class="tabular-nums"
+                        :class="text.length >= 5000 ? 'font-semibold text-bad' : text.length >= 4500 ? 'font-semibold text-ink' : 'text-muted'"
+                        aria-live="polite"
+                    >{{ text.length.toLocaleString("en-US") }} / 5,000</span>
+                    <button
+                        v-if="text.length"
+                        type="button"
+                        class="rounded-md px-2 py-1 font-medium text-muted hover:bg-surface-2 hover:text-ink"
+                        @click="text = ''"
+                    >
+                        Clear
+                    </button>
+                </div>
+                <div class="flex items-center gap-3">
+                    <kbd class="hidden rounded-md border border-line px-1.5 py-0.5 font-sans text-[12px] text-muted sm:inline">{{ shortcut }}</kbd>
+                    <button type="button" class="btn-primary" :disabled="!text.trim() || loading" @click="send">
+                        {{ loading ? "Generating…" : "Generate code" }}
+                    </button>
+                </div>
+            </div>
+        </div>
 
-    <template v-if="!generatedCode">
-      <label class="field-label" for="send-textarea">
-        <span class="mono">&gt;</span> Your text, link, or note
-      </label>
-
-      <div class="textarea-wrapper">
-        <textarea
-          id="send-textarea"
-          v-model="inputText"
-          class="input-field send-textarea"
-          placeholder="Paste your link, text, or note here..."
-          maxlength="5000"
-        />
-        <span class="char-count" :class="{ warning: inputText.length > 4500 }">
-          {{ inputText.length }}/5000
-        </span>
-      </div>
-
-      <p v-if="errorMsg" class="error-msg">⚠ {{ errorMsg }}</p>
-
-      <button
-        class="btn-primary send-btn"
-        :class="{ 'btn-disabled': !inputText.trim() || loading }"
-        @click="handleSend"
-      >
-        <span v-if="loading">Generating...</span>
-        <span v-else>Generate Code →</span>
-      </button>
-    </template>
-
-    <template v-else>
-      <p class="result-label">
-        <span class="status-dot" /> Your code is ready
-      </p>
-
-      <div class="code-display">{{ generatedCode }}</div>
-
-      <div class="qr-wrap">
-        <QrCode :text="qrUrl" :size="168" />
-      </div>
-      <p class="qr-hint">📱 Scan to receive on your other device</p>
-
-      <p class="code-hint">
-        Or go to <strong class="accent">Receive Text</strong> on your other device and enter this code.
-      </p>
-
-      <div class="expiry-notice">⏱ Expires in 10 minutes or after first read</div>
-
-      <div class="result-actions">
-        <button class="btn-primary" @click="doCopy">
-          {{ copied ? '✓ Copied!' : 'Copy Code' }}
-        </button>
-        <button class="btn-secondary" @click="reset">
-          Send Another
-        </button>
-      </div>
-
-      <a
-        href="https://wise.com/pay/me/syedm198"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="support-inline-link"
-        aria-label="Support TextShareNow with a donation via Wise"
-      >
-        ☕ If this saved you a step, you can support the project →
-      </a>
-    </template>
-
-  </div>
+        <CodeResult v-else :code="code" :ttl="600" :qr-url="qrUrl" @reset="reset" />
+    </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+const API_BASE = useRuntimeConfig().public.API_BASE;
+const text = ref("");
+const code = ref("");
+const qrUrl = ref("");
+const loading = ref(false);
+const error = ref("");
+const shortcut = ref("Ctrl Enter");
 
-const inputText     = ref('')
-const generatedCode = ref('')
-const qrUrl         = ref('')
-const loading       = ref(false)
-const errorMsg      = ref('')
-const copied        = ref(false)
+onMounted(() => {
+    if (/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) shortcut.value = "⌘ Enter";
+});
 
-async function handleSend() {
-  if (!inputText.value.trim() || loading.value) return
-  loading.value  = true
-  errorMsg.value = ''
-  try {
-    const res = await $fetch('/api/share', {
-      method: 'POST',
-      body: { text: inputText.value },
-    })
-    generatedCode.value = res.code
-    const origin = typeof window !== 'undefined'
-      ? window.location.origin
-      : 'https://www.textsharenow.com'
-    qrUrl.value = `${origin}/?code=${res.code}`
-  } catch (e) {
-    errorMsg.value = e?.data?.message || 'Something went wrong. Please try again.'
-  } finally {
-    loading.value = false
-  }
-}
-
-async function doCopy() {
-  try {
-    await navigator.clipboard.writeText(generatedCode.value)
-  } catch {
-    const el = document.createElement('textarea')
-    el.value = generatedCode.value
-    document.body.appendChild(el)
-    el.select()
-    document.execCommand('copy')
-    document.body.removeChild(el)
-  }
-  copied.value = true
-  setTimeout(() => { copied.value = false }, 2000)
+async function send() {
+    if (!text.value.trim() || loading.value) return;
+    loading.value = true;
+    error.value = "";
+    try {
+        const res = await $fetch(`${API_BASE}/api/share`, { method: "POST", body: { text: text.value } });
+        code.value = res.code;
+        qrUrl.value = `${window.location.origin}/?code=${res.code}`;
+        text.value = "";
+    } catch (e) {
+        error.value = e?.data?.message || "Couldn't create a code. Check your connection and try again.";
+    } finally {
+        loading.value = false;
+    }
 }
 
 function reset() {
-  inputText.value     = ''
-  generatedCode.value = ''
-  qrUrl.value         = ''
-  errorMsg.value      = ''
-  copied.value        = false
+    code.value = "";
+    qrUrl.value = "";
+    error.value = "";
 }
 </script>
-
-<style scoped>
-.send-panel { display: flex; flex-direction: column; gap: 16px; }
-
-.field-label {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.mono { color: var(--accent); font-family: var(--font-mono); }
-
-.textarea-wrapper { position: relative; }
-
-.send-textarea { min-height: 160px; line-height: 1.6; padding-bottom: 32px; }
-
-.char-count {
-  position: absolute;
-  bottom: 10px;
-  right: 14px;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--text-muted);
-  pointer-events: none;
-}
-.char-count.warning { color: #ff9500; }
-
-.error-msg {
-  font-size: 0.82rem;
-  color: #ff4d6d;
-  padding: 10px 14px;
-  background: rgba(255, 77, 109, 0.08);
-  border: 1px solid rgba(255, 77, 109, 0.2);
-  border-radius: 8px;
-}
-
-.send-btn { width: 100%; display: flex; justify-content: center; }
-
-.btn-disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-.result-label {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--accent-green);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.code-display {
-  font-family: var(--font-mono);
-  font-size: clamp(1.8rem, 5vw, 2.8rem);
-  font-weight: 600;
-  letter-spacing: 0.45em;
-  color: var(--accent-green);
-  text-shadow: 0 0 30px rgba(0, 255, 135, 0.6);
-  text-align: center;
-  padding: 28px 20px;
-  background: rgba(0, 255, 135, 0.04);
-  border: 1px solid rgba(0, 255, 135, 0.2);
-  border-radius: var(--radius);
-}
-
-.code-hint { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; text-align: center; }
-.accent { color: var(--accent); }
-.expiry-notice { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); text-align: center; }
-
-.qr-wrap {
-  display: flex;
-  justify-content: center;
-  padding: 12px;
-  border-radius: var(--radius);
-}
-
-.qr-wrap :deep(.qr-canvas) {
-  outline: 1px solid rgba(255, 255, 255, 0.9);
-}
-
-.qr-hint {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  text-align: center;
-  margin-top: -6px;
-}
-
-.result-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-.result-actions > * { flex: 1; min-width: 120px; display: flex; justify-content: center; }
-
-.support-inline-link {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--accent);
-  text-align: center;
-  text-decoration: none;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-}
-.support-inline-link:hover {
-  opacity: 1;
-}
-</style>

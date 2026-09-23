@@ -1,202 +1,57 @@
 <template>
     <div>
-        <!-- ========================
-         HERO
-    ========================= -->
-        <section class="hero section" aria-labelledby="hero-title">
-            <!-- Ambient glow blobs -->
-            <div class="glow-blob glow-blob--1" aria-hidden="true" />
-            <div class="glow-blob glow-blob--2" aria-hidden="true" />
+        <!-- Hero -->
+        <section class="relative isolate overflow-hidden px-4 pb-16 pt-14 sm:pb-20 sm:pt-20" aria-labelledby="hero-title">
+            <div class="hero-grid absolute inset-0 -z-10" aria-hidden="true" />
 
-            <div class="container hero-inner">
-                <!-- Left — Copy -->
-                <div class="hero-copy">
-                    <div class="hero-badge animate-fade-up">
-                        <span class="status-dot" />
-                        <span>No account · No app · Free forever</span>
-                    </div>
+            <div class="mx-auto max-w-6xl text-center">
+                <p class="inline-flex items-center gap-2 rounded-full border border-line bg-bg px-3 py-1 text-[13px] font-medium text-ink shadow-card">
+                    <i class="live-dot" aria-hidden="true" />No account · No app · Free forever
+                </p>
 
-                    <h1 id="hero-title" class="hero-title animate-fade-up-1">
-                        Share Text and Files<br />
-                        Between <span class="glow-text">Any Devices</span><br />
-                        In Seconds
-                    </h1>
-
-                    <p class="hero-subtitle animate-fade-up-2">
-                        Stop emailing yourself. Paste your link or note, get a
-                        short code, type it on your other device — done. Works
-                        phone to laptop, laptop to phone, across any network.
-                    </p>
-
-                    <div class="hero-stats animate-fade-up-3">
-                        <div class="stat">
-                            <span class="stat-value glow-text"><UsageCounter /></span>
-                            <span class="stat-label">texts shared using textsharenow</span>
-                        </div>
-                        <div class="stat-divider" />
-                        <div class="stat">
-                            <span class="stat-value glow-text">~8s</span>
-                            <span class="stat-label">avg. transfer time</span>
-                        </div>
-                        <div class="stat-divider" />
-                        <div class="stat">
-                            <span class="stat-value glow-text">5 chars</span>
-                            <span class="stat-label">short code</span>
-                        </div>
-                        <div class="stat-divider" />
-                        <div class="stat">
-                            <span class="stat-value glow-text">0</span>
-                            <span class="stat-label">sign-ups needed</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right — Tool Widget -->
-                <div class="hero-tool animate-fade-up-3">
-                    <!-- Top-level Tabs — OUTSIDE the card -->
-                    <div
-                        class="tab-bar tab-bar-main"
-                        role="tablist"
-                        aria-label="Share text or files"
-                    >
-                        <button
-                            class="tab-btn"
-                            :class="{ active: mainTab === 'text' }"
-                            role="tab"
-                            :aria-selected="mainTab === 'text'"
-                            aria-controls="panel-text"
-                            @click="mainTab = 'text'"
-                        >
-                            Share Text
-                        </button>
-                        <button
-                            class="tab-btn"
-                            :class="{ active: mainTab === 'file' }"
-                            role="tab"
-                            :aria-selected="mainTab === 'file'"
-                            aria-controls="panel-file"
-                            @click="mainTab = 'file'"
-                        >
-                            Share Files
-                        </button>
-                    </div>
-
-                    <div class="tool-card glass-card pulse-glow">
-                        <!-- Share Text Panel -->
-                        <div v-if="mainTab === 'text'" id="panel-text" role="tabpanel" class="tab-content">
-                            <div class="tab-bar tab-bar-sub">
-                                <button
-                                    class="tab-btn tab-btn-sub"
-                                    :class="{ active: textSubTab === 'send' }"
-                                    @click="textSubTab = 'send'"
-                                >
-                                    ↑ Send Text
-                                </button>
-                                <button
-                                    class="tab-btn tab-btn-sub"
-                                    :class="{ active: textSubTab === 'receive' }"
-                                    @click="textSubTab = 'receive'"
-                                >
-                                    ↓ Receive Text
-                                </button>
-                            </div>
-                            <div class="sub-tab-content">
-                                <SendText v-if="textSubTab === 'send'" />
-                                <ReceiveText v-else :initial-code="scannedCode" />
-                            </div>
-                        </div>
-
-                        <!-- Share Files Panel -->
-                        <div v-else id="panel-file" role="tabpanel" class="tab-content">
-                            <div class="tab-bar tab-bar-sub">
-                                <button
-                                    class="tab-btn tab-btn-sub"
-                                    :class="{ active: fileSubTab === 'send' }"
-                                    @click="fileSubTab = 'send'"
-                                >
-                                    ↑ Send File
-                                </button>
-                                <button
-                                    class="tab-btn tab-btn-sub"
-                                    :class="{ active: fileSubTab === 'receive' }"
-                                    @click="fileSubTab = 'receive'"
-                                >
-                                    ↓ Receive File
-                                </button>
-                            </div>
-                            <div class="sub-tab-content">
-                                <LazySendFile v-if="fileSubTab === 'send'" />
-                                <LazyReceiveFile v-else :initial-code="scannedFileCode" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Security notice -->
-                    <div class="security-notice">
-                        <span class="security-icon">🔒</span>
-                        <span
-                            >Text auto-deletes after first read or 10 min · Files after first download or 15 min</span
-                        >
-                    </div>
-                </div>
+                <h1 id="hero-title" class="mx-auto mt-7 text-[clamp(2.5rem,5.4vw,4.9rem)] font-bold leading-[1.04] tracking-[-0.05em]">
+                    Share Text and Files Between <br class="hidden md:block" />Any Devices In Seconds
+                </h1>
+                <p class="mx-auto mt-6 max-w-[68ch] text-[19px] leading-relaxed text-muted">
+                    Stop emailing yourself. Paste your link or note, get a short code, type it on your other device — done. Works phone to laptop, laptop to phone, across any network.
+                </p>
             </div>
+
+            <div class="mt-12">
+                <ShareTool wide :initial-tab="tab" :initial-code="scannedCode" :initial-kind="scannedKind" />
+            </div>
+
+            <ul class="mx-auto mt-6 flex max-w-5xl flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-muted">
+                <li class="inline-flex items-center gap-1.5"><TsnIcon name="user-x" class="h-4 w-4" stroke="1.8" />No sign-up</li>
+                <li class="inline-flex items-center gap-1.5"><TsnIcon name="lock" class="h-4 w-4" stroke="1.8" />Each code works once</li>
+                <li class="inline-flex items-center gap-1.5"><TsnIcon name="clock" class="h-4 w-4" stroke="1.8" />Text deleted after 10 min</li>
+                <li class="inline-flex items-center gap-1.5"><TsnIcon name="globe" class="h-4 w-4" stroke="1.8" />Any browser, any network</li>
+            </ul>
+            <p class="mx-auto mt-3 max-w-5xl text-center text-[12px] text-muted/80">
+                Text auto-deletes after first read or 10 min · Files after first download or 15 min
+            </p>
+
+            <dl class="mx-auto mt-10 grid max-w-5xl grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line shadow-card sm:grid-cols-4">
+                <div v-for="s in STATS" :key="s.label" class="flex flex-col-reverse gap-1 bg-bg px-5 py-4 text-center">
+                    <dt class="text-[12px] text-muted">{{ s.label }}</dt>
+                    <dd class="text-[22px] font-bold tracking-[-0.03em] text-ink">
+                        <UsageCounter v-if="s.counter" /><template v-else>{{ s.value }}</template>
+                    </dd>
+                </div>
+            </dl>
         </section>
 
-        <hr class="divider" />
-
-        <!-- How It Works -->
-        <LazyHowItWorks />
-
-        <hr class="divider" />
-
-        <!-- About This Tool (prose) -->
-        <LazyAboutTool />
-
-        <hr class="divider" />
-
-        <!-- Features -->
-        <LazyFeaturesSection />
-
-        <hr class="divider" />
-
-        <!-- Use Cases (prose) -->
-        <LazyUseCases />
-
-        <hr class="divider" />
-
-        <!-- Blog Preview -->
-        <LazyBlogPreview />
-
-        <hr class="divider" />
-
-        <!-- FAQ -->
-        <LazyFaqSection />
-
-        <!-- CTA Banner -->
-        <section class="cta-section section">
-            <div class="container">
-                <div class="cta-card glass-card">
-                    <div class="glow-blob cta-blob" aria-hidden="true" />
-                    <h2 class="cta-title">
-                        Ready to share?<br />
-                        <span class="glow-text">Takes 8 seconds.</span>
-                    </h2>
-                    <p class="cta-desc">
-                        Open on any device, paste, get code, done.
-                    </p>
-                    <button class="btn-primary" @click="scrollToTool">
-                        <span>Use the Tool Now →</span>
-                    </button>
-                </div>
-            </div>
-        </section>
+        <HowItWorks />
+        <AboutTool />
+        <FeaturesSection />
+        <UseCases />
+        <BlogPreview />
+        <FaqSection />
+        <SupportSection />
     </div>
 </template>
 
 <script setup>
-import { defineAsyncComponent } from 'vue'
-
-// SEO
 useSeo({
     title: "Share Text and Files Between Any Devices",
     description:
@@ -204,7 +59,6 @@ useSeo({
     pagePath: "/",
 });
 
-// Structured data for Google
 useHead({
     script: [
         {
@@ -214,8 +68,7 @@ useHead({
                 "@type": "WebApplication",
                 name: "TextShareNow",
                 url: "https://textsharenow.com",
-                description:
-                    "Instantly share text, links, and notes between any devices using a short code. No account needed.",
+                description: "Instantly share text, links, and notes between any devices using a short code. No account needed.",
                 applicationCategory: "UtilitiesApplication",
                 operatingSystem: "Any",
                 offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
@@ -224,269 +77,44 @@ useHead({
     ],
 });
 
-const LazyHowItWorks = defineAsyncComponent(() => import('~/components/HowItWorks.vue'))
-const LazyAboutTool = defineAsyncComponent(() => import('~/components/AboutTool.vue'))
-const LazyFeaturesSection = defineAsyncComponent(() => import('~/components/FeaturesSection.vue'))
-const LazyUseCases = defineAsyncComponent(() => import('~/components/UseCases.vue'))
-const LazyBlogPreview = defineAsyncComponent(() => import('~/components/BlogPreview.vue'))
-const LazyFaqSection = defineAsyncComponent(() => import('~/components/FaqSection.vue'))
-const LazySendFile = defineAsyncComponent(() => import('~/components/SendFile.vue'))
-const LazyReceiveFile = defineAsyncComponent(() => import('~/components/ReceiveFile.vue'))
-
-const mainTab = ref("text");
-const textSubTab = ref("send");
-const fileSubTab = ref("send");
-
 const route = useRoute();
 const router = useRouter();
-
-// Code captured from a scanned QR (`/?code=XXXXX`) — kept in a local ref
-// so it survives the URL cleanup below.
+const tab = ref("text");
 const scannedCode = ref("");
-// File code from QR scan (`/?fcode=XXXXX`)
-const scannedFileCode = ref("");
+const scannedKind = ref("");
+
+const STATS = [
+    { label: "texts shared using textsharenow", counter: true },
+    { label: "avg. transfer time", value: "~8s" },
+    { label: "short code", value: "5 chars" },
+    { label: "sign-ups needed", value: "0" },
+];
+
+const clean = (v) => (v || "").toString().trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
 
 onMounted(() => {
-    const c = (route.query.code || "").toString();
-    const code = c.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
-    if (code.length >= 4) {
-        scannedCode.value = code;
-        mainTab.value = "text";
-        textSubTab.value = "receive";
+    // A scanned QR opens the Receive tab and fetches straight away:
+    // /?code=XXXXX for text, /?fcode=XXXXX for files
+    const code = clean(route.query.code);
+    const fcode = clean(route.query.fcode);
+    if (code.length >= 4 || fcode.length >= 4) {
+        tab.value = "receive";
+        scannedKind.value = code.length >= 4 ? "text" : "file";
+        scannedCode.value = code.length >= 4 ? code : fcode;
         router.replace({ query: {} });
-        return;
-    }
-
-    const fc = (route.query.fcode || "").toString();
-    const fcode = fc.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
-    if (fcode.length >= 4) {
-        scannedFileCode.value = fcode;
-        mainTab.value = "file";
-        fileSubTab.value = "receive";
-        router.replace({ query: {} });
+    } else if (route.hash === "#receive") {
+        tab.value = "receive";
     }
 });
 
-const scrollToTool = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-};
+// Footer "Receive Text" link while already on the home page
+watch(
+    () => route.hash,
+    (h) => {
+        if (h === "#receive") {
+            tab.value = "receive";
+            document.getElementById("tool")?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    },
+);
 </script>
-
-<style scoped>
-/* ========================
-   Hero
-========================= */
-.hero {
-    padding-top: 80px;
-    padding-bottom: 80px;
-    overflow: hidden;
-    position: relative;
-}
-
-.hero-inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: center;
-}
-
-@media (max-width: 900px) {
-    .hero-inner {
-        grid-template-columns: 1fr;
-        gap: 48px;
-    }
-}
-
-/* Glow blobs */
-.glow-blob {
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-    filter: blur(80px);
-    opacity: 0.12;
-}
-
-.glow-blob--1 {
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, #00d4ff, transparent);
-    top: -100px;
-    left: -100px;
-}
-
-.glow-blob--2 {
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, #7c3aed, transparent);
-    bottom: -80px;
-    right: 0;
-}
-
-.hero-copy {
-}
-
-.hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-    background: rgba(0, 212, 255, 0.06);
-    border: 1px solid var(--border-accent);
-    padding: 6px 14px;
-    border-radius: 100px;
-    margin-bottom: 24px;
-}
-
-.hero-title {
-    font-size: clamp(2rem, 4vw, 3.2rem);
-    font-weight: 900;
-    line-height: 1.15;
-    margin-bottom: 20px;
-    letter-spacing: 0.01em;
-}
-
-.hero-subtitle {
-    font-size: 1rem;
-    color: var(--text-secondary);
-    line-height: 1.75;
-    font-weight: 300;
-    margin-bottom: 36px;
-    max-width: 480px;
-}
-
-/* Stats */
-.hero-stats {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.stat {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.stat-value {
-    font-family: var(--font-display);
-    font-size: 1.3rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-}
-
-.stat-label {
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-}
-
-.stat-divider {
-    width: 1px;
-    height: 32px;
-    background: var(--border-accent);
-}
-
-/* Tool widget */
-.hero-tool {
-    position: relative;
-}
-
-.tool-card {
-    padding: 28px;
-}
-
-.tab-content {
-    margin-top: 20px;
-}
-
-.tab-bar-main {
-    margin-bottom: 16px;
-    width: 100%;
-}
-
-.tab-bar-sub {
-    margin-top: 16px;
-    background: rgba(0, 0, 0, 0.15);
-}
-
-.tab-btn-sub {
-    font-size: 0.65rem;
-    padding: 8px 16px;
-}
-
-.sub-tab-content {
-    margin-top: 16px;
-}
-
-/* Security notice */
-.security-notice {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 12px;
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-}
-
-/* Tab transition */
-.tab-fade-enter-active,
-.tab-fade-leave-active {
-    transition: all 0.2s ease;
-}
-.tab-fade-enter-from {
-    opacity: 0;
-    transform: translateY(8px);
-}
-.tab-fade-leave-to {
-    opacity: 0;
-    transform: translateY(-8px);
-}
-
-/* CTA */
-.cta-section {
-    padding-bottom: 100px;
-}
-
-.cta-card {
-    padding: 60px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.cta-blob {
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, #00d4ff, transparent);
-    top: -150px;
-    left: 50%;
-    transform: translateX(-50%);
-    filter: blur(80px);
-    opacity: 0.08;
-}
-
-.cta-title {
-    font-size: clamp(1.6rem, 3vw, 2.4rem);
-    margin-bottom: 16px;
-    position: relative;
-    z-index: 1;
-}
-
-.cta-desc {
-    color: var(--text-secondary);
-    margin-bottom: 32px;
-    position: relative;
-    z-index: 1;
-}
-</style>

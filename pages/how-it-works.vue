@@ -1,66 +1,42 @@
 <template>
   <div>
-    <section class="section">
-      <div class="container">
-        <span class="section-label">Documentation</span>
-        <h1 class="section-title animate-fade-up">
-          How <span class="glow-text">TextShareNow</span> Works
-        </h1>
-        <p class="section-subtitle animate-fade-up-1">
-          A complete guide to sharing text between any devices in seconds —
-          from phone to laptop, laptop to phone, or any combination.
-        </p>
-      </div>
-    </section>
+    <PageHero
+      meta="Documentation"
+      title="How TextShareNow Works"
+      lead="A complete guide to sharing text between any devices in seconds — from phone to laptop, laptop to phone, or any combination."
+    />
 
     <!-- Embeds the shared how-it-works component -->
     <HowItWorks />
 
     <!-- Extended written guide (for SEO) -->
     <section class="section">
-      <div class="container guide-container">
-        <div class="guide-body glass-card">
-          <h2 class="guide-heading">Step-by-Step: Phone to Laptop</h2>
-          <ol class="guide-steps">
-            <li v-for="step in phoneToLaptopSteps" :key="step.title">
-              <strong>{{ step.title }}</strong> — {{ step.detail }}
-            </li>
-          </ol>
+      <div class="wrap">
+        <div class="max-w-[68ch] space-y-14">
+          <section v-for="guide in guides" :key="guide.title">
+            <h2 class="text-[26px] font-semibold tracking-[-0.03em] text-ink">{{ guide.title }}</h2>
+            <ol class="mt-6 space-y-5">
+              <li v-for="(step, i) in guide.steps" :key="step.title" class="flex gap-4">
+                <span class="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-line bg-bg text-[13px] font-semibold text-ink shadow-card">{{ i + 1 }}</span>
+                <p class="text-[16px] leading-7 text-muted">
+                  <strong class="font-semibold text-ink">{{ step.title }}</strong> — {{ step.detail }}
+                </p>
+              </li>
+            </ol>
+          </section>
 
-          <hr class="guide-divider" />
-
-          <h2 class="guide-heading">Step-by-Step: Laptop to Phone</h2>
-          <ol class="guide-steps">
-            <li v-for="step in laptopToPhoneSteps" :key="step.title">
-              <strong>{{ step.title }}</strong> — {{ step.detail }}
-            </li>
-          </ol>
-
-          <hr class="guide-divider" />
-
-          <h2 class="guide-heading">How to Share Files Between Devices</h2>
-          <ol class="guide-steps">
-            <li v-for="step in fileShareSteps" :key="step.title">
-              <strong>{{ step.title }}</strong> — {{ step.detail }}
-            </li>
-          </ol>
-
-          <hr class="guide-divider" />
-
-          <h2 class="guide-heading">Online Text Sharing: The Browser-Based Alternative</h2>
-          <p class="guide-p">
-            Looking for a deeper dive on <strong>online text sharing</strong> — why browser-based tools
-            beat apps for cross-platform transfers, comparison tables, and more use cases?
-            <NuxtLink to="/online-text-sharing" class="guide-link">
-              Read our dedicated online text sharing guide →
-            </NuxtLink>
-          </p>
-
+          <section>
+            <h2 class="text-[26px] font-semibold tracking-[-0.03em] text-ink">Online Text Sharing: The Browser-Based Alternative</h2>
+            <p class="mt-4 text-[16px] leading-7 text-muted">
+              Looking for a deeper dive on <strong class="font-semibold text-ink">online text sharing</strong> — why browser-based tools
+              beat apps for cross-platform transfers, comparison tables, and more use cases?
+              <NuxtLink to="/online-text-sharing" class="text-link">Read our dedicated online text sharing guide</NuxtLink>.
+            </p>
+          </section>
         </div>
       </div>
     </section>
 
-    <hr class="divider" />
     <FaqSection />
   </div>
 </template>
@@ -97,88 +73,10 @@ const fileShareSteps = [
   { title: 'Open Share Files on the receiving device', detail: 'Switch to the Share Files tab on the other device.' },
   { title: 'Select Receive File and enter the code', detail: 'Type the code and click Download. The file downloads directly to your device with the correct filename.' },
 ]
+
+const guides = [
+  { title: 'Step-by-Step: Phone to Laptop', steps: phoneToLaptopSteps },
+  { title: 'Step-by-Step: Laptop to Phone', steps: laptopToPhoneSteps },
+  { title: 'How to Share Files Between Devices', steps: fileShareSteps },
+]
 </script>
-
-<style scoped>
-.guide-container {
-  max-width: 760px;
-}
-
-.guide-body {
-  padding: 44px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-@media (max-width: 640px) {
-  .guide-body { padding: 28px 20px; }
-}
-
-.guide-heading {
-  font-family: var(--font-display);
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--accent);
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border-accent);
-}
-
-.guide-steps {
-  list-style: none;
-  counter-reset: steps;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.guide-steps li {
-  counter-increment: steps;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  line-height: 1.7;
-  font-weight: 300;
-  padding-left: 36px;
-  position: relative;
-}
-
-.guide-steps li::before {
-  content: counter(steps, decimal-leading-zero);
-  position: absolute;
-  left: 0;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--accent);
-  font-weight: 600;
-  top: 3px;
-}
-
-.guide-steps li strong {
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-.guide-divider {
-  border: none;
-  border-top: 1px solid var(--border);
-}
-
-.guide-p {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  line-height: 1.82;
-  font-weight: 300;
-}
-
-.guide-link {
-  color: var(--accent);
-  text-decoration: none;
-  font-weight: 500;
-}
-.guide-link:hover {
-  opacity: 0.75;
-}
-</style>

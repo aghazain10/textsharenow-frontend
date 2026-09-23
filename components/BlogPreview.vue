@@ -1,49 +1,24 @@
 <template>
-    <section class="section blog-preview" aria-labelledby="blog-preview-title">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">From the Blog</span>
-                <h2 id="blog-preview-title" class="section-title">
-                    Guides & <span class="glow-text">Tips</span>
-                </h2>
-                <p class="section-subtitle">
-                    Practical reading on cross-device sharing, productivity, and
-                    getting the most out of TextShareNow.
-                </p>
+    <section id="blog" class="section" aria-labelledby="blog-preview-title">
+        <div class="wrap">
+            <div class="flex flex-wrap items-end justify-between gap-6">
+                <div class="max-w-2xl">
+                    <p class="text-[13px] font-medium text-muted">From the Blog</p>
+                    <h2 id="blog-preview-title" class="section-title mt-3">Guides &amp; Tips</h2>
+                    <p class="section-lead">Practical reading on cross-device sharing, productivity, and getting the most out of TextShareNow.</p>
+                </div>
+                <NuxtLink to="/blog" class="btn-ghost">View All Articles</NuxtLink>
             </div>
-
-            <div class="preview-grid">
-                <article
-                    v-for="post in latestPosts"
-                    :key="post.slug"
-                    class="preview-card glass-card"
-                >
-                    <div class="preview-meta">
-                        <span class="preview-tag">{{ post.tag }}</span>
-                        <span class="preview-date mono">{{ post.date }}</span>
-                    </div>
-                    <h3 class="preview-title">
-                        <NuxtLink
-                            :to="`/blog/${post.slug}`"
-                            class="preview-link"
-                        >
-                            {{ post.title }}
-                        </NuxtLink>
+            <div class="mt-12 grid gap-8 md:grid-cols-3 md:gap-5">
+                <article v-for="(post, i) in latestPosts" :key="post.slug" class="group relative flex flex-col">
+                    <div :class="COVERS[i % 3]" class="aspect-[16/10] max-w-full rounded-xl transition-opacity group-hover:opacity-90" aria-hidden="true" />
+                    <p class="mt-4 text-[13px] font-medium text-muted">{{ post.tag }} · {{ post.date }}</p>
+                    <h3 class="mt-1 text-[19px] font-semibold leading-snug tracking-[-0.025em]">
+                        <NuxtLink :to="`/blog/${post.slug}`" class="after:absolute after:inset-0 group-hover:underline group-hover:underline-offset-4">{{ post.title }}</NuxtLink>
                     </h3>
-                    <p class="preview-excerpt">{{ post.excerpt }}</p>
-                    <NuxtLink
-                        :to="`/blog/${post.slug}`"
-                        class="preview-read-more"
-                    >
-                        Read article →
-                    </NuxtLink>
+                    <p class="mt-2 text-[15px] leading-relaxed text-muted">{{ post.excerpt }}</p>
+                    <span class="mt-4 text-[14px] font-medium text-ink underline decoration-line underline-offset-4 group-hover:decoration-ink">Read article</span>
                 </article>
-            </div>
-
-            <div class="preview-cta">
-                <NuxtLink to="/blog" class="btn-secondary">
-                    <span>View All Articles →</span>
-                </NuxtLink>
             </div>
         </div>
     </section>
@@ -52,113 +27,7 @@
 <script setup>
 import { blogPosts } from "~/data/blog-posts";
 
-// Latest 3 posts, newest first (source array is oldest-first).
+const COVERS = ["cover-a", "cover-b", "cover-c"];
+// Latest 3 posts, newest first (source array is oldest-first)
 const latestPosts = [...blogPosts].reverse().slice(0, 3);
 </script>
-
-<style scoped>
-.section-header {
-    margin-bottom: 48px;
-}
-
-.preview-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-bottom: 36px;
-}
-
-@media (max-width: 900px) {
-    .preview-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-@media (max-width: 600px) {
-    .preview-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-.preview-card {
-    padding: 26px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    transition: transform 0.25s ease;
-}
-
-.preview-card:hover {
-    transform: translateY(-3px);
-}
-
-.preview-meta {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.preview-tag {
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    background: var(--accent-dim);
-    border: 1px solid var(--accent-border);
-    padding: 3px 10px;
-    border-radius: 100px;
-}
-
-.preview-date {
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-}
-
-.preview-title {
-    font-family: var(--font-display);
-    font-size: 0.85rem;
-    font-weight: 600;
-    line-height: 1.45;
-    letter-spacing: 0.02em;
-}
-
-.preview-link {
-    color: var(--text-primary);
-    text-decoration: none;
-    transition: color 0.2s;
-}
-.preview-link:hover {
-    color: var(--accent);
-}
-
-.preview-excerpt {
-    font-size: 0.83rem;
-    color: var(--text-secondary);
-    line-height: 1.68;
-    font-weight: 300;
-    flex: 1;
-}
-
-.preview-read-more {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-    text-decoration: none;
-    transition: opacity 0.2s;
-}
-.preview-read-more:hover {
-    opacity: 0.7;
-}
-
-.preview-cta {
-    display: flex;
-    justify-content: center;
-}
-
-.mono {
-    font-family: var(--font-mono);
-}
-</style>

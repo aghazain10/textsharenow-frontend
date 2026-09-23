@@ -10,7 +10,7 @@ export default defineNuxtConfig({
         plugins: [tailwindcss() as unknown as Plugin],
     },
 
-    css: ["~/assets/css/fonts.css", "~/assets/css/main.css"],
+    css: ["~/assets/css/main.css"],
 
     // ── Env vars ─────────────────────────────────────────────────────────────
     runtimeConfig: {
@@ -20,6 +20,9 @@ export default defineNuxtConfig({
         // Public (exposed to browser)
         public: {
             FILES_API_URL: process.env.NUXT_PUBLIC_FILES_API_URL || "https://files.textsharenow.com",
+            // Where /api/share and /api/stats live. Empty = this same server (production).
+            // Set NUXT_PUBLIC_API_BASE=https://www.textsharenow.com locally to test against the live API.
+            API_BASE: process.env.NUXT_PUBLIC_API_BASE || "",
         },
     },
 
@@ -35,7 +38,7 @@ export default defineNuxtConfig({
                     content:
                         "Share text, files, links, and notes between your phone and laptop instantly. No app, no account — just paste, get a code, and retrieve on any device in seconds.",
                 },
-                { name: "theme-color", content: "#060a14" },
+                { name: "theme-color", content: "#09090b" },
                 { property: "og:type", content: "website" },
                 {
                     property: "og:title",
@@ -74,29 +77,20 @@ export default defineNuxtConfig({
                     rel: "dns-prefetch",
                     href: "https://pagead2.googlesyndication.com",
                 },
+                { rel: "preconnect", href: "https://fonts.googleapis.com" },
+                { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: "" },
                 {
-                    rel: "preload",
-                    href: "/fonts/orbitron-latin.woff2",
-                    as: "font",
-                    type: "font/woff2",
-                    crossorigin: "",
-                },
-                {
-                    rel: "preload",
-                    href: "/fonts/exo2-latin.woff2",
-                    as: "font",
-                    type: "font/woff2",
-                    crossorigin: "",
-                },
-                {
-                    rel: "preload",
-                    href: "/fonts/jetbrains-mono-latin.woff2",
-                    as: "font",
-                    type: "font/woff2",
-                    crossorigin: "",
+                    rel: "stylesheet",
+                    href: "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@500;700&display=swap",
                 },
             ],
             script: [
+                // Apply the saved light/dark choice before first paint (no flash)
+                {
+                    innerHTML:
+                        'try{var t=localStorage.getItem("tsn-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}',
+                    tagPosition: "head",
+                },
                 {
                     src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6697676712322371",
                     async: true,

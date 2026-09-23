@@ -1,58 +1,41 @@
 <template>
     <div>
-        <section class="about-hero section">
-            <div class="container">
-                <span class="section-label">About</span>
-                <h1 class="section-title animate-fade-up">
-                    Built for the
-                    <span class="glow-text">Frictionless</span> Transfer
-                </h1>
-                <p class="section-subtitle animate-fade-up-1">
-                    TextShareNow was created to solve a single, frustrating
-                    problem — why is it so hard to move a piece of text from
-                    your phone to your laptop?
-                </p>
-            </div>
-        </section>
+        <PageHero
+            meta="About"
+            title="Built for the Frictionless Transfer"
+            lead="TextShareNow was created to solve a single, frustrating problem — why is it so hard to move a piece of text from your phone to your laptop?"
+        />
 
         <section class="section">
-            <div class="container about-content">
-                <article class="about-body glass-card">
-                    <h2 class="about-section-heading">The Problem We Solved</h2>
-                    <p>
+            <div class="wrap grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_300px]">
+                <article class="max-w-[68ch] text-[16px] leading-7 text-muted">
+                    <h2 class="text-[26px] font-semibold tracking-[-0.03em] text-ink">The Problem We Solved</h2>
+                    <p class="mt-4">
                         Every day, millions of people email themselves URLs.
                         They message their own WhatsApp. They screenshot notes,
                         then retype them. The workflow is absurd — and yet it
                         persists, because no simple, universal tool existed to
                         bridge the gap between devices.
                     </p>
-                    <p>
+                    <p class="mt-4">
                         QR codes work well from laptop to phone (easy to scan),
                         but the reverse is awkward — your laptop doesn't have a
                         camera pointed at a screen. Long shareable links require
                         you to type a full URL, which defeats the purpose. Apps
                         require accounts.
                     </p>
-                    <p>
+                    <p class="mt-4">
                         TextShareNow is the answer: a short, typeable code that
                         works in both directions, across any network, on any
                         device, with zero setup. If you are coming from Apple's
                         ecosystem and missing AirDrop on your Windows or Android
                         device, our guide on
-                        <NuxtLink
-                            to="/blog/airdrop-alternative-cross-platform"
-                            class="about-link"
-                            >AirDrop alternatives that work across platforms</NuxtLink
-                        >
+                        <NuxtLink to="/blog/airdrop-alternative-cross-platform" class="text-link">AirDrop alternatives that work across platforms</NuxtLink>
                         covers the landscape in detail.
                     </p>
 
-                    <hr class="content-divider" />
-
-                    <h2 class="about-section-heading">
-                        How It Works (Technically)
-                    </h2>
-                    <p>
+                    <h2 class="mt-12 border-t border-line pt-12 text-[26px] font-semibold tracking-[-0.03em] text-ink">How It Works (Technically)</h2>
+                    <p class="mt-4">
                         When you submit text, it is stored in an encrypted
                         temporary key-value store with a time-to-live (TTL) of
                         10 minutes. A unique 5-character alphanumeric code is
@@ -60,19 +43,15 @@
                         space gives over 60 million combinations, and our
                         rate-limiting prevents brute-force enumeration.
                     </p>
-                    <p>
+                    <p class="mt-4">
                         When the receiving device submits the code, the content
                         is retrieved and the entry is immediately deleted — a
                         single-read guarantee. The entire round trip takes under
                         500ms on a typical connection.
                     </p>
 
-                    <hr class="content-divider" />
-
-                    <h2 class="about-section-heading">
-                        File Sharing — Beyond Text
-                    </h2>
-                    <p>
+                    <h2 class="mt-12 border-t border-line pt-12 text-[26px] font-semibold tracking-[-0.03em] text-ink">File Sharing — Beyond Text</h2>
+                    <p class="mt-4">
                         Text sharing solved the daily friction of moving links
                         and notes between devices. But the same problem exists
                         for files — photos, videos, documents. AirDrop only
@@ -81,7 +60,7 @@
                         someone else's server, creating an account, and managing
                         shared links.
                     </p>
-                    <p>
+                    <p class="mt-4">
                         So we added file sharing to TextShareNow. The workflow
                         is the same: upload a file on one device, get a short
                         code, type it on the other device, and the file
@@ -90,7 +69,7 @@
                         becoming available, and automatically deleted after the
                         first download or 15 minutes — whichever comes first.
                     </p>
-                    <p>
+                    <p class="mt-4">
                         Supported formats include PNG, JPEG, WebP, MP4, and
                         WebM, with a 10 MB size limit per file. Images are
                         re-encoded from raw pixels for security. Every file is
@@ -99,19 +78,17 @@
                         by search engines.
                     </p>
 
-                    <hr class="content-divider" />
-
-                    <h2 class="about-section-heading">Who Built This</h2>
-                    <p>
+                    <h2 class="mt-12 border-t border-line pt-12 text-[26px] font-semibold tracking-[-0.03em] text-ink">Who Built This</h2>
+                    <p class="mt-4">
                         TextShareNow is an independent project built and
                         maintained by
-                        <strong>Zain Rizvee</strong>, a web developer based in
+                        <strong class="font-semibold text-ink">Zain Rizvee</strong>, a web developer based in
                         Skardu, Pakistan. Zain runs several e-commerce
                         businesses and builds the custom storefronts and
                         internal tools behind them himself, working primarily
                         with Laravel, Nuxt, and Vue.
                     </p>
-                    <p>
+                    <p class="mt-4">
                         The idea for TextShareNow came out of a problem Zain
                         kept running into during his own work: moving a link, a
                         snippet of code, or a quick note between his phone and
@@ -122,7 +99,7 @@
                         use — a short code that works instantly, in both
                         directions, on any device.
                     </p>
-                    <p>
+                    <p class="mt-4">
                         TextShareNow is free to use and doesn't require an
                         account, a subscription, or your email address. To keep
                         it free and cover the cost of running the servers, the
@@ -131,10 +108,8 @@
                         tool built to solve a real, everyday problem.
                     </p>
 
-                    <hr class="content-divider" />
-
-                    <h2 class="about-section-heading">Keep This Free</h2>
-                    <p>
+                    <h2 class="mt-12 border-t border-line pt-12 text-[26px] font-semibold tracking-[-0.03em] text-ink">Keep This Free</h2>
+                    <p class="mt-4">
                         TextShareNow is free to use, and that's not changing.
                         Running it costs a little in hosting and time, though
                         — if it's saved you a few minutes here and there, you
@@ -146,67 +121,48 @@
                         href="https://wise.com/pay/me/syedm198"
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="btn-secondary support-about-btn"
+                        class="btn-ghost mt-6"
                         aria-label="Support TextShareNow with a donation via Wise"
                     >
-                        <span>Support via Wise →</span>
+                        <TsnIcon name="heart" class="h-4 w-4" />
+                        Support via Wise
                     </a>
 
-                    <hr class="content-divider" />
-
-                    <h2 class="about-section-heading">Our Principles</h2>
-                    <div class="principles-grid">
-                        <div
-                            v-for="p in principles"
-                            :key="p.title"
-                            class="principle"
-                        >
-                            <span class="principle-icon">{{ p.icon }}</span>
-                            <h3>{{ p.title }}</h3>
-                            <p>{{ p.desc }}</p>
+                    <h2 class="mt-12 border-t border-line pt-12 text-[26px] font-semibold tracking-[-0.03em] text-ink">Our Principles</h2>
+                    <div class="mt-6 grid gap-4 sm:grid-cols-2">
+                        <div v-for="p in principles" :key="p.title" class="tile">
+                            <TsnIcon :name="p.icon" class="h-5 w-5 text-ink" stroke="1.8" />
+                            <h3 class="mt-4 text-[19px] font-semibold tracking-[-0.02em] text-ink">{{ p.title }}</h3>
+                            <p class="mt-2 text-[15px] leading-6 text-muted">{{ p.desc }}</p>
                         </div>
                     </div>
                 </article>
 
-                <!-- Sidebar stats -->
-                <aside class="about-sidebar">
-                    <div class="sidebar-card glass-card">
-                        <h3 class="sidebar-title">By the Numbers</h3>
-                        <div class="sidebar-stats">
-                            <div
-                                v-for="stat in sidebarStats"
-                                :key="stat.label"
-                                class="sidebar-stat"
-                            >
-                                <span class="sidebar-stat-value glow-text">{{
-                                    stat.value
-                                }}</span>
-                                <span class="sidebar-stat-label">{{
-                                    stat.label
-                                }}</span>
+                <!-- Sidebar -->
+                <aside class="grid gap-4 lg:sticky lg:top-24">
+                    <div class="tile">
+                        <h3 class="text-[13px] font-medium text-muted">By the Numbers</h3>
+                        <dl class="mt-4 divide-y divide-line">
+                            <div v-for="stat in sidebarStats" :key="stat.label" class="flex items-baseline justify-between gap-4 py-3 first:pt-0 last:pb-0">
+                                <dt class="text-[14px] text-muted">{{ stat.label }}</dt>
+                                <dd class="shrink-0 text-[18px] font-semibold tracking-[-0.02em] text-ink">{{ stat.value }}</dd>
                             </div>
-                        </div>
+                        </dl>
                     </div>
 
-                    <div class="sidebar-card glass-card">
-                        <h3 class="sidebar-title">Built By</h3>
-                        <p class="sidebar-desc">
+                    <div class="tile">
+                        <h3 class="text-[13px] font-medium text-muted">Built By</h3>
+                        <p class="mt-3 text-[15px] leading-6 text-ink">
                             Zain Rizvee — web developer, Skardu, Pakistan.<br />
-                            Laravel · Nuxt · Vue
+                            <span class="text-muted">Laravel · Nuxt · Vue</span>
                         </p>
-                        <NuxtLink to="/contact" class="btn-primary sidebar-btn">
-                            <span>Get in Touch →</span>
-                        </NuxtLink>
+                        <NuxtLink to="/contact" class="btn-ghost mt-5 w-full">Get in Touch</NuxtLink>
                     </div>
 
-                    <div class="sidebar-card glass-card">
-                        <h3 class="sidebar-title">Ready to try it?</h3>
-                        <p class="sidebar-desc">
-                            No sign-up. No app. Just open and share.
-                        </p>
-                        <NuxtLink to="/" class="btn-primary sidebar-btn">
-                            <span>Use the Tool →</span>
-                        </NuxtLink>
+                    <div class="tile">
+                        <h3 class="text-[13px] font-medium text-muted">Ready to try it?</h3>
+                        <p class="mt-3 text-[15px] leading-6 text-ink">No sign-up. No app. Just open and share.</p>
+                        <NuxtLink to="/" class="btn-primary mt-5 w-full">Use the Tool</NuxtLink>
                     </div>
                 </aside>
             </div>
@@ -224,22 +180,22 @@ useSeo({
 
 const principles = [
     {
-        icon: "⚡",
+        icon: "clock",
         title: "Speed First",
         desc: "Every design decision prioritises getting your text from device A to device B as fast as possible.",
     },
     {
-        icon: "🔒",
+        icon: "lock",
         title: "Privacy by Default",
         desc: "We delete your content immediately after retrieval. There is no archive, no history, no logging of what you share.",
     },
     {
-        icon: "🎯",
+        icon: "check",
         title: "One Thing, Done Well",
         desc: "We are not building a platform. We solve one problem: quick text and file sharing between devices.",
     },
     {
-        icon: "🌍",
+        icon: "globe",
         title: "Universal Access",
         desc: "Works on any device with a browser. No OS restrictions, no app installs, no carrier dependencies.",
     },
@@ -253,175 +209,3 @@ const sidebarStats = [
     { value: "5,000", label: "Max characters per transfer" },
 ];
 </script>
-
-<style scoped>
-.about-hero {
-    padding-bottom: 40px;
-}
-
-.about-content {
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 32px;
-    align-items: start;
-}
-
-@media (max-width: 900px) {
-    .about-content {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Body */
-.about-body {
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.about-section-heading {
-    font-family: var(--font-display);
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-top: 8px;
-}
-
-.about-body p {
-    font-size: 0.92rem;
-    color: var(--text-secondary);
-    line-height: 1.8;
-    font-weight: 300;
-}
-
-.about-body strong {
-    color: var(--text-primary);
-    font-weight: 600;
-}
-
-.content-divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 8px 0;
-}
-
-/* Principles */
-.principles-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-top: 8px;
-}
-
-@media (max-width: 600px) {
-    .principles-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-.principle {
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-}
-
-.principle-icon {
-    font-size: 1.4rem;
-    display: block;
-    margin-bottom: 10px;
-}
-
-.principle h3 {
-    font-family: var(--font-display);
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    margin-bottom: 8px;
-    color: var(--text-primary);
-}
-
-.principle p {
-    font-size: 0.82rem !important;
-    color: var(--text-muted) !important;
-}
-
-/* Sidebar */
-.about-sidebar {
-    position: sticky;
-    top: 90px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.sidebar-card {
-    padding: 28px 24px;
-}
-
-.sidebar-title {
-    font-family: var(--font-display);
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-    margin-bottom: 20px;
-}
-
-.sidebar-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.sidebar-stat {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-
-.sidebar-stat-value {
-    font-family: var(--font-display);
-    font-size: 1.2rem;
-    font-weight: 700;
-}
-
-.sidebar-stat-label {
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-}
-
-.sidebar-desc {
-    font-size: 0.84rem;
-    color: var(--text-secondary);
-    margin-bottom: 16px;
-    line-height: 1.6;
-}
-
-.sidebar-btn {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.about-link {
-    color: var(--accent);
-    text-decoration: none;
-}
-.about-link:hover {
-    opacity: 0.75;
-}
-
-.support-about-btn {
-    width: fit-content;
-    display: flex;
-    justify-content: center;
-}
-</style>

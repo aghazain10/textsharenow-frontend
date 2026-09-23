@@ -1,42 +1,29 @@
 <template>
     <div>
-        <section class="section">
-            <div class="container legal-container">
-                <div class="legal-header">
-                    <span class="section-label">Legal</span>
-                    <h1 class="section-title">Terms of Use</h1>
-                    <p class="section-subtitle">Last updated: August 2026</p>
-                </div>
+        <PageHero title="Terms of Use" meta="Last updated: August 2026" lead="The rules and conditions for using the TextShareNow text and file transfer tool." />
 
-                <div class="legal-body glass-card">
-                    <section
-                        v-for="section in sections"
-                        :key="section.title"
-                        class="legal-section"
-                    >
-                        <h2 class="legal-h2">{{ section.title }}</h2>
-                        <div v-for="(block, i) in section.content" :key="i">
-                            <p v-if="block.type === 'p'" class="legal-p">
-                                {{ block.text }}
-                            </p>
-                            <ul
-                                v-else-if="block.type === 'ul'"
-                                class="legal-ul"
-                            >
-                                <li v-for="(item, j) in block.items" :key="j">
-                                    {{ item }}
-                                </li>
-                            </ul>
+        <section class="section">
+            <div class="wrap">
+                <div class="max-w-[68ch] space-y-12">
+                    <section v-for="section in sections" :key="section.title">
+                        <h2 class="text-[26px] font-semibold tracking-[-0.03em] text-ink">{{ section.title }}</h2>
+                        <div class="mt-4 space-y-4 text-[16px] leading-7 text-muted">
+                            <template v-for="(block, i) in section.content" :key="i">
+                                <p v-if="block.type === 'p'">{{ block.text }}</p>
+                                <ul v-else-if="block.type === 'ul'" class="list-disc space-y-2 pl-5 marker:text-line">
+                                    <li v-for="(item, j) in block.items" :key="j">{{ item }}</li>
+                                </ul>
+                            </template>
                         </div>
                     </section>
 
-                    <div class="legal-contact">
-                        <h2 class="legal-h2">Contact</h2>
-                        <p class="legal-p">
+                    <section>
+                        <h2 class="text-[26px] font-semibold tracking-[-0.03em] text-ink">Contact</h2>
+                        <p class="mt-4 text-[16px] leading-7 text-muted">
                             Questions about these Terms can be sent to
-                            <span class="highlight">info@textsharenow.com</span>
+                            <a href="mailto:info@textsharenow.com" class="text-link">info@textsharenow.com</a>.
                         </p>
-                    </div>
+                    </section>
                 </div>
             </div>
         </section>
@@ -188,87 +175,3 @@ const sections = [
     },
 ];
 </script>
-
-<style scoped>
-.legal-container {
-    max-width: 760px;
-}
-
-.legal-header {
-    margin-bottom: 36px;
-}
-
-.legal-body {
-    padding: 48px;
-    display: flex;
-    flex-direction: column;
-    gap: 36px;
-}
-
-@media (max-width: 640px) {
-    .legal-body {
-        padding: 28px 20px;
-    }
-}
-
-.legal-section {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.legal-h2 {
-    font-family: var(--font-display);
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    color: var(--accent);
-    text-transform: uppercase;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border-accent);
-}
-
-.legal-p {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    line-height: 1.8;
-    font-weight: 300;
-}
-
-.legal-ul {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 0;
-}
-
-.legal-ul li {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    line-height: 1.7;
-    font-weight: 300;
-    padding-left: 18px;
-    position: relative;
-}
-
-.legal-ul li::before {
-    content: "›";
-    position: absolute;
-    left: 0;
-    color: var(--accent);
-    font-family: var(--font-mono);
-}
-
-.legal-contact {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.highlight {
-    font-family: var(--font-mono);
-    color: var(--accent);
-    font-size: 0.85rem;
-}
-</style>

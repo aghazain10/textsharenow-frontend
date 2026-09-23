@@ -1,53 +1,55 @@
 <template>
   <div>
-    <section class="faq-hero section">
-      <div class="container">
-        <span class="section-label">Knowledge Base</span>
-        <h1 class="section-title animate-fade-up">
-          Frequently Asked <span class="glow-text">Questions</span>
-        </h1>
-        <p class="section-subtitle animate-fade-up-1">
-          Everything you need to know about sharing text and files between devices with TextShareNow.
-        </p>
-      </div>
-    </section>
+    <PageHero
+      meta="Knowledge Base"
+      title="Frequently Asked Questions"
+      lead="Everything you need to know about sharing text and files between devices with TextShareNow."
+    />
 
     <section class="section" aria-label="FAQ answers">
-      <div class="container faq-container">
-        <div
-          v-for="(category, ci) in categories"
-          :key="ci"
-          class="faq-category"
-        >
-          <h2 class="category-title">{{ category.title }}</h2>
+      <div class="wrap">
+        <div class="grid gap-14">
+          <div
+            v-for="(category, ci) in categories"
+            :key="ci"
+            class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-10"
+          >
+            <h2 class="text-[26px] font-semibold tracking-[-0.03em] text-ink">{{ category.title }}</h2>
 
-          <div class="faq-list">
-            <div
-              v-for="(item, i) in category.items"
-              :key="i"
-              class="faq-item"
-            >
-              <button
-                class="faq-question"
-                @click="toggle(`${ci}-${i}`)"
+            <div class="border-t border-line">
+              <div
+                v-for="(item, i) in category.items"
+                :key="i"
+                class="border-b border-line"
               >
-                <span class="faq-q-text">{{ item.question }}</span>
-                <span class="faq-icon">{{ openKey === `${ci}-${i}` ? '−' : '+' }}</span>
-              </button>
-              <div v-show="openKey === `${ci}-${i}`" class="faq-answer">
-                <p>{{ item.answer }}</p>
+                <button
+                  type="button"
+                  class="flex w-full cursor-pointer items-center justify-between gap-4 py-4 text-left text-[15px] font-medium text-ink hover:underline hover:underline-offset-4"
+                  :aria-expanded="openKey === `${ci}-${i}`"
+                  @click="toggle(`${ci}-${i}`)"
+                >
+                  <span>{{ item.question }}</span>
+                  <span
+                    class="grid h-6 w-6 shrink-0 place-items-center text-muted transition-transform duration-200"
+                    :class="{ 'rotate-45': openKey === `${ci}-${i}` }"
+                    aria-hidden="true"
+                  ><TsnIcon name="plus" class="h-3.5 w-3.5" stroke="2.6" /></span>
+                </button>
+                <div v-show="openKey === `${ci}-${i}`" class="pb-4">
+                  <p class="max-w-[68ch] text-[15px] leading-7 text-muted">{{ item.answer }}</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- CTA -->
-        <div class="faq-cta glass-card">
-          <h3>Still have a question?</h3>
-          <p>The best way to understand TextShareNow is to try it — it takes under 10 seconds.</p>
-          <NuxtLink to="/" class="btn-primary">
-            <span>Try the Tool →</span>
-          </NuxtLink>
+        <div class="tile mt-16 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 class="text-[19px] font-semibold tracking-[-0.02em] text-ink">Still have a question?</h3>
+            <p class="mt-1 text-[15px] text-muted">The best way to understand TextShareNow is to try it — it takes under 10 seconds.</p>
+          </div>
+          <NuxtLink to="/" class="btn-primary shrink-0">Try the Tool</NuxtLink>
         </div>
       </div>
     </section>
@@ -231,118 +233,3 @@ const categories = [
   },
 ]
 </script>
-
-<style scoped>
-.faq-hero {
-  padding-bottom: 40px;
-}
-
-.faq-container {
-  max-width: 780px;
-  display: flex;
-  flex-direction: column;
-  gap: 48px;
-}
-
-.faq-category {}
-
-.category-title {
-  font-family: var(--font-display);
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-accent);
-}
-
-.faq-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.faq-item {
-  border-bottom: 1px solid var(--border);
-}
-
-.faq-question {
-  width: 100%;
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 18px 0;
-  text-align: left;
-}
-
-.faq-q-text {
-  font-size: 0.92rem;
-  font-weight: 500;
-  color: var(--text-primary);
-  line-height: 1.5;
-}
-
-.faq-icon {
-  font-family: var(--font-mono);
-  font-size: 1.2rem;
-  color: var(--accent);
-  flex-shrink: 0;
-  width: 20px;
-  text-align: center;
-}
-
-.faq-answer {
-  padding-bottom: 18px;
-}
-
-.faq-answer p {
-  font-size: 0.88rem;
-  color: var(--text-secondary);
-  line-height: 1.75;
-  font-weight: 300;
-}
-
-/* CTA */
-.faq-cta {
-  padding: 40px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-
-.faq-cta h3 {
-  font-family: var(--font-display);
-  font-size: 1rem;
-  letter-spacing: 0.04em;
-}
-
-.faq-cta p {
-  font-size: 0.88rem;
-  color: var(--text-secondary);
-  margin-bottom: 8px;
-}
-
-/* Accordion */
-.accordion-enter-active,
-.accordion-leave-active {
-  transition: all 0.28s ease;
-  overflow: hidden;
-}
-.accordion-enter-from,
-.accordion-leave-to {
-  opacity: 0;
-  max-height: 0;
-}
-.accordion-enter-to,
-.accordion-leave-from {
-  opacity: 1;
-  max-height: 400px;
-}
-</style>

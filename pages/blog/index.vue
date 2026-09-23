@@ -1,42 +1,21 @@
 <template>
     <div>
-        <section class="section blog-hero">
-            <div class="container">
-                <span class="section-label">Blog</span>
-                <h1 class="section-title animate-fade-up">
-                    Guides & <span class="glow-text">Tips</span>
-                </h1>
-                <p class="section-subtitle animate-fade-up-1">
-                    Practical guides on sharing text between devices,
-                    productivity shortcuts, and getting the most out of
-                    TextShareNow.
-                </p>
-            </div>
-        </section>
+        <PageHero
+            meta="Blog"
+            title="Guides & Tips"
+            lead="Practical guides on sharing text between devices, productivity shortcuts, and getting the most out of TextShareNow."
+        />
 
         <section class="section">
-            <div class="container">
-                <div class="blog-grid">
-                    <article
-                        v-for="post in posts"
-                        :key="post.slug"
-                        class="post-card glass-card"
-                    >
-                        <div class="post-meta">
-                            <span class="post-tag">{{ post.tag }}</span>
-                            <span class="post-date mono">{{ post.date }}</span>
-                        </div>
-                        <h2 class="post-title">
-                            <NuxtLink
-                                :to="`/blog/${post.slug}`"
-                                class="post-link"
-                            >
-                                {{ post.title }}
-                            </NuxtLink>
-                        </h2>
-                        <p class="post-excerpt">{{ post.excerpt }}</p>
-                        <NuxtLink :to="`/blog/${post.slug}`" class="read-more">
-                            Read article →
+            <div class="wrap">
+                <div class="grid gap-x-5 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+                    <article v-for="(post, i) in posts" :key="post.slug">
+                        <NuxtLink :to="`/blog/${post.slug}`" class="group block">
+                            <div :class="COVERS[i % 3]" class="aspect-[16/10] max-w-full rounded-xl transition-opacity group-hover:opacity-90" />
+                            <p class="mt-4 text-[13px] font-medium text-muted">{{ post.tag }} · {{ post.readTime.replace(" read", "") }}</p>
+                            <h2 class="mt-1 text-[19px] font-semibold leading-snug tracking-[-0.025em] group-hover:underline group-hover:underline-offset-4">{{ post.title }}</h2>
+                            <p class="mt-2 text-[15px] leading-relaxed text-muted">{{ post.excerpt }}</p>
+                            <span class="mt-4 inline-block text-[14px] font-medium text-ink underline decoration-line underline-offset-4">Read article</span>
                         </NuxtLink>
                     </article>
                 </div>
@@ -58,99 +37,5 @@ useSeo({
 // Sorted newest-first; falls back to source order if dates are equal.
 // All post data lives in ~/data/blog-posts.js — add new posts there only.
 const posts = [...blogPosts].reverse();
+const COVERS = ["cover-a", "cover-b", "cover-c"];
 </script>
-
-<style scoped>
-.blog-hero {
-    padding-bottom: 40px;
-}
-
-.blog-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-}
-
-@media (max-width: 680px) {
-    .blog-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-.post-card {
-    padding: 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    transition: transform 0.25s ease;
-}
-
-.post-card:hover {
-    transform: translateY(-3px);
-}
-
-.post-meta {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.post-tag {
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    background: var(--accent-dim);
-    border: 1px solid var(--accent-border);
-    padding: 3px 10px;
-    border-radius: 100px;
-}
-
-.post-date {
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-}
-
-.post-title {
-    font-family: var(--font-display);
-    font-size: 0.9rem;
-    font-weight: 600;
-    line-height: 1.45;
-    letter-spacing: 0.02em;
-}
-
-.post-link {
-    color: var(--text-primary);
-    text-decoration: none;
-    transition: color 0.2s;
-}
-.post-link:hover {
-    color: var(--accent);
-}
-
-.post-excerpt {
-    font-size: 0.86rem;
-    color: var(--text-secondary);
-    line-height: 1.7;
-    font-weight: 300;
-    flex: 1;
-}
-
-.read-more {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-    text-decoration: none;
-    transition: opacity 0.2s;
-}
-.read-more:hover {
-    opacity: 0.7;
-}
-
-.mono {
-    font-family: var(--font-mono);
-}
-</style>

@@ -47,7 +47,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "⚡",
+                icon: "",
                 text: "The entire flow — paste to retrieve — takes under 8 seconds on a typical connection.",
             },
             { type: "h2", text: "When Each Method Makes Sense" },
@@ -110,7 +110,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "💡",
+                icon: "",
                 text: "The key distinction: if you are transferring something right now and do not need to keep it, use a transfer tool. If you need to archive it, use a notes app.",
             },
             {
@@ -166,7 +166,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "📎",
+                icon: "",
                 text: "TextShareNow now supports file sharing too — photos, videos, and documents up to 10 MB, with malware scanning and auto-delete after download. See the full guide at textsharenow.com/share-files-online.",
             },
             { type: "h2", text: "Quick Picks by Device Pair" },
@@ -267,7 +267,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "🆕",
+                icon: "",
                 text: "Update: TextShareNow now supports both. When you share text, you get a scan-to-receive QR code alongside the short code — so on a laptop or monitor you can just scan with your phone, and on a phone-to-laptop send you can type the code. You get whichever option fits your direction.",
             },
         ],
@@ -308,7 +308,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "⚡",
+                icon: "",
                 text: "Because the content is plain text, indentation and formatting come through exactly as pasted — no rich-text mangling like you sometimes get from email or chat apps.",
             },
             {
@@ -445,7 +445,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "🔐",
+                icon: "",
                 text: "One advantage worth noting for sensitive info like Wi-Fi passwords: the content auto-deletes after it is read once, so the password is not left sitting in a chat log indefinitely.",
             },
             { type: "h2", text: "Which to Use When" },
@@ -568,7 +568,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "🔗",
+                icon: "",
                 text: "If you are ever unsure whether a link survived a transfer intact, paste it somewhere plain — a notes app or a text field — before clicking, so you can visually check it has not been truncated.",
             },
             {
@@ -639,7 +639,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "📊",
+                icon: "",
                 text: "None of these are dramatic on their own — a minute here, thirty seconds there. The cost is in how often they repeat, day after day, across months.",
             },
             { type: "h2", text: "The Fix" },
@@ -684,7 +684,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "🗑️",
+                icon: "",
                 text: "This is a good fit for day-to-day transfers you do not need a record of. It is not a substitute for encrypted messaging or a password manager when the content is genuinely sensitive, like credentials — see our note on that distinction in our guide for developers sharing code snippets.",
             },
             { type: "h2", text: "Worth Deciding Once" },
@@ -762,7 +762,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "⚡",
+                icon: "",
                 text: "Works on any network — mobile data, home Wi-Fi, office, hotel, VPN. Devices do not need to be on the same network.",
             },
             { type: "h2", text: "When This Beats the Alternatives" },
@@ -821,7 +821,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "📎",
+                icon: "",
                 text: "Need to send files too? Use cloud storage for files, TextShareNow for text. Splitting the problem is faster than forcing one tool to do everything.",
             },
             { type: "h2", text: "Try It Now" },
@@ -867,7 +867,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "⚠️",
+                icon: "",
                 text: "Quick Share does not work with iPhone. If your phone is an iPhone, this option is not available to you.",
             },
             { type: "h3", text: "2. Cloud Storage (Google Drive, OneDrive, Dropbox)" },
@@ -882,7 +882,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "⚡",
+                icon: "",
                 text: "TextShareNow now also supports file sharing — photos, videos, and documents up to 10 MB, with auto-delete after download. Try it at textsharenow.com/share-files-online.",
             },
             { type: "h2", text: "Which Should You Pick" },
@@ -933,7 +933,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "💡",
+                icon: "",
                 text: "Apps solve sync; browsers solve transfer. If you want a permanent clipboard bridge across your own devices, an app makes sense. If you want to move text right now, a browser tool wins.",
             },
             { type: "h2", text: "Where App-Based Tools Add Friction" },
@@ -1036,7 +1036,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "📸",
+                icon: "",
                 text: "The pattern is consistent: every messaging app compresses by default. The only way to guarantee the original arrives intact is to not let the app touch the file in the first place.",
             },
             { type: "h2", text: "Why This Matters More Than You Think" },
@@ -1077,7 +1077,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "⚡",
+                icon: "",
                 text: "For a quick photo transfer between your own devices — the most common case — a browser-based short-code tool is typically the fastest method that preserves quality. No account, no cloud link, no email composition, under 10 seconds.",
             },
             { type: "h2", text: "What About Screen Recordings and RAW Files?" },
@@ -1175,7 +1175,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "🔒",
+                icon: "",
                 text: "Privacy note: a good temporary file-sharing tool does not just delete the file — it also strips metadata (EXIF data, device information) from images before storage, so the file that is downloaded is visually identical but contains no identifying information about the sender's device.",
             },
             { type: "h2", text: "How It Compares to the Alternatives" },
@@ -1269,7 +1269,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "📎",
+                icon: "",
                 text: "The 10 MB limit is honest: this approach works for short clips and screen recordings, not for long videos. A 1-minute 1080p clip from a phone camera is typically 100–200 MB — that belongs in cloud storage or AirDrop, not a temporary transfer tool.",
             },
             { type: "h2", text: "What Counts as a 'Small Video'?" },
@@ -1358,7 +1358,7 @@ export const blogPosts = [
             },
             {
                 type: "callout",
-                icon: "⚡",
+                icon: "",
                 text: "A screenshot is typically 200 KB–2 MB — well within the 10 MB limit for browser-based transfers. For this specific file size, a browser-based tool is the fastest method that preserves original quality.",
             },
             { type: "h2", text: "Why Screenshots Specifically Benefit From This Approach" },
