@@ -11,14 +11,7 @@
     <!-- Dismissed just now -->
     <p v-else-if="state === 'later'" class="mt-3 text-center text-[13px] text-muted">
         No problem. You can tip anytime from
-        <a class="text-link" :href="tipUrl" target="_blank" rel="noopener noreferrer" @click="tip('click_small')">Support this project</a>.
-    </p>
-
-    <!-- Small nudge (already tipped recently, or said "maybe later" this visit) -->
-    <p v-else-if="state === 'compact'" class="tip-in mt-3 flex items-center justify-center gap-1.5 text-[13px] text-muted">
-        <TsnIcon name="heart" class="h-[18px] w-[18px]" />
-        <span>Enjoying TextShareNow?
-            <a class="text-link" :href="tipUrl" target="_blank" rel="noopener noreferrer" @click="tip('click_small')">Leave a tip</a></span>
+        <a class="text-link" :href="tipUrl" target="_blank" rel="noopener noreferrer" @click="tip('click')">Support this project</a>.
     </p>
 
     <!-- Full card -->
@@ -76,24 +69,16 @@ const copy = computed(() =>
         : ["Did this save you a few minutes?", "TextShareNow is free, with no accounts and no paid plan. A small tip keeps the servers running."],
 );
 
-const safe = (fn) => { try { return fn(); } catch { return null; } };
-
-onMounted(() => {
-    const tipped = Number(safe(() => localStorage.getItem("tsn-tipped"))) || 0;
-    const recently = Date.now() - tipped < 30 * 864e5;
-    if (recently || safe(() => sessionStorage.getItem("tsn-tip-later"))) state.value = "compact";
-    trackTip(state.value === "compact" ? "shown_small" : "shown", props.where, API_BASE);
-});
+// The full card shows every time; "Maybe later" and "thanks" only change it for this result
+onMounted(() => trackTip("shown", props.where, API_BASE));
 
 function tip(event) {
     trackTip(event, props.where, API_BASE);
-    safe(() => localStorage.setItem("tsn-tipped", String(Date.now())));
     state.value = "thanked";
 }
 
 function later() {
     trackTip("later", props.where, API_BASE);
-    safe(() => sessionStorage.setItem("tsn-tip-later", "1"));
     state.value = "later";
 }
 </script>

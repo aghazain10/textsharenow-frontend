@@ -1,8 +1,7 @@
 /**
  * POST /api/tip-event
  * Body: { event, where }
- *   event: "shown" | "shown_small" | "click" | "click_small" | "later"
- *          (shown/click = full tip card, *_small = the one-line nudge, later = "Maybe later")
+ *   event: "shown" | "click" | "later"  (later = "Maybe later")
  *   where: "share" | "receive" (tip card) or "banner" | "footer" | "about" (support links)
  * Response: 204
  *
@@ -13,7 +12,7 @@
  * Read them in the Upstash console with: HGETALL stats:tip:total
  */
 
-const EVENTS = new Set(['shown', 'shown_small', 'click', 'click_small', 'later'])
+const EVENTS = new Set(['shown', 'click', 'later'])
 const PLACES = new Set(['share', 'receive', 'banner', 'footer', 'about'])
 const DAY_TTL = 400 * 24 * 60 * 60
 

@@ -26,13 +26,11 @@ Each field is `<where>:<event>`.
 
 **event**
 
-| Value         | Meaning                                                        |
-| ------------- | -------------------------------------------------------------- |
-| `shown`       | Full tip card was shown                                        |
-| `click`       | "Leave a tip" clicked on the full card (or a support link)     |
-| `later`       | "Maybe later" clicked                                          |
-| `shown_small` | One-line nudge shown (user tipped recently or chose "Maybe later" this visit) |
-| `click_small` | "Leave a tip" clicked on the one-line nudge                    |
+| Value    | Meaning                                                  |
+| -------- | -------------------------------------------------------- |
+| `shown`  | Tip card was shown                                       |
+| `click`  | "Leave a tip" clicked on the tip card (or a support link) |
+| `later`  | "Maybe later" clicked                                    |
 
 ## Notes
 
