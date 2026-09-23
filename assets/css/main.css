@@ -56,9 +56,28 @@
     --glow-line: rgb(255 255 255 / 0.9);
 }
 
+/* Size-matched stand-ins shown for the split second before Geist loads, so nothing
+   jumps when it swaps in. Numbers measured from the Geist files vs Arial / Courier New. */
+@font-face {
+    font-family: "Geist Fallback";
+    src: local("Arial"), local("ArialMT"), local("Helvetica"), local("Roboto");
+    size-adjust: 101.9%;
+    ascent-override: 98.6%;
+    descent-override: 28.95%;
+    line-gap-override: 0%;
+}
+@font-face {
+    font-family: "Geist Mono Fallback";
+    src: local("Courier New"), local("CourierNewPSMT"), local("Courier");
+    size-adjust: 100%;
+    ascent-override: 100.5%;
+    descent-override: 29.5%;
+    line-gap-override: 0%;
+}
+
 @theme inline {
-    --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, SFMono-Regular, Menlo, monospace;
     --color-bg: var(--bg);
     --color-surface: var(--surface);
     --color-surface-2: var(--surface-2);
@@ -128,7 +147,7 @@ h1, h2, h3 { text-wrap: balance; }
     --w: 3.4rem;
     position: relative; display: inline-grid; place-items: center;
     width: var(--w); height: calc(var(--w) * 1.3);
-    font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: "Geist Mono", "Geist Mono Fallback", ui-monospace, SFMono-Regular, Menlo, monospace;
     font-weight: 700; font-size: calc(var(--w) * 0.62); line-height: 1;
     color: var(--flap-ink);
     background: linear-gradient(to bottom, var(--flap-top) 0 50%, var(--flap) 50% 100%);

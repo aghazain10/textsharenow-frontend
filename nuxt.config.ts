@@ -4,7 +4,19 @@ import type { Plugin } from "vite";
 export default defineNuxtConfig({
     devtools: { enabled: true },
 
-    modules: [],
+    modules: ["@nuxt/fonts"],
+
+    // Self-host Geist (downloaded at build time) with size-matched fallback fonts,
+    // so text shows at once and doesn't jump when the real font arrives.
+    fonts: {
+        families: [
+            { name: "Geist", provider: "google", weights: [400, 500, 600, 700, 800], styles: ["normal"], fallbacks: ["Arial"], preload: true },
+            { name: "Geist Mono", provider: "google", weights: [500, 700], styles: ["normal"], fallbacks: ["Courier New"] },
+        ],
+        defaults: {
+            subsets: ["latin"],
+        },
+    },
 
     vite: {
         plugins: [tailwindcss() as unknown as Plugin],
@@ -76,12 +88,6 @@ export default defineNuxtConfig({
                 {
                     rel: "dns-prefetch",
                     href: "https://pagead2.googlesyndication.com",
-                },
-                { rel: "preconnect", href: "https://fonts.googleapis.com" },
-                { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: "" },
-                {
-                    rel: "stylesheet",
-                    href: "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@500;700&display=swap",
                 },
             ],
             script: [
