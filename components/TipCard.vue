@@ -8,12 +8,6 @@
         Thank you. Your tip keeps TextShareNow free for everyone.
     </p>
 
-    <!-- Dismissed just now -->
-    <p v-else-if="state === 'later'" class="mt-3 text-center text-[13px] text-muted">
-        No problem. You can tip anytime from
-        <a class="text-link" :href="tipUrl" target="_blank" rel="noopener noreferrer" @click="tip('click')">Support this project</a>.
-    </p>
-
     <!-- Full card: compact — one heart, two short lines, one button -->
     <div
         v-else
@@ -26,17 +20,10 @@
             </p>
             <p class="mt-0.5 text-[13px] leading-snug text-muted">{{ copy[1] }}</p>
         </div>
-        <div class="flex shrink-0 items-center gap-1">
+        <div class="flex shrink-0 items-center">
             <a class="btn-primary !h-9 flex-1 sm:flex-none" :href="tipUrl" target="_blank" rel="noopener noreferrer" @click="tip('click')">
                 <TsnIcon name="heart" class="tip-heart h-4 w-4" />Leave a tip
             </a>
-            <button
-                type="button"
-                class="h-9 rounded-md px-3 text-[13px] font-medium text-muted hover:bg-surface-2 hover:text-ink"
-                @click="later"
-            >
-                Maybe later
-            </button>
         </div>
     </div>
 </template>
@@ -45,7 +32,7 @@
 /*
  * Tip nudge shown after a share or receive works. Never blocks anything.
  * The PayPal link lets people type any amount, so there's one button, no preset amounts.
- * Shown / click / "maybe later" are counted (anonymously) in Upstash via trackTip().
+ * Shown / click are counted (anonymously) in Upstash via trackTip().
  */
 const props = defineProps({
     where: { type: String, default: "share" }, // "share" | "receive"
@@ -101,10 +88,5 @@ onBeforeUnmount(() => observer?.disconnect());
 function tip(event) {
     trackTip(event, props.where, API_BASE);
     state.value = "thanked";
-}
-
-function later() {
-    trackTip("later", props.where, API_BASE);
-    state.value = "later";
 }
 </script>

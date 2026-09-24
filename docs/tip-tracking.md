@@ -30,9 +30,10 @@ Each field is `<where>:<event>`.
 | -------- | -------------------------------------------------------- |
 | `shown`  | Tip card was actually on screen (60% visible)            |
 | `click`  | "Leave a tip" clicked on the tip card (or a support link) |
-| `later`  | "Maybe later" clicked                                    |
 
 ## Notes
+
+- `later` (the old "Maybe later" button) was removed on 2026-09-24. Old counts may still show `later` fields.
 
 - From 2026-09-24, `shown` only counts when the card is really seen. Counts before that date also include cards that loaded below the fold and were never seen, so older click rates look lower than they were.
 
