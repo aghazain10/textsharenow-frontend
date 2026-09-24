@@ -1,59 +1,53 @@
 <template>
     <div>
-        <div class="rounded-lg border border-line p-5 sm:p-7">
-            <div class="grid gap-6 sm:grid-cols-[1fr_auto] sm:items-center" :class="{ 'is-dead': expired }">
+        <!-- Compact on purpose: code, copy and the tip card all fit on one screen, even on phones -->
+        <div class="rounded-lg border border-line p-5 sm:p-6">
+            <div class="grid gap-x-6 gap-y-5 sm:grid-cols-[1fr_auto]" :class="{ 'is-dead': expired }">
                 <div class="min-w-0">
-                    <p class="text-[14px] font-medium text-muted">Your code</p>
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <p class="text-[14px] font-medium text-muted">Your code</p>
+                        <!-- Small timer chip instead of a big timer row -->
+                        <span
+                            class="inline-flex items-center gap-1.5 rounded-full border border-line px-2.5 py-0.5 text-[12px] font-medium tabular-nums"
+                            :class="expired ? 'text-bad' : 'text-muted'"
+                            role="timer"
+                        >
+                            <svg v-if="!expired" class="timer-ring h-3.5 w-3.5" viewBox="0 0 44 44" aria-hidden="true">
+                                <circle class="track" cx="22" cy="22" r="18" style="stroke-width: 7" />
+                                <circle class="bar" cx="22" cy="22" r="18" style="stroke-width: 7" :stroke-dasharray="CIRC" :stroke-dashoffset="CIRC * (1 - left / ttl)" />
+                            </svg>
+                            <template v-if="!expired">{{ clock }} · works once</template>
+                            <template v-else>Expired</template>
+                        </span>
+                    </div>
                     <div ref="flapsEl" class="mt-3 flex gap-1.5 sm:gap-2" role="img" :aria-label="`Code ${code.split('').join(' ')}`">
                         <span v-for="(c, i) in code" :key="i" class="flap flap-lg">·</span>
                     </div>
-                    <div class="mt-5 flex flex-wrap gap-2">
-                        <button v-if="!expired" ref="copyBtn" type="button" class="btn-primary" :disabled="copied" @click="doCopy">
+                    <p v-if="!expired" class="mt-3 text-[13px] text-muted">On the other device, go to textsharenow.com/r and enter this code.</p>
+                    <p v-else class="mt-3 text-[13px] text-muted">Nobody opened it in time, so it was deleted. Share again to get a new code.</p>
+                    <div v-if="!expired" class="mt-4 flex flex-wrap gap-2">
+                        <button ref="copyBtn" type="button" class="btn-primary" :disabled="copied" @click="doCopy">
                             <TsnIcon :name="copied ? 'check' : 'copy'" class="h-[18px] w-[18px]" />{{ copied ? "Copied" : "Copy code" }}
                         </button>
-                        <button v-if="!expired" type="button" class="btn-ghost" @click="openBig">
+                        <button type="button" class="btn-ghost" @click="openBig">
                             <TsnIcon name="expand" class="h-[18px] w-[18px]" />Show big
                         </button>
-                        <button type="button" class="btn-ghost" @click="$emit('reset')">Share something else</button>
                     </div>
                 </div>
-                <figure v-if="!expired && qrUrl" class="flex items-center gap-4 sm:flex-col sm:gap-2">
-                    <div class="w-28 shrink-0 overflow-hidden rounded-lg border border-line bg-white p-1.5 sm:w-32 [&_canvas]:!h-auto [&_canvas]:!w-full">
+
+                <!-- QR: beside the code on bigger screens, under the tip card on phones -->
+                <figure v-if="!expired && qrUrl" class="order-last flex items-center gap-4 sm:order-none sm:row-span-2 sm:flex-col sm:justify-start sm:gap-2">
+                    <div class="w-24 shrink-0 overflow-hidden rounded-lg border border-line bg-white p-1.5 sm:w-32 [&_canvas]:!h-auto [&_canvas]:!w-full">
                         <QrCode :text="qrUrl" :size="120" />
                     </div>
                     <figcaption class="text-[13px] text-muted sm:text-center">Or scan with your<br class="hidden sm:inline" /> phone camera</figcaption>
                 </figure>
+
+                <TipCard where="share" class="!mt-0" />
             </div>
 
-            <div class="mt-6 flex items-center gap-4 border-t border-line pt-5">
-                <template v-if="!expired">
-                    <svg class="timer-ring h-12 w-12 shrink-0" viewBox="0 0 44 44" aria-hidden="true">
-                        <circle class="track" cx="22" cy="22" r="18" />
-                        <circle class="bar" cx="22" cy="22" r="18" :stroke-dasharray="CIRC" :stroke-dashoffset="CIRC * (1 - left / ttl)" />
-                    </svg>
-                    <div class="text-[14px]">
-                        <p class="font-semibold">
-                            Expires in <span class="tabular-nums">{{ clock }}</span>. Works once.
-                        </p>
-                        <p class="mt-0.5 text-muted">
-                            On the other device, go to textsharenow.com/r and enter this code.
-                        </p>
-                    </div>
-                </template>
-                <template v-else>
-                    <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-surface-2 text-ink">
-                        <TsnIcon name="x" class="h-4 w-4" />
-                    </span>
-                    <div class="text-[14px]">
-                        <p class="font-semibold">This code expired</p>
-                        <p class="mt-0.5 text-muted">
-                            Nobody opened it in time, so it was deleted. Share again to get a new code.
-                        </p>
-                    </div>
-                </template>
-            </div>
+            <button type="button" class="btn-ghost mt-5 w-full" @click="$emit('reset')">Share something else</button>
         </div>
-        <TipCard where="share" />
 
         <!-- Big code: full screen, easy to read from across the room -->
         <Teleport to="body">

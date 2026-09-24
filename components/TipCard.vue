@@ -4,7 +4,7 @@
         v-if="state === 'thanked'"
         class="mt-3 flex items-center justify-center gap-1.5 rounded-lg border border-line px-4 py-3 text-[14px] font-medium"
     >
-        <TsnIcon name="heart" class="h-[18px] w-[18px]" />
+        <TsnIcon name="heart" class="h-[18px] w-[18px] text-[var(--heart)]" />
         Thank you. Your tip keeps TextShareNow free for everyone.
     </p>
 
@@ -14,38 +14,30 @@
         <a class="text-link" :href="tipUrl" target="_blank" rel="noopener noreferrer" @click="tip('click')">Support this project</a>.
     </p>
 
-    <!-- Full card -->
-    <div v-else class="tip-in mt-3 flex gap-5 rounded-lg border border-line bg-surface-2/50 p-5">
-        <div class="min-w-0 flex-1">
-            <div class="flex items-start gap-3">
-                <span class="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-brand text-on-brand">
-                    <TsnIcon name="heart" class="h-[18px] w-[18px]" />
-                </span>
-                <div class="min-w-0">
-                    <p class="text-[15px] font-semibold tracking-[-0.01em]">{{ copy[0] }}</p>
-                    <p class="mt-0.5 text-[14px] text-muted">{{ copy[1] }}</p>
-                </div>
-            </div>
-            <div class="mt-4 flex flex-wrap items-center gap-2">
-                <a class="btn-primary" :href="tipUrl" target="_blank" rel="noopener noreferrer" @click="tip('click')">
-                    <TsnIcon name="heart" class="h-[18px] w-[18px]" />Leave a tip
-                </a>
-                <button
-                    type="button"
-                    class="h-10 rounded-md px-3 text-[14px] font-medium text-muted hover:bg-surface-2 hover:text-ink"
-                    @click="later"
-                >
-                    Maybe later
-                </button>
-            </div>
-            <p class="mt-3 text-[12px] text-muted">Any amount you like. Optional, TextShareNow stays free either way. Pay securely with card or PayPal.</p>
+    <!-- Full card: compact — one heart, two short lines, one button -->
+    <div
+        v-else
+        ref="card"
+        class="tip-in mt-3 flex flex-col gap-3 rounded-lg border border-line bg-surface-2/50 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:gap-5"
+    >
+        <div class="min-w-0">
+            <p class="flex items-center gap-1.5 text-[15px] font-semibold tracking-[-0.01em]">
+                <TsnIcon name="heart" class="tip-heart h-4 w-4 shrink-0" />{{ copy[0] }}
+            </p>
+            <p class="mt-0.5 text-[13px] leading-snug text-muted">{{ copy[1] }}</p>
         </div>
-        <figure class="hidden shrink-0 flex-col items-center gap-1.5 md:flex">
-            <div class="w-24 overflow-hidden rounded-md border border-line bg-white p-1 [&_canvas]:!h-auto [&_canvas]:!w-full">
-                <QrCode :text="tipUrl" :size="92" />
-            </div>
-            <figcaption class="text-[11px] text-muted">Scan to tip</figcaption>
-        </figure>
+        <div class="flex shrink-0 items-center gap-1">
+            <a class="btn-primary !h-9 flex-1 sm:flex-none" :href="tipUrl" target="_blank" rel="noopener noreferrer" @click="tip('click')">
+                <TsnIcon name="heart" class="tip-heart h-4 w-4" />Leave a tip
+            </a>
+            <button
+                type="button"
+                class="h-9 rounded-md px-3 text-[13px] font-medium text-muted hover:bg-surface-2 hover:text-ink"
+                @click="later"
+            >
+                Maybe later
+            </button>
+        </div>
     </div>
 </template>
 
@@ -65,12 +57,46 @@ const state = ref("full");
 
 const copy = computed(() =>
     props.where === "receive"
-        ? ["Got it in seconds?", "If TextShareNow helped you, a small tip keeps it free for everyone."]
-        : ["Did this save you a few minutes?", "TextShareNow is free, with no accounts and no paid plan. A small tip keeps the servers running."],
+        ? ["Got it in seconds?", "A small tip, any amount, keeps TextShareNow free. Card or PayPal."]
+        : ["Saved you a few minutes?", "A small tip, any amount, keeps TextShareNow free. Card or PayPal."],
 );
 
-// The full card shows every time; "Maybe later" and "thanks" only change it for this result
-onMounted(() => trackTip("shown", props.where, API_BASE));
+const card = ref(null);
+let observer;
+
+// Scroll so the whole tool box sits right under the header: result + tip card in view together
+function bringIntoView() {
+    const el = card.value;
+    if (!el) return;
+    const box = el.closest("#tool, .tool-glow") || el;
+    const header = (document.querySelector("header")?.offsetHeight || 56) + 8;
+    const delta = box.getBoundingClientRect().top - header;
+    if (Math.abs(delta) < 4) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollBy({ top: delta, behavior: reduce ? "auto" : "smooth" });
+}
+
+onMounted(() => {
+    // Wait a frame so the result above has its final size
+    requestAnimationFrame(() => requestAnimationFrame(bringIntoView));
+
+    // Count "shown" only once the card is really on screen
+    if ("IntersectionObserver" in window && card.value) {
+        observer = new IntersectionObserver(
+            (entries) => {
+                if (entries.some((e) => e.isIntersecting)) {
+                    trackTip("shown", props.where, API_BASE);
+                    observer.disconnect();
+                }
+            },
+            { threshold: 0.6 },
+        );
+        observer.observe(card.value);
+    } else {
+        trackTip("shown", props.where, API_BASE);
+    }
+});
+onBeforeUnmount(() => observer?.disconnect());
 
 function tip(event) {
     trackTip(event, props.where, API_BASE);

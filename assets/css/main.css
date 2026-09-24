@@ -29,6 +29,7 @@
     --glow-halo: rgb(0 0 0 / 0.13);
     --glow-ring: rgb(0 0 0 / 0.05);
     --glow-line: rgb(0 0 0 / 0.7);
+    --heart: #ef4444;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -42,6 +43,7 @@
         --glow-halo: rgb(255 255 255 / 0.11);
         --glow-ring: rgb(255 255 255 / 0.07);
         --glow-line: rgb(255 255 255 / 0.9);
+        --heart: #f87171;
     }
 }
 :root[data-theme="dark"] {
@@ -54,6 +56,7 @@
     --glow-halo: rgb(255 255 255 / 0.11);
     --glow-ring: rgb(255 255 255 / 0.07);
     --glow-line: rgb(255 255 255 / 0.9);
+    --heart: #f87171;
 }
 
 /* Size-matched stand-ins shown for the split second before Geist loads, so nothing
@@ -137,6 +140,15 @@ h1, h2, h3 { text-wrap: balance; }
     animation: glow-spin 6s linear infinite;
 }
 @keyframes glow-spin { to { --glow-angle: 360deg; } }
+
+/* Tip card hearts: red, with a gentle heartbeat */
+.tip-heart { color: var(--heart); transform-origin: center; animation: heartbeat 1.4s ease-in-out infinite; }
+@keyframes heartbeat {
+    0%, 40%, 100% { transform: scale(1); }
+    10% { transform: scale(1.2); }
+    20% { transform: scale(1); }
+    30% { transform: scale(1.12); }
+}
 
 /* Tip card slides in once the result has settled */
 .tip-in { animation: tip-in 0.45s cubic-bezier(0.2, 0.8, 0.3, 1) 0.9s both; }

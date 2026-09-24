@@ -28,11 +28,13 @@ Each field is `<where>:<event>`.
 
 | Value    | Meaning                                                  |
 | -------- | -------------------------------------------------------- |
-| `shown`  | Tip card was shown                                       |
+| `shown`  | Tip card was actually on screen (60% visible)            |
 | `click`  | "Leave a tip" clicked on the tip card (or a support link) |
 | `later`  | "Maybe later" clicked                                    |
 
 ## Notes
+
+- From 2026-09-24, `shown` only counts when the card is really seen. Counts before that date also include cards that loaded below the fold and were never seen, so older click rates look lower than they were.
 
 - Clicks count people who opened the PayPal page, not people who actually paid. Check PayPal for real payments.
 - Each visitor can add at most 30 events a minute, so one person can't inflate the numbers.

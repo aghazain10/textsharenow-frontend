@@ -53,10 +53,6 @@
 
         <div v-else>
             <div class="rounded-lg border border-line p-5 sm:p-7">
-                <p class="mb-5 flex items-start gap-2.5 rounded-lg border border-line bg-surface-2/50 px-3.5 py-2.5 text-left text-[13px]">
-                    <TsnIcon name="trash" class="mt-px h-4 w-4 shrink-0" stroke="1.8" />
-                    <span><strong class="font-semibold text-ink">Deleted from our server.</strong> <span class="text-muted">{{ result.type === "text" ? "It was removed the moment you opened it" : "It was removed as the download started" }}, and code {{ result.code }} won't work again.</span></span>
-                </p>
                 <!-- Text -->
                 <ReceivedText v-if="result.type === 'text'" :text="result.text" />
 
@@ -76,9 +72,15 @@
                     <p class="mt-3 text-[13px] text-muted">Original quality and file names are kept.</p>
                 </template>
 
+                <p class="mt-3 flex items-start justify-center gap-1.5 text-center text-[13px] text-muted">
+                    <TsnIcon name="trash" class="mt-px h-3.5 w-3.5 shrink-0" stroke="1.8" />
+                    <span>Deleted from our server. Code {{ result.code }} won't work again.</span>
+                </p>
+
+                <TipCard where="receive" class="!mt-4" />
+
                 <button type="button" class="btn-ghost mt-4 w-full" @click="reset">Enter another code</button>
             </div>
-            <TipCard where="receive" />
         </div>
     </div>
 </template>
