@@ -31,7 +31,7 @@
 <script setup>
 /*
  * Tip nudge shown after a share or receive works. Never blocks anything.
- * The PayPal link lets people type any amount, so there's one button, no preset amounts.
+ * The Wise link lets people type any amount, so there's one button, no preset amounts.
  * Shown / click are counted (anonymously) in Upstash via trackTip().
  */
 const props = defineProps({
@@ -44,8 +44,8 @@ const state = ref("full");
 
 const copy = computed(() =>
     props.where === "receive"
-        ? ["Got it in seconds?", "A small tip, any amount, keeps TextShareNow free. Card or PayPal."]
-        : ["Saved you a few minutes?", "A small tip, any amount, keeps TextShareNow free. Card or PayPal."],
+        ? ["Got it in seconds?", "A small tip, any amount, keeps TextShareNow free. Paid through Wise."]
+        : ["Saved you a few minutes?", "A small tip, any amount, keeps TextShareNow free. Paid through Wise."],
 );
 
 const card = ref(null);

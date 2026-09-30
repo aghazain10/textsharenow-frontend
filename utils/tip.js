@@ -1,9 +1,9 @@
-/** Where tips go (PayPal payment link: card or PayPal, no account needed to pay by card). */
-export const TIP_URL = "https://www.paypal.com/ncp/payment/QDLKMQZAPHDHE";
+/** Where tips go (Wise "pay me" link). */
+export const TIP_URL = "https://wise.com/pay/me/syedm198";
 
 /**
  * Count a tip-nudge event (shown / click / later) in Upstash via /api/tip-event.
- * Uses sendBeacon so the count still goes out when the click opens PayPal.
+ * Uses sendBeacon so the count still goes out when the click opens the payment page.
  * Pass `base` = useRuntimeConfig().public.API_BASE (read it in setup, not in a click handler).
  */
 export const trackTip = (event, where, base = "") => {
