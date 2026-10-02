@@ -9,7 +9,8 @@
             >
                 <p class="mt-6 text-[14px] text-muted">
                     Written by
-                    <NuxtLink to="/about" class="text-link">{{ post.author || "Zain Rizvee" }}</NuxtLink>
+                    <NuxtLink to="/author/zain-rizvee" class="text-link">{{ post.author || "Zain Rizvee" }}</NuxtLink>
+                    <template v-if="updatedLabel"> · {{ updatedLabel }}</template>
                 </p>
             </PageHero>
 
@@ -140,6 +141,16 @@ const postWordCount = (p) => {
 
 const authorName = computed(() => post.value?.author || "Zain Rizvee");
 
+const fmtMonth = (iso) =>
+    new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
+
+// "Updated …" only when the post was actually touched after publishing.
+const updatedLabel = computed(() => {
+    const p = post.value;
+    if (!p?.dateModified || !p.datePublished || p.dateModified === p.datePublished) return "";
+    return `Updated ${fmtMonth(p.dateModified)}`;
+});
+
 const relatedPosts = computed(() => {
     return blogPosts
         .filter((p) => p.slug !== route.params.slug)
@@ -171,7 +182,7 @@ watchEffect(() => {
                         author: {
                             "@type": "Person",
                             name: authorName.value,
-                            url: "https://www.textsharenow.com/about",
+                            url: "https://www.textsharenow.com/author/zain-rizvee",
                         },
                         mainEntityOfPage: {
                             "@type": "WebPage",

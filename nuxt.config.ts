@@ -1,5 +1,12 @@
 import tailwindcss from "@tailwindcss/vite";
 import type { Plugin } from "vite";
+import { blogPosts } from "./data/blog-posts.js";
+
+// Prerender every published post without editing this file: add a post in
+// data/posts/ and it is registered in the build and the sitemap automatically.
+const blogPrerender = Object.fromEntries(
+    blogPosts.map((post) => [`/blog/${post.slug}`, { prerender: true }] as const),
+);
 
 export default defineNuxtConfig({
     devtools: { enabled: true },
@@ -139,24 +146,9 @@ export default defineNuxtConfig({
         "/online-text-sharing": { prerender: true },
         "/share-files-online": { prerender: true },
         "/r": { prerender: true },
-        "/blog/airdrop-alternative-cross-platform": { prerender: true },
-        "/blog/airdrop-alternative-for-windows": { prerender: true },
-        "/blog/how-to-share-text-from-phone-to-laptop": { prerender: true },
-        "/blog/why-you-should-stop-emailing-yourself": { prerender: true },
-        "/blog/qr-codes-vs-short-codes-device-sharing": { prerender: true },
-        "/blog/share-code-snippets-between-devices-for-developers": { prerender: true },
-        "/blog/iphone-windows-text-transfer-without-icloud": { prerender: true },
-        "/blog/share-wifi-password-without-reading-aloud": { prerender: true },
-        "/blog/clipboard-manager-vs-text-sharing-tool": { prerender: true },
-        "/blog/share-long-urls-without-breaking-links": { prerender: true },
-        "/blog/signs-you-need-better-device-sharing": { prerender: true },
-        "/blog/share-text-privately-without-chat-history": { prerender: true },
-        "/blog/transfer-text-from-android-to-mac": { prerender: true },
-        "/blog/online-text-sharing-vs-apps": { prerender: true },
-        "/blog/how-to-send-photo-without-losing-quality": { prerender: true },
-        "/blog/free-temporary-file-sharing": { prerender: true },
-        "/blog/how-to-send-small-video-without-email-limits": { prerender: true },
-        "/blog/screenshot-to-second-device-in-seconds": { prerender: true },
+        "/author/zain-rizvee": { prerender: true },
+        ...blogPrerender,
+        "/sitemap.xml": { prerender: true },
         "/api/**": { cors: true },
     },
 

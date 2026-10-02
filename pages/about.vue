@@ -83,21 +83,10 @@
                         TextShareNow is an independent project built and
                         maintained by
                         <strong class="font-semibold text-ink">Zain Rizvee</strong>, a web developer based in
-                        Skardu, Pakistan. Zain runs several e-commerce
-                        businesses and builds the custom storefronts and
-                        internal tools behind them himself, working primarily
-                        with Laravel, Nuxt, and Vue.
-                    </p>
-                    <p class="mt-4">
-                        The idea for TextShareNow came out of a problem Zain
-                        kept running into during his own work: moving a link, a
-                        snippet of code, or a quick note between his phone and
-                        his laptop, over and over, every single day. Emailing
-                        himself got old fast, and every existing tool either
-                        needed an app install, an account, or only worked one
-                        direction. So he built the tool he actually wanted to
-                        use — a short code that works instantly, in both
-                        directions, on any device.
+                        Skardu, Pakistan, who runs several e-commerce businesses
+                        and builds the custom storefronts and internal tools behind
+                        them himself.
+                        <NuxtLink to="/author/zain-rizvee" class="text-link">Read his full bio</NuxtLink>.
                     </p>
                     <p class="mt-4">
                         TextShareNow is free to use and doesn't require an
@@ -154,7 +143,7 @@
                     <div class="tile">
                         <h3 class="text-[13px] font-medium text-muted">Built By</h3>
                         <p class="mt-3 text-[15px] leading-6 text-ink">
-                            Zain Rizvee — web developer, Skardu, Pakistan.<br />
+                            <NuxtLink to="/author/zain-rizvee" class="text-link">Zain Rizvee</NuxtLink> — web developer, Skardu, Pakistan.<br />
                             <span class="text-muted">Laravel · Nuxt · Vue</span>
                         </p>
                         <NuxtLink to="/contact" class="btn-ghost mt-5 w-full">Get in Touch</NuxtLink>
