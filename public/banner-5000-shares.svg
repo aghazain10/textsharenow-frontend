@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="bannerTitle">
+  <title id="bannerTitle">TextShareNow — over 5,000 texts shared</title>
+
+  <defs>
+    <!-- Split-flap face: light top half, slightly dimmer bottom half, hinge in the middle -->
+    <linearGradient id="flapFace" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset="0.5" stop-color="#ffffff" />
+      <stop offset="0.5" stop-color="#f4f4f5" />
+      <stop offset="1" stop-color="#f4f4f5" />
+    </linearGradient>
+
+    <!-- Soft halo behind the board -->
+    <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.10" />
+      <stop offset="0.6" stop-color="#ffffff" stop-opacity="0.03" />
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Faint dot grid, echoing the hero background -->
+    <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1.3" fill="#fafafa" opacity="0.16" />
+    </pattern>
+    <radialGradient id="gridFade" cx="0.5" cy="0.35" r="0.63">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset="0.4" stop-color="#ffffff" />
+      <stop offset="0.85" stop-color="#000000" />
+      <stop offset="1" stop-color="#000000" />
+    </radialGradient>
+    <mask id="gridMask">
+      <rect width="1200" height="630" fill="url(#gridFade)" />
+    </mask>
+  </defs>
+
+  <!-- Backdrop -->
+  <rect width="1200" height="630" fill="#09090b" />
+  <rect width="1200" height="630" fill="url(#dots)" mask="url(#gridMask)" />
+  <ellipse cx="600" cy="212" rx="440" ry="200" fill="url(#halo)" />
+
+  <!-- Brand lockup: mini flap mark + wordmark -->
+  <g>
+    <rect x="64" y="44" width="30" height="38" rx="4" fill="url(#flapFace)" />
+    <rect x="64" y="62.5" width="30" height="1" fill="#09090b" opacity="0.35" />
+    <text x="79" y="70" text-anchor="middle" font-family="'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="19" font-weight="700" fill="#09090b">T</text>
+    <text x="106" y="70" font-family="Geist, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="600" letter-spacing="-0.01em" fill="#fafafa">TextShareNow</text>
+  </g>
+
+  <!-- Eyebrow -->
+  <text x="600" y="115" text-anchor="middle" font-family="Geist, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="600" letter-spacing="0.2em" fill="#a1a1aa">SHARES SO FAR</text>
+
+  <!-- Split-flap board reading 5000+ -->
+  <g>
+    <!-- 5 -->
+    <g>
+      <rect x="336" y="150" width="96" height="125" rx="12" fill="url(#flapFace)" />
+      <rect x="336" y="212" width="96" height="1" fill="#09090b" opacity="0.35" />
+      <rect x="336" y="213" width="96" height="1" fill="#ffffff" opacity="0.45" />
+      <text x="384" y="234" text-anchor="middle" font-family="'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="60" font-weight="700" fill="#09090b">5</text>
+    </g>
+    <!-- 0 -->
+    <g>
+      <rect x="444" y="150" width="96" height="125" rx="12" fill="url(#flapFace)" />
+      <rect x="444" y="212" width="96" height="1" fill="#09090b" opacity="0.35" />
+      <rect x="444" y="213" width="96" height="1" fill="#ffffff" opacity="0.45" />
+      <text x="492" y="234" text-anchor="middle" font-family="'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="60" font-weight="700" fill="#09090b">0</text>
+    </g>
+    <!-- 0 -->
+    <g>
+      <rect x="552" y="150" width="96" height="125" rx="12" fill="url(#flapFace)" />
+      <rect x="552" y="212" width="96" height="1" fill="#09090b" opacity="0.35" />
+      <rect x="552" y="213" width="96" height="1" fill="#ffffff" opacity="0.45" />
+      <text x="600" y="234" text-anchor="middle" font-family="'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="60" font-weight="700" fill="#09090b">0</text>
+    </g>
+    <!-- 0 -->
+    <g>
+      <rect x="660" y="150" width="96" height="125" rx="12" fill="url(#flapFace)" />
+      <rect x="660" y="212" width="96" height="1" fill="#09090b" opacity="0.35" />
+      <rect x="660" y="213" width="96" height="1" fill="#ffffff" opacity="0.45" />
+      <text x="708" y="234" text-anchor="middle" font-family="'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="60" font-weight="700" fill="#09090b">0</text>
+    </g>
+    <!-- + -->
+    <g>
+      <rect x="768" y="150" width="96" height="125" rx="12" fill="url(#flapFace)" />
+      <rect x="768" y="212" width="96" height="1" fill="#09090b" opacity="0.35" />
+      <rect x="768" y="213" width="96" height="1" fill="#ffffff" opacity="0.45" />
+      <text x="816" y="234" text-anchor="middle" font-family="'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="60" font-weight="700" fill="#09090b">+</text>
+    </g>
+  </g>
+
+  <!-- Headline -->
+  <text x="600" y="372" text-anchor="middle" font-family="Geist, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="58" font-weight="700" letter-spacing="-0.03em" fill="#fafafa">texts shared on TextShareNow</text>
+
+  <!-- Subline -->
+  <text x="600" y="424" text-anchor="middle" font-family="Geist, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="23" fill="#a1a1aa">No app. No account. Nothing left behind.</text>
+
+  <!-- Domain pill -->
+  <rect x="466" y="498" width="268" height="48" rx="24" fill="none" stroke="#27272a" stroke-width="1.5" />
+  <text x="600" y="530" text-anchor="middle" font-family="'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="19" font-weight="500" fill="#a1a1aa">textsharenow.com</text>
+</svg>
