@@ -1,5 +1,5 @@
-/** Where tips go (Wise "pay me" link). */
-export const TIP_URL = "https://wise.com/pay/me/syedm198";
+/** Where tips go (Gumroad pay-what-you-want coffee link). */
+export const TIP_URL = "https://ghazain.gumroad.com/coffee";
 
 /**
  * Count a tip-nudge event (shown / click / later) in Upstash via /api/tip-event.

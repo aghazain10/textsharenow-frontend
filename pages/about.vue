@@ -122,11 +122,11 @@
                         target="_blank"
                         rel="noopener noreferrer"
                         class="btn-ghost mt-6"
-                        aria-label="Support TextShareNow with a donation via Wise"
+                        aria-label="Support TextShareNow with a donation via Gumroad"
                         @click="countTipClick"
                     >
                         <TsnIcon name="heart" class="h-4 w-4" />
-                        Support via Wise
+                        Support via Gumroad
                     </a>
 
                     <h2 class="mt-12 border-t border-line pt-12 text-[26px] font-semibold tracking-[-0.03em] text-ink">Our Principles</h2>

@@ -12,7 +12,7 @@
                         target="_blank"
                         rel="noopener noreferrer"
                         class="btn border border-on-brand/25 text-on-brand hover:bg-on-brand/10"
-                        aria-label="Support TextShareNow with a tip via Wise"
+                        aria-label="Support TextShareNow with a tip via Gumroad"
                         @click="countTipClick"
                     >
                         <TsnIcon name="heart" class="h-[18px] w-[18px]" />Support this project
@@ -24,7 +24,7 @@
                     <QrCode :text="tipUrl" :size="150" />
                 </div>
                 <figcaption class="text-[14px] font-medium">Help keep TextShareNow free</figcaption>
-                <p class="-mt-2 text-[12px] opacity-60">Scan to tip with Wise</p>
+                <p class="-mt-2 text-[12px] opacity-60">Scan to support via Gumroad</p>
             </figure>
         </div>
     </section>
