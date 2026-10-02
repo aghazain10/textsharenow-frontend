@@ -72,7 +72,8 @@
                                     <p class="text-[13px] font-medium text-muted">{{ block.label || "Related reading" }}</p>
                                     <ul class="mt-3 space-y-2">
                                         <li v-for="(link, k) in block.items" :key="k">
-                                            <NuxtLink :to="link.to" class="text-link">{{ link.text }}</NuxtLink>
+                                            <a v-if="link.href" :href="link.href" target="_blank" rel="noopener noreferrer" class="text-link">{{ link.text }}</a>
+                                            <NuxtLink v-else :to="link.to" class="text-link">{{ link.text }}</NuxtLink>
                                         </li>
                                     </ul>
                                 </div>

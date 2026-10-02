@@ -16,6 +16,9 @@ import post15 from "./posts/how-to-send-photo-without-losing-quality.js";
 import post16 from "./posts/free-temporary-file-sharing.js";
 import post17 from "./posts/how-to-send-small-video-without-email-limits.js";
 import post18 from "./posts/screenshot-to-second-device-in-seconds.js";
+import post19 from "./posts/cross-device-sharing-glossary.js";
+import post20 from "./posts/how-short-code-sharing-works.js";
+import post21 from "./posts/sharing-code-not-working.js";
 
 export const blogPosts = [
     post1,
@@ -36,4 +39,7 @@ export const blogPosts = [
     post16,
     post17,
     post18,
+    post19,
+    post20,
+    post21,
 ];
