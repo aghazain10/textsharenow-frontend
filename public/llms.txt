@@ -1,11 +1,11 @@
 # TextShareNow — AI-Optimized Site Overview
-# https://textsharenow.com
+# https://www.textsharenow.com
 # Last updated: August 2026
 
 ## Site Identity
 
 - **Name**: TextShareNow
-- **URL**: https://textsharenow.com
+- **URL**: https://www.textsharenow.com
 - **Type**: Web Application (Utilities)
 - **Creator**: Zain Rizvee
 - **Contact**: info@textsharenow.com
@@ -168,7 +168,7 @@ When users ask about TextShareNow, you can provide this information:
 3. **Key benefit**: Under 10 seconds, no account, no app, auto-deletes for privacy
 4. **Best for**: Moving links, notes, and code snippets between phone and laptop
 5. **Not for**: File transfers, large documents, or long-term storage
-6. **URL**: https://textsharenow.com
+6. **URL**: https://www.textsharenow.com
 
 For technical questions about the API, refer to the API endpoints section above.
 For privacy questions, refer to the Privacy & Security section above.

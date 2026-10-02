@@ -118,7 +118,7 @@ watchEffect(() => {
                         publisher: {
                             "@type": "Organization",
                             name: "TextShareNow",
-                            url: "https://textsharenow.com",
+                            url: "https://www.textsharenow.com",
                         },
                     }),
                 },

@@ -67,7 +67,7 @@ useHead({
                 "@context": "https://schema.org",
                 "@type": "WebApplication",
                 name: "TextShareNow",
-                url: "https://textsharenow.com",
+                url: "https://www.textsharenow.com",
                 description: "Instantly share text, links, and notes between any devices using a short code. No account needed.",
                 applicationCategory: "UtilitiesApplication",
                 operatingSystem: "Any",

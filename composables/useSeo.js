@@ -12,7 +12,9 @@ export const useSeo = ({
 } = {}) => {
     // = {} makes all params optional
     const site = "TextShareNow";
-    const base = "https://textsharenow.com"; // ← update to your future custom domain when you switch
+    // Must match the host Google actually serves: non-www 308-redirects to www,
+    // so canonical/og:url have to use www or every page points at a redirecting URL.
+    const base = "https://www.textsharenow.com";
     const full = title ? `${title} — ${site}` : site;
 
     useHead({

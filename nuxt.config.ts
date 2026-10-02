@@ -91,14 +91,24 @@ export default defineNuxtConfig({
                 },
             ],
             script: [
-                // Google Analytics 4 (gtag.js)
+                // Google Consent Mode v2 — must execute before any Google tag, including
+                // adsbygoogle.js, so no analytics/advertising storage exists beforehand.
+                // Unhead renders <script src> tags above inline ones, hence the priority.
+                {
+                    key: "tsn-consent-default",
+                    tagPriority: -1000,
+                    innerHTML:
+                        'window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}' +
+                        'gtag("consent","default",{ad_storage:"denied",ad_user_data:"denied",ad_personalization:"denied",analytics_storage:"denied",wait_for_update:500});' +
+                        'try{if(localStorage.getItem("tsn-consent")==="granted"){gtag("consent","update",{ad_storage:"granted",ad_user_data:"granted",ad_personalization:"granted",analytics_storage:"granted"});}}catch(e){}',
+                },
                 {
                     src: "https://www.googletagmanager.com/gtag/js?id=G-PXW7CX14YN",
                     async: true,
                 },
+                // GA4 init — runs after the consent default above.
                 {
-                    innerHTML:
-                        'window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-PXW7CX14YN");',
+                    innerHTML: 'gtag("js",new Date());gtag("config","G-PXW7CX14YN");',
                 },
                 // Dark by default; a saved light/dark choice wins. Runs before first paint (no flash).
                 {
