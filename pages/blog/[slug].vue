@@ -25,6 +25,45 @@
                                 <ul v-else-if="block.type === 'ul'" class="list-disc space-y-2 pl-5 marker:text-line">
                                     <li v-for="(item, j) in block.items" :key="j">{{ item }}</li>
                                 </ul>
+                                <ol v-else-if="block.type === 'ol'" class="list-decimal space-y-2 pl-5 marker:text-line">
+                                    <li v-for="(item, j) in block.items" :key="j">{{ item }}</li>
+                                </ol>
+                                <figure v-else-if="block.type === 'image'" class="!mt-8">
+                                    <img
+                                        :src="block.src"
+                                        :alt="block.alt"
+                                        loading="lazy"
+                                        decoding="async"
+                                        class="w-full rounded-xl border border-line bg-surface shadow-card"
+                                    />
+                                    <figcaption v-if="block.caption" class="mt-3 text-[13px] leading-relaxed text-muted">{{ block.caption }}</figcaption>
+                                </figure>
+                                <div v-else-if="block.type === 'table'" class="!mt-8 overflow-x-auto rounded-xl border border-line bg-surface shadow-card">
+                                    <table class="w-full min-w-[520px] border-collapse text-left text-[14px]">
+                                        <caption v-if="block.caption" class="border-b border-line bg-surface-2/50 px-4 py-3 text-left text-[13px] text-muted">{{ block.caption }}</caption>
+                                        <thead>
+                                            <tr>
+                                                <th v-for="(head, h) in block.head" :key="h" scope="col" class="bg-surface-2 px-4 py-3 text-[13px] font-medium text-muted">{{ head }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(row, r) in block.rows" :key="r" class="border-t border-line">
+                                                <th v-for="(cell, c) in row" :key="c" :scope="c === 0 ? 'row' : null" class="px-4 py-3 font-medium" :class="c === 0 ? 'text-ink' : 'text-muted'">{{ cell }}</th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div v-else-if="block.type === 'code'" class="!mt-8 overflow-hidden rounded-xl border border-line bg-surface shadow-card">
+                                    <div v-if="block.filename || block.lang" class="flex items-center justify-between gap-4 border-b border-line bg-surface-2 px-4 py-2">
+                                        <span v-if="block.filename" class="font-mono text-[12px] text-muted">{{ block.filename }}</span>
+                                        <span v-if="block.lang" class="text-[11px] font-medium uppercase tracking-wide text-muted">{{ block.lang }}</span>
+                                    </div>
+                                    <pre class="overflow-x-auto px-4 py-4 text-[13.5px] leading-6"><code class="font-mono">{{ block.code }}</code></pre>
+                                </div>
+                                <blockquote v-else-if="block.type === 'blockquote'" class="!mt-8 space-y-1 border-l-2 border-line pl-5">
+                                    <p class="italic text-ink">{{ block.text }}</p>
+                                    <cite v-if="block.cite" class="block text-[13px] not-italic text-muted">— {{ block.cite }}</cite>
+                                </blockquote>
                                 <div v-else-if="block.type === 'callout'" class="rounded-lg border border-line bg-surface-2/50 p-5 text-ink">
                                     <p>{{ block.text }}</p>
                                 </div>
