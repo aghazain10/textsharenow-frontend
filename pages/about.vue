@@ -40,7 +40,7 @@
                         temporary key-value store with a time-to-live (TTL) of
                         10 minutes. A unique 5-character alphanumeric code is
                         generated and tied to your content as the key. The code
-                        space gives over 60 million combinations, and our
+                        space gives over 33 million combinations, and our
                         rate-limiting prevents brute-force enumeration.
                     </p>
                     <p class="mt-4">

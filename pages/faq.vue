@@ -172,7 +172,7 @@ const categories = [
       {
         question: 'Can someone else guess my code and read my text?',
         answer:
-          'The odds are extremely low. Our 5-character alphanumeric codes have over 60 million possible combinations, and we apply rate limiting to prevent brute-force attempts. For sensitive content, we still recommend using end-to-end encrypted alternatives.',
+          'The odds are extremely low. Our 5-character alphanumeric codes have over 33 million possible combinations, and we apply rate limiting to prevent brute-force attempts. For sensitive content, we still recommend using end-to-end encrypted alternatives.',
       },
       {
         question: 'Do you collect personal data?',
