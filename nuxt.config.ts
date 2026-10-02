@@ -91,6 +91,15 @@ export default defineNuxtConfig({
                 },
             ],
             script: [
+                // Google Analytics 4 (gtag.js)
+                {
+                    src: "https://www.googletagmanager.com/gtag/js?id=G-PXW7CX14YN",
+                    async: true,
+                },
+                {
+                    innerHTML:
+                        'window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-PXW7CX14YN");',
+                },
                 // Dark by default; a saved light/dark choice wins. Runs before first paint (no flash).
                 {
                     innerHTML:
