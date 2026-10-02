@@ -34,6 +34,6 @@ useSeo({
 });
 
 // Sorted newest-first; falls back to source order if dates are equal.
-// All post data lives in ~/data/blog-posts.js — add new posts there only.
+// One file per post lives in ~/data/posts/ and is registered in ~/data/blog-posts.js.
 const posts = [...blogPosts].reverse();
 </script>

@@ -123,10 +123,22 @@ import { blogPosts } from "~/data/blog-posts";
 
 const route = useRoute();
 
-// All post data lives in ~/data/blog-posts.js — add new posts there only.
+// One file per post lives in ~/data/posts/ and is registered in ~/data/blog-posts.js.
 const post = computed(
     () => blogPosts.find((p) => p.slug === route.params.slug) || null,
 );
+
+const postWordCount = (p) => {
+    let n = 0;
+    for (const block of p.content) {
+        if (block.text) n += block.text.split(/\s+/).filter(Boolean).length;
+        if (Array.isArray(block.items)) n += block.items.reduce((a, i) => a + String(i).split(/\s+/).filter(Boolean).length, 0);
+        if (block.code) n += block.code.split(/\s+/).filter(Boolean).length;
+    }
+    return n;
+};
+
+const authorName = computed(() => post.value?.author || "Zain Rizvee");
 
 const relatedPosts = computed(() => {
     return blogPosts
@@ -153,7 +165,18 @@ watchEffect(() => {
                         "@type": "Article",
                         headline: post.value.title,
                         description: post.value.excerpt,
-                        datePublished: post.value.date,
+                        datePublished: post.value.datePublished || undefined,
+                        dateModified: post.value.dateModified || post.value.datePublished || undefined,
+                        wordCount: postWordCount(post.value),
+                        author: {
+                            "@type": "Person",
+                            name: authorName.value,
+                            url: "https://www.textsharenow.com/about",
+                        },
+                        mainEntityOfPage: {
+                            "@type": "WebPage",
+                            "@id": `https://www.textsharenow.com/blog/${post.value.slug}`,
+                        },
                         publisher: {
                             "@type": "Organization",
                             name: "TextShareNow",
