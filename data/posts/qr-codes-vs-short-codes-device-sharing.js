@@ -3,8 +3,8 @@ export default {
     "title": "QR Codes vs Short Codes: Which Is Better for Phone-to-Laptop Sharing?",
     "excerpt": "QR codes are everywhere — but they have a significant flaw when sharing from phone to laptop. Here is why short codes often win.",
     "tag": "Comparison",
-    "date": "January 2025",
-    "datePublished": "2025-01-01",
+    "date": "March 2026",
+    "datePublished": "2026-03-05",
     "dateModified": "2026-08-07",
     "readTime": "4 min read",
     "content": [

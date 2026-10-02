@@ -4,7 +4,7 @@ export default {
     "excerpt": "You take a screenshot on your phone and need it on your laptop. Here are the real options — ranked by speed — and why a browser-based tool beats email and AirDrop for this specific task.",
     "tag": "Guide",
     "date": "September 2026",
-    "datePublished": "2026-09-01",
+    "datePublished": "2026-09-17",
     "dateModified": "2026-09-17",
     "readTime": "5 min read",
     "content": [

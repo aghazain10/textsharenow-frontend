@@ -3,8 +3,8 @@ export default {
     "title": "The Best AirDrop Alternatives That Work Across Windows, Android, and iPhone",
     "excerpt": "AirDrop is great — if you are in the Apple ecosystem. For everyone else, here are the real cross-platform alternatives.",
     "tag": "Guide",
-    "date": "January 2025",
-    "datePublished": "2025-01-01",
+    "date": "March 2026",
+    "datePublished": "2026-03-05",
     "dateModified": "2026-08-07",
     "readTime": "5 min read",
     "content": [

@@ -4,7 +4,7 @@ export default {
     "excerpt": "Most file-sharing tools want your email, your photos, or a subscription. Temporary file sharing works differently — upload, get a code, download, gone. Here is how it works and when it is the right choice.",
     "tag": "Guide",
     "date": "September 2026",
-    "datePublished": "2026-09-01",
+    "datePublished": "2026-09-17",
     "dateModified": "2026-09-17",
     "readTime": "5 min read",
     "content": [

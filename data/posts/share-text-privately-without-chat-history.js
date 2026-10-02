@@ -4,7 +4,7 @@ export default {
     "excerpt": "Every message you send yourself sits in a chat log indefinitely. Here is how to move text between devices without leaving a permanent trail.",
     "tag": "Guide",
     "date": "August 2026",
-    "datePublished": "2026-08-01",
+    "datePublished": "2026-08-11",
     "dateModified": "2026-08-25",
     "readTime": "3 min read",
     "content": [

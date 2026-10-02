@@ -4,7 +4,7 @@ export default {
     "excerpt": "Spelling out a 16-character Wi-Fi password to a guest is nobody's favorite moment. Here are better ways to hand it over.",
     "tag": "Guide",
     "date": "August 2026",
-    "datePublished": "2026-08-01",
+    "datePublished": "2026-08-11",
     "dateModified": "2026-08-11",
     "readTime": "3 min read",
     "content": [

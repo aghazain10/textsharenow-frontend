@@ -4,7 +4,7 @@ export default {
     "excerpt": "Both promise to fix the \"I need this text on another device\" problem. They solve it very differently — here is which one actually fits your situation.",
     "tag": "Comparison",
     "date": "August 2026",
-    "datePublished": "2026-08-01",
+    "datePublished": "2026-08-11",
     "dateModified": "2026-08-11",
     "readTime": "4 min read",
     "content": [

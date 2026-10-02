@@ -3,8 +3,8 @@ export default {
     "title": "The Fastest Way to Share Text From Your Phone to Your Laptop (No Cables)",
     "excerpt": "Tired of emailing yourself URLs? Here are the five best methods for getting text off your phone and onto your laptop quickly — with a clear winner.",
     "tag": "Guide",
-    "date": "January 2025",
-    "datePublished": "2025-01-01",
+    "date": "March 2026",
+    "datePublished": "2026-03-05",
     "dateModified": "2026-08-07",
     "readTime": "4 min read",
     "content": [

@@ -4,7 +4,7 @@ export default {
     "excerpt": "Long URLs with tracking parameters and query strings break easily when copied through the wrong app. Here is how to avoid it.",
     "tag": "Guide",
     "date": "August 2026",
-    "datePublished": "2026-08-01",
+    "datePublished": "2026-08-11",
     "dateModified": "2026-08-25",
     "readTime": "3 min read",
     "content": [

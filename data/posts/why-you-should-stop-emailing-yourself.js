@@ -3,8 +3,8 @@ export default {
     "title": "Why You Should Stop Emailing Yourself (And What to Use Instead)",
     "excerpt": "Self-emailing is a productivity anti-pattern that wastes 30–60 seconds per transfer. Here is what professional users do instead.",
     "tag": "Productivity",
-    "date": "January 2025",
-    "datePublished": "2025-01-01",
+    "date": "March 2026",
+    "datePublished": "2026-03-05",
     "dateModified": "2026-08-07",
     "readTime": "3 min read",
     "content": [

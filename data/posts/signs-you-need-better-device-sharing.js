@@ -4,7 +4,7 @@ export default {
     "excerpt": "If any of these sound familiar, your current method of getting text between devices is costing you more time than you realize.",
     "tag": "Productivity",
     "date": "August 2026",
-    "datePublished": "2026-08-01",
+    "datePublished": "2026-08-11",
     "dateModified": "2026-08-11",
     "readTime": "3 min read",
     "content": [

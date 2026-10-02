@@ -4,7 +4,7 @@ export default {
     "excerpt": "Moving text from Android to Mac shouldn't require installing KDE Connect, pairing over local Wi-Fi, or setting up Google Messages Web. Here's the faster, no-install way that works on any network.",
     "tag": "Guide",
     "date": "September 2026",
-    "datePublished": "2026-09-01",
+    "datePublished": "2026-09-04",
     "dateModified": "2026-09-04",
     "readTime": "4 min read",
     "content": [

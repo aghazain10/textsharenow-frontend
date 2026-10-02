@@ -4,7 +4,7 @@ export default {
     "excerpt": "AirDrop does not exist on Windows. Here are three real alternatives for sending files and text from your iPhone or Android to a Windows PC — ranked by speed.",
     "tag": "Guide",
     "date": "August 2026",
-    "datePublished": "2026-08-01",
+    "datePublished": "2026-08-25",
     "dateModified": "2026-08-25",
     "readTime": "4 min read",
     "content": [

@@ -4,7 +4,7 @@ export default {
     "excerpt": "Email caps attachments at 25 MB. Your phone shoots 4K video at 400 MB per minute. Here is how to send short video clips between devices without hitting attachment limits or losing quality to compression.",
     "tag": "Guide",
     "date": "September 2026",
-    "datePublished": "2026-09-01",
+    "datePublished": "2026-09-17",
     "dateModified": "2026-09-17",
     "readTime": "5 min read",
     "content": [

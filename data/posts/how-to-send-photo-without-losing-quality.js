@@ -4,7 +4,7 @@ export default {
     "excerpt": "WhatsApp, Messenger, and iMessage all compress your photos before sending. Here is exactly what happens to your images, and how to send the original file without any quality loss.",
     "tag": "Guide",
     "date": "September 2026",
-    "datePublished": "2026-09-01",
+    "datePublished": "2026-09-17",
     "dateModified": "2026-09-17",
     "readTime": "6 min read",
     "content": [

@@ -4,7 +4,7 @@ export default {
     "excerpt": "Found a fix on your phone during a commute? Here is the fastest way to get a code snippet from your phone onto your laptop — and one thing you should never share this way.",
     "tag": "Guide",
     "date": "August 2026",
-    "datePublished": "2026-08-01",
+    "datePublished": "2026-08-11",
     "dateModified": "2026-08-11",
     "readTime": "4 min read",
     "content": [

@@ -4,7 +4,7 @@ export default {
     "excerpt": "iCloud does not play nicely with Windows, and Apple's ecosystem tools mostly assume you own another Apple device. Here is how to move text across the divide anyway.",
     "tag": "Guide",
     "date": "August 2026",
-    "datePublished": "2026-08-01",
+    "datePublished": "2026-08-11",
     "dateModified": "2026-08-25",
     "readTime": "4 min read",
     "content": [
