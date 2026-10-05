@@ -32,10 +32,10 @@
             </p>
 
             <dl class="mx-auto mt-10 grid max-w-5xl grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line shadow-card sm:grid-cols-4">
-                <div v-for="s in STATS" :key="s.label" class="flex flex-col-reverse gap-1 bg-bg px-5 py-4 text-center">
+                <div v-for="s in STATS" :key="s.label" class="flex flex-col-reverse gap-1 bg-bg px-5 py-4 text-center" :class="s.wide ? 'col-span-2 sm:col-span-4' : ''">
                     <dt class="text-[12px] text-muted">{{ s.label }}</dt>
                     <dd class="text-[22px] font-bold tracking-[-0.03em] text-ink">
-                        <UsageCounter v-if="s.counter" /><template v-else>{{ s.value }}</template>
+                        <UsageCounter v-if="s.counter" :kind="s.counter" /><template v-else>{{ s.value }}</template>
                     </dd>
                 </div>
             </dl>
@@ -84,10 +84,11 @@ const scannedCode = ref("");
 const scannedKind = ref("");
 
 const STATS = [
-    { label: "texts shared using textsharenow", counter: true },
+    { label: "texts shared using textsharenow", counter: "text" },
     { label: "avg. transfer time", value: "~8s" },
     { label: "short code", value: "5 chars" },
     { label: "sign-ups needed", value: "0" },
+    { label: "files shared using textsharenow", counter: "file", wide: true },
 ];
 
 const clean = (v) => (v || "").toString().trim().toUpperCase().replace(/[^A-Z0-9]/g, "");

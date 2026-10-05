@@ -129,6 +129,8 @@ async function upload() {
         });
         code.value = result;
         qrUrl.value = `${window.location.origin}/r?fcode=${result}`;
+        // Record the file share in the aggregate counter (best-effort).
+        $fetch(`${config.public.API_BASE}/api/file-share`, { method: "POST" }).catch(() => {});
     } catch (e) {
         error.value = e?.message || "Upload failed. Please try again.";
     } finally {
