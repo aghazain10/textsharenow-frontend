@@ -66,6 +66,24 @@ export default {
             ]
         },
         {
+            "type": "links",
+            "label": "Related reading",
+            "items": [
+                {
+                    "to": "/blog/how-short-code-sharing-works",
+                    "text": "How short codes are generated, stored, and expired"
+                },
+                {
+                    "to": "/blog/share-wifi-password-without-reading-aloud",
+                    "text": "Wi-Fi sharing, where QR codes genuinely win"
+                },
+                {
+                    "to": "/blog/how-to-share-text-from-phone-to-laptop",
+                    "text": "Five ways to move text from phone to laptop, ranked"
+                }
+            ]
+        },
+        {
             "type": "h2",
             "text": "So, Which Should You Use?"
         },

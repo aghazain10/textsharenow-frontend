@@ -1,7 +1,7 @@
 export default {
     "slug": "how-to-send-photo-without-losing-quality",
     "title": "How to Send a Photo Without Losing Quality (No WhatsApp Compression)",
-    "excerpt": "WhatsApp, Messenger, and iMessage all compress your photos before sending. Here is exactly what happens to your images, and how to send the original file without any quality loss.",
+    "excerpt": "WhatsApp, Messenger and iMessage all compress your photos. Here is what happens to your images, and how to send the original without losing quality.",
     "tag": "Guide",
     "date": "September 2026",
     "datePublished": "2026-09-17",

@@ -58,14 +58,6 @@ export default {
             ]
         },
         {
-            "type": "h2",
-            "text": "Which One Fits You"
-        },
-        {
-            "type": "p",
-            "text": "A simple rule of thumb: if it is a device you use every day, a synced clipboard manager pays off over time. If it is a one-time transfer or a device you do not control, a short-code tool with nothing to install wins. These are not really competitors — plenty of people reasonably use both, a clipboard manager for their own daily-driver devices and a short-code tool for the one-off cases those apps were never built for."
-        },
-        {
             "type": "links",
             "items": [
                 {
@@ -85,6 +77,14 @@ export default {
                     "text": "QR codes vs short codes compared"
                 }
             ]
+        },
+        {
+            "type": "h2",
+            "text": "Which One Fits You"
+        },
+        {
+            "type": "p",
+            "text": "A simple rule of thumb: if it is a device you use every day, a synced clipboard manager pays off over time. If it is a one-time transfer or a device you do not control, a short-code tool with nothing to install wins. These are not really competitors — plenty of people reasonably use both, a clipboard manager for their own daily-driver devices and a short-code tool for the one-off cases those apps were never built for."
         }
     ]
 };

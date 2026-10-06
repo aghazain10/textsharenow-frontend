@@ -1,7 +1,7 @@
 export default {
     "slug": "cross-device-sharing-glossary",
     "title": "Cross-Device Sharing Glossary: 24 Terms, Plainly Explained",
-    "excerpt": "QR codes, short codes, TTLs, single-read links, EXIF, P2P — the vocabulary of moving text and files between devices, defined in plain English without the marketing spin.",
+    "excerpt": "QR codes, short codes, TTLs, single-read links, EXIF, P2P — the vocabulary of moving text and files between devices, defined in plain English.",
     "tag": "Glossary",
     "date": "October 2026",
     "datePublished": "2026-10-02",

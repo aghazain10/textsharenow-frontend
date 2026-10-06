@@ -1,7 +1,7 @@
 export default {
     "slug": "free-temporary-file-sharing",
     "title": "Free Temporary File Sharing: How It Works and When to Use It",
-    "excerpt": "Most file-sharing tools want your email, your photos, or a subscription. Temporary file sharing works differently — upload, get a code, download, gone. Here is how it works and when it is the right choice.",
+    "excerpt": "Most file-sharing tools want your email or a subscription. Temporary file sharing works differently — upload, get a code, download, gone.",
     "tag": "Guide",
     "date": "September 2026",
     "datePublished": "2026-09-17",

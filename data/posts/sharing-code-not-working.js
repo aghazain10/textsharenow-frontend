@@ -1,7 +1,7 @@
 export default {
     "slug": "sharing-code-not-working",
     "title": "Sharing Code Not Working? 8 Causes and What Each One Means",
-    "excerpt": "Expired, already opened, mistyped, rate-limited, or rejected — the four server responses behind almost every failed code, and the 60-second check that tells them apart.",
+    "excerpt": "Expired, opened, mistyped, throttled — the server responses behind almost every failed code, and the 60-second check that tells them apart.",
     "tag": "Troubleshooting",
     "date": "October 2026",
     "datePublished": "2026-10-02",

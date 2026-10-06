@@ -1,7 +1,7 @@
 export default {
     "slug": "how-short-code-sharing-works",
     "title": "How Short-Code Sharing Works: Codes, TTLs, and Single-Read Storage",
-    "excerpt": "Five characters, ten minutes, one key in a key-value store. The full mechanics behind code-based sharing — code space math, collisions, rate limits, and what the server really sees.",
+    "excerpt": "Five characters, ten minutes, one key in a key-value store. Code space math, collisions, rate limits, and what the server really sees.",
     "tag": "Technical",
     "date": "October 2026",
     "datePublished": "2026-10-02",

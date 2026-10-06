@@ -58,14 +58,6 @@ export default {
             "text": "None of these are dramatic on their own — a minute here, thirty seconds there. The cost is in how often they repeat, day after day, across months."
         },
         {
-            "type": "h2",
-            "text": "The Fix"
-        },
-        {
-            "type": "p",
-            "text": "None of this requires a complex solution. A short, typeable code that moves plain text between any two devices in seconds removes the friction behind all five signs above, without an account, an app install, or a habit change beyond opening a browser tab."
-        },
-        {
             "type": "links",
             "items": [
                 {
@@ -77,6 +69,14 @@ export default {
                     "text": "Try TextShareNow"
                 }
             ]
+        },
+        {
+            "type": "h2",
+            "text": "The Fix"
+        },
+        {
+            "type": "p",
+            "text": "None of this requires a complex solution. A short, typeable code that moves plain text between any two devices in seconds removes the friction behind all five signs above, without an account, an app install, or a habit change beyond opening a browser tab."
         }
     ]
 };

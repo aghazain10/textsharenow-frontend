@@ -1,7 +1,7 @@
 export default {
     "slug": "online-text-sharing-vs-apps",
     "title": "Online Text Sharing vs. Apps: Why Browser-Based Wins for Cross-Device Text",
-    "excerpt": "Apps like Pushbullet, KDE Connect, and AirDroid promise cross-device sync — but for one-off text transfers, they are overkill. Here is why a browser-based online text sharing tool beats apps for the 90% of transfers that are quick, temporary, and cross-platform.",
+    "excerpt": "Pushbullet, KDE Connect and AirDroid promise cross-device sync — but for one-off transfers they are overkill. Here is what works better.",
     "tag": "Comparison",
     "date": "September 2026",
     "datePublished": "2026-09-07",

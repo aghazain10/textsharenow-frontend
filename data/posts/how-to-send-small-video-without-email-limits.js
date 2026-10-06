@@ -1,7 +1,7 @@
 export default {
     "slug": "how-to-send-small-video-without-email-limits",
     "title": "How to Send a Small Video Without Email Attachment Limits",
-    "excerpt": "Email caps attachments at 25 MB. Your phone shoots 4K video at 400 MB per minute. Here is how to send short video clips between devices without hitting attachment limits or losing quality to compression.",
+    "excerpt": "Email caps attachments at 25 MB. Your phone shoots 4K video at 400 MB a minute. Here is how to send short clips without limits or compression.",
     "tag": "Guide",
     "date": "September 2026",
     "datePublished": "2026-09-17",

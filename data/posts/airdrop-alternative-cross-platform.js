@@ -90,25 +90,6 @@ export default {
             "text": "Nearby Share now works between Windows and Android via Google's companion app, so file transfers are reasonably covered. For text and links specifically, a short-code tool is still faster since it skips the app install and account sign-in that Nearby Share requires."
         },
         {
-            "type": "h2",
-            "text": "Which One Should You Actually Use"
-        },
-        {
-            "type": "ul",
-            "items": [
-                "Large files, same platform: AirDrop (Apple) or Nearby Share (Android)",
-                "Large files, mixed platforms: Cloud storage, accepting the extra steps",
-                "Text, links, or notes, any platform combination: A short-code tool like TextShareNow",
-                "Android to iPhone specifically: No native option works — a browser-based tool is the fastest path",
-                "Windows to iPhone specifically: Apple's tools do not exist on Windows — see the device-pair breakdown above",
-                "No internet connection at all: Bluetooth, despite the slower speed"
-            ]
-        },
-        {
-            "type": "p",
-            "text": "There is no single perfect AirDrop replacement, mainly because AirDrop bundles file transfer and cross-device convenience into one Apple-only feature. Splitting the problem apart — a dedicated tool for quick text and links, cloud storage for the large files you actually want to keep — tends to end up faster in practice than forcing one tool to do everything."
-        },
-        {
             "type": "links",
             "items": [
                 {
@@ -128,6 +109,25 @@ export default {
                     "text": "iPhone to Windows text transfer without iCloud"
                 }
             ]
+        },
+        {
+            "type": "h2",
+            "text": "Which One Should You Actually Use"
+        },
+        {
+            "type": "ul",
+            "items": [
+                "Large files, same platform: AirDrop (Apple) or Nearby Share (Android)",
+                "Large files, mixed platforms: Cloud storage, accepting the extra steps",
+                "Text, links, or notes, any platform combination: A short-code tool like TextShareNow",
+                "Android to iPhone specifically: No native option works — a browser-based tool is the fastest path",
+                "Windows to iPhone specifically: Apple's tools do not exist on Windows — see the device-pair breakdown above",
+                "No internet connection at all: Bluetooth, despite the slower speed"
+            ]
+        },
+        {
+            "type": "p",
+            "text": "There is no single perfect AirDrop replacement, mainly because AirDrop bundles file transfer and cross-device convenience into one Apple-only feature. Splitting the problem apart — a dedicated tool for quick text and links, cloud storage for the large files you actually want to keep — tends to end up faster in practice than forcing one tool to do everything."
         }
     ]
 };

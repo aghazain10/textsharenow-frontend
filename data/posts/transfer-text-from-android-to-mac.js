@@ -1,7 +1,7 @@
 export default {
     "slug": "transfer-text-from-android-to-mac",
     "title": "How to Transfer Text from Android to Mac (Without KDE Connect, Apps, or Same Wi-Fi)",
-    "excerpt": "Moving text from Android to Mac shouldn't require installing KDE Connect, pairing over local Wi-Fi, or setting up Google Messages Web. Here's the faster, no-install way that works on any network.",
+    "excerpt": "Moving text from Android to Mac shouldn't require KDE Connect, paired Wi-Fi, or Google Messages Web. Here is the faster, no-install way.",
     "tag": "Guide",
     "date": "September 2026",
     "datePublished": "2026-09-04",

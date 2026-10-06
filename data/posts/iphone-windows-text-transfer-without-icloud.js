@@ -1,7 +1,7 @@
 export default {
     "slug": "iphone-windows-text-transfer-without-icloud",
     "title": "iPhone to Windows Text Transfer Without iCloud — 3 Fast Ways (2026)",
-    "excerpt": "iCloud does not play nicely with Windows, and Apple's ecosystem tools mostly assume you own another Apple device. Here is how to move text across the divide anyway.",
+    "excerpt": "iCloud does not play nicely with Windows, and Apple's tools mostly assume you own another Apple device. Here is how to move text across the divide.",
     "tag": "Guide",
     "date": "August 2026",
     "datePublished": "2026-08-11",
@@ -49,14 +49,6 @@ export default {
             "text": "Because it runs entirely in the browser, it does not care whether one device is an iPhone and the other is a Windows PC. Paste on the iPhone, type the code on the PC — the platform mismatch that breaks AirDrop and Handoff simply does not apply. The core issue with iPhone-to-Windows transfers is always the same: Apple's built-in tools assume Apple hardware on both ends, and anything browser-based sidesteps that assumption entirely."
         },
         {
-            "type": "h2",
-            "text": "What to Actually Do"
-        },
-        {
-            "type": "p",
-            "text": "You do not need to set up iCloud for Windows or install a syncing extension just to move a link or a note. For that specific, common case, a browser-only tool that does not care what device you are on is the simplest fix."
-        },
-        {
             "type": "links",
             "items": [
                 {
@@ -84,6 +76,14 @@ export default {
                     "text": "The best AirDrop alternatives for cross-platform sharing"
                 }
             ]
+        },
+        {
+            "type": "h2",
+            "text": "What to Actually Do"
+        },
+        {
+            "type": "p",
+            "text": "You do not need to set up iCloud for Windows or install a syncing extension. Because the tool runs in a browser, it does not care whether one side is Apple and the other is Microsoft — the code is the same either way."
         }
     ]
 };

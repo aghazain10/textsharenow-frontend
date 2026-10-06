@@ -1,7 +1,7 @@
 export default {
     "slug": "share-code-snippets-between-devices-for-developers",
     "title": "How Developers Can Quickly Move Code Snippets Between Devices",
-    "excerpt": "Found a fix on your phone during a commute? Here is the fastest way to get a code snippet from your phone onto your laptop — and one thing you should never share this way.",
+    "excerpt": "Found a fix on your phone during a commute? Here is the fastest way to get that snippet onto your laptop — and one thing you should never share this way.",
     "tag": "Guide",
     "date": "August 2026",
     "datePublished": "2026-08-11",
@@ -75,14 +75,6 @@ export default {
             ]
         },
         {
-            "type": "h2",
-            "text": "Where This Leaves You"
-        },
-        {
-            "type": "p",
-            "text": "Not every snippet deserves a gist, and not every fix deserves to live forever in your Slack history. For the in-between case — text you need on another device right now, and probably never again — a short, typeable code is the least friction of any option."
-        },
-        {
             "type": "links",
             "items": [
                 {
@@ -102,6 +94,14 @@ export default {
                     "text": "The story behind TextShareNow"
                 }
             ]
+        },
+        {
+            "type": "h2",
+            "text": "Where This Leaves You"
+        },
+        {
+            "type": "p",
+            "text": "Not every snippet deserves a gist, and not every fix deserves to live forever in your Slack history. For the in-between case — text you need on another device right now, and probably never again — a short, typeable code is the least friction of any option."
         }
     ]
 };

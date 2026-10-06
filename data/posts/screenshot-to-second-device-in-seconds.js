@@ -1,7 +1,7 @@
 export default {
     "slug": "screenshot-to-second-device-in-seconds",
     "title": "Screenshot to Second Device in Seconds: A Faster Way Than AirDrop or Email",
-    "excerpt": "You take a screenshot on your phone and need it on your laptop. Here are the real options — ranked by speed — and why a browser-based tool beats email and AirDrop for this specific task.",
+    "excerpt": "You screenshot on your phone and need it on your laptop. Here are the real options, ranked by speed — and why a browser tool beats email.",
     "tag": "Guide",
     "date": "September 2026",
     "datePublished": "2026-09-17",

@@ -19,6 +19,7 @@ import post18 from "./posts/screenshot-to-second-device-in-seconds.js";
 import post19 from "./posts/cross-device-sharing-glossary.js";
 import post20 from "./posts/how-short-code-sharing-works.js";
 import post21 from "./posts/sharing-code-not-working.js";
+import post22 from "./posts/what-happens-to-your-text.js";
 
 export const blogPosts = [
     post1,
@@ -42,4 +43,5 @@ export const blogPosts = [
     post19,
     post20,
     post21,
+    post22,
 ];
