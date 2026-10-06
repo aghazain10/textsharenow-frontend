@@ -127,7 +127,7 @@
 useSeo({
     title: 'Share Files Online — Free File Sharing Between Devices',
     description:
-        'Share files between any devices instantly using a short code. Free, no sign-up. Upload photos, videos, or documents — recipient downloads with a code. Files auto-delete after first download. Malware scanned.',
+        'Share files between any devices using a short code. Free, no sign-up — photos, videos and documents download with a code, then auto-delete.',
     pagePath: '/share-files-online',
 })
 

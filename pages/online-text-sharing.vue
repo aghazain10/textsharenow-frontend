@@ -198,7 +198,7 @@ import { useSeo, useHead } from '#imports'
 // SEO
 useSeo({
   title: 'Online Text Sharing — Share Text Between Devices Instantly (Free, No App)',
-  description: 'Free online text sharing tool to transfer text, links, and notes between any devices in seconds using a short code. No app, no sign-up, works cross-platform. Try now.',
+  description: 'Free online text sharing tool to move text, links, and notes between devices in seconds using a short code. No app, no sign-up, cross-platform.',
   pagePath: '/online-text-sharing',
 })
 
@@ -238,7 +238,7 @@ useHead({
         '@context': 'https://schema.org',
         '@type': 'WebPage',
         name: 'Online Text Sharing — Share Text Between Devices Instantly',
-        description: 'Free online text sharing tool to transfer text, links, and notes between any devices in seconds using a short code. No app, no sign-up, works cross-platform.',
+        description: 'Free online text sharing tool to move text, links, and notes between devices in seconds using a short code. No app, no sign-up, cross-platform.',
         url: 'https://www.textsharenow.com/online-text-sharing',
         publisher: {
           '@type': 'Organization',
