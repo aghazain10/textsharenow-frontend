@@ -25,8 +25,8 @@
 
       <ul class="mx-auto mt-6 flex max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-muted">
         <li class="inline-flex items-center gap-1.5"><TsnIcon name="user-x" class="h-4 w-4" stroke="1.8" />0 sign-ups needed</li>
-        <li class="inline-flex items-center gap-1.5"><TsnIcon name="lock" class="h-4 w-4" stroke="1.8" />5-character short code</li>
-        <li class="inline-flex items-center gap-1.5"><TsnIcon name="clock" class="h-4 w-4" stroke="1.8" />Text auto-deletes after first read or 10 min</li>
+        <li class="inline-flex items-center gap-1.5"><TsnIcon name="lock" class="h-4 w-4" stroke="1.8" />5-character code + share link</li>
+        <li class="inline-flex items-center gap-1.5"><TsnIcon name="clock" class="h-4 w-4" stroke="1.8" />Text auto-deletes after first read or expiry (10 min–1 h)</li>
         <li class="inline-flex items-center gap-1.5"><TsnIcon name="globe" class="h-4 w-4" stroke="1.8" />No account · No app · Free forever</li>
       </ul>
     </section>
@@ -43,7 +43,7 @@
             <strong class="font-semibold text-ink">Online text sharing</strong> means using a web-based tool to transfer text from one device to another over the internet. Unlike AirDrop, Nearby Share, or Pushbullet — which require apps, OS compatibility, or both devices on the same network — an online tool works in any browser, on any operating system, across any connection.
           </p>
           <p>
-            You open the site on both devices, paste your text on one, get a short code, type that code on the other, and the text appears. The entire round trip takes under 10 seconds. The content is encrypted in transit, stored temporarily (10 minutes max), and deleted immediately after retrieval.
+            You open the site on both devices, paste your text on one, get a short code, type that code on the other, and the text appears. The entire round trip takes under 10 seconds. The content is encrypted in transit, stored temporarily (10 minutes to 1 hour, your choice), and deleted immediately after retrieval.
           </p>
           <p>
             This approach solves the fundamental friction of cross-device text transfer: <strong class="font-semibold text-ink">you don't need to install anything, sign in anywhere, or be on the same Wi-Fi.</strong> It just works.
@@ -218,7 +218,7 @@ const faqs = [
   },
   {
     question: 'Does the text get stored on your servers?',
-    answer: 'Only temporarily — maximum 10 minutes, and deleted immediately after the first successful retrieval. We do not log, sell, or retain any content after deletion.',
+    answer: 'Only temporarily — you choose 10 minutes, 30 minutes or 1 hour when sharing, and it is deleted immediately after the first successful retrieval. We do not log, sell, or retain any content after deletion.',
   },
   {
     question: 'Is there a limit on how much text I can share online?',

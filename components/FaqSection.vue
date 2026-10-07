@@ -38,7 +38,7 @@ const faqs = [
     },
     {
         question: "Is the shared text stored on your servers?",
-        answer: "Only temporarily. Your text is stored for a maximum of 10 minutes or deleted immediately after it is retrieved — whichever happens first. We do not log, sell, or retain any of your content after deletion.",
+        answer: "Only temporarily. Your text is deleted immediately after it is retrieved, or when its timer ends — you choose 10 minutes, 30 minutes or 1 hour when sharing. We do not log, sell, or retain any of your content after deletion.",
     },
     {
         question: "Do I need to create an account to use TextShareNow?",

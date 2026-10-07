@@ -19,6 +19,9 @@
             <p v-if="error" class="mx-5 mb-2 flex items-center gap-2 text-[14px] text-bad" role="alert">
                 <TsnIcon name="alert" class="h-4 w-4 shrink-0" />{{ error }}
             </p>
+            <div class="border-t border-line px-5 py-2.5">
+                <ExpirySelect v-model="ttl" />
+            </div>
             <div class="flex flex-wrap items-center justify-between gap-3 px-3 pb-3 pl-5">
                 <div class="flex items-center gap-3 text-[13px]">
                     <span
@@ -53,15 +56,18 @@
             </div>
         </div>
 
-        <CodeResult v-else :code="code" :ttl="600" :qr-url="qrUrl" @reset="reset" />
+        <CodeResult v-else :code="code" :ttl="ttl" :qr-url="qrUrl" @reset="reset" />
     </div>
 </template>
 
 <script setup>
+import { DEFAULT_EXPIRY } from "~/utils/expiry.js";
+
 const API_BASE = useRuntimeConfig().public.API_BASE;
 const text = ref("");
 const code = ref("");
 const qrUrl = ref("");
+const ttl = ref(DEFAULT_EXPIRY); // seconds: 10 min, 30 min or 1 h
 const loading = ref(false);
 const error = ref("");
 const shortcut = ref("Ctrl Enter");
@@ -94,8 +100,9 @@ async function send() {
     loading.value = true;
     error.value = "";
     try {
-        const res = await $fetch(`${API_BASE}/api/share`, { method: "POST", body: { text: text.value } });
+        const res = await $fetch(`${API_BASE}/api/share`, { method: "POST", body: { text: text.value, ttl: ttl.value } });
         code.value = res.code;
+        if (res.ttl) ttl.value = res.ttl;
         qrUrl.value = `${window.location.origin}/r?code=${res.code}`;
         text.value = "";
     } catch (e) {

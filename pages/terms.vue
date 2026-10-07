@@ -61,7 +61,7 @@ const sections = [
             },
             {
                 type: "p",
-                text: "Submitted text is automatically deleted after first retrieval or after 10 minutes, whichever occurs first. Uploaded files are automatically deleted after first download or after 15 minutes, whichever occurs first, as described in our Privacy Policy.",
+                text: "Submitted text is automatically deleted after first retrieval or when its timer ends (10 minutes, 30 minutes or 1 hour), whichever occurs first. Uploaded files are automatically deleted after first download or when their timer ends (the same 10 minute to 1 hour range), whichever occurs first, as described in our Privacy Policy.",
             },
             {
                 type: "p",

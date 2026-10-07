@@ -1,15 +1,18 @@
 /**
  * POST /api/share
- * Body: { text: string }
- * Response: { code: string }
+ * Body: { text: string, ttl?: number }
+ * Response: { code: string, ttl: number }
  *
- * Stores text in Upstash Redis with 10 minute TTL.
+ * Stores text in Upstash Redis with the requested TTL (seconds).
+ * Allowed TTLs: 600 (10 min), 1800 (30 min), 3600 (1 h) — anything else
+ * falls back to the 10 minute default.
  * Returns a unique 5-character alphanumeric code.
  */
 
 const CHARSET     = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 const CODE_LENGTH = 5
 const TTL_SECONDS = 600
+const ALLOWED_TTLS = [600, 1800, 3600] // 10 min, 30 min, 1 h
 const KEY_PREFIX  = 'share:'
 const COUNT_KEY   = 'stats:shares'
 
@@ -62,6 +65,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 422, message: 'Text cannot exceed 10,000 characters.' })
   }
 
+  // Expiry: 10 min, 30 min or 1 h — anything else falls back to 10 min
+  const requestedTtl = Number(body?.ttl)
+  const ttl = ALLOWED_TTLS.includes(requestedTtl) ? requestedTtl : TTL_SECONDS
+
   // Rate limiting — 10 sends per minute per IP
   const ip      = getRequestHeader(event, 'x-forwarded-for') || 'unknown'
   const rateKey = `rate:send:${ip}`
@@ -93,7 +100,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // Store in Redis with TTL
-  await upstashRequest(redisUrl, redisToken, ['SETEX', KEY_PREFIX + code, TTL_SECONDS, text])
+  await upstashRequest(redisUrl, redisToken, ['SETEX', KEY_PREFIX + code, ttl, text])
 
   // Increment the aggregate, anonymous all-time share counter and a daily
   // bucket so usage can be charted over time (UTC days).
@@ -105,5 +112,5 @@ export default defineEventHandler(async (event) => {
     // Counters are non-critical — a failure here must not block the share.
   }
 
-  return { code }
+  return { code, ttl }
 })

@@ -95,7 +95,7 @@ useHead({
             name: 'Can I share files with TextShareNow?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Yes. TextShareNow supports file sharing for PNG, JPEG, WebP, MP4, and WebM files up to 10 MB. Upload a file, get a short code, and the recipient downloads it with that code. Files auto-delete after the first download or 15 minutes.',
+              text: 'Yes. TextShareNow supports file sharing for PNG, JPEG, WebP, MP4, and WebM files up to 10 MB. Upload a file, get a short code, and the recipient downloads it with that code. Files auto-delete after the first download or when their timer ends — 10 minutes, 30 minutes or 1 hour.',
             },
           },
         ],
@@ -147,7 +147,7 @@ const categories = [
       {
         question: 'How long does a code last?',
         answer:
-          'Each code is valid for a maximum of 10 minutes from the time it was generated. If no one retrieves the text within 10 minutes, the code and its content are permanently deleted from our servers.',
+          'A code lasts exactly as long as the sender chose when sharing — 10 minutes, 30 minutes or 1 hour from the time it was generated. If no one retrieves the text before the timer ends, the code and its content are permanently deleted from our servers.',
       },
       {
         question: 'Can the same code be used more than once?',
@@ -167,7 +167,7 @@ const categories = [
       {
         question: 'Is my text stored on your servers?',
         answer:
-          'Only briefly and temporarily. Your text is stored only long enough to be retrieved — up to 10 minutes maximum, or deleted immediately upon first retrieval. We do not log, analyse, or retain the content of your messages.',
+          'Only briefly and temporarily. Your text is stored only long enough to be retrieved — for the 10 minutes to 1 hour the sender chose, or until the first retrieval, whichever comes first. We do not log, analyse, or retain the content of your messages.',
       },
       {
         question: 'Can someone else guess my code and read my text?',
@@ -197,7 +197,7 @@ const categories = [
       {
         question: 'How long do files stay on the server?',
         answer:
-          'Files are available for 15 minutes or until the first download — whichever comes first. After that, both the file and its metadata are permanently deleted. Files are never archived or backed up.',
+          'Files are available until the first download or until their timer ends — whichever comes first. The sender chooses 10 minutes, 30 minutes or 1 hour when uploading. After that, both the file and its metadata are permanently deleted. Files are never archived or backed up.',
       },
       {
         question: 'Are files scanned for malware?',

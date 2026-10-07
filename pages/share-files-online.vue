@@ -25,11 +25,11 @@
 
             <p class="mx-auto mt-6 flex max-w-3xl items-center justify-center gap-2 text-center text-[13px] text-muted">
                 <TsnIcon name="lock" class="h-4 w-4 shrink-0" stroke="1.8" />
-                Files auto-delete after first download or 15 min · Scanned for malware
+                Files auto-delete after first download or expiry (10 min–1 h) · Scanned for malware
             </p>
             <ul class="mx-auto mt-3 flex max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-muted">
                 <li class="inline-flex items-center gap-1.5"><TsnIcon name="user-x" class="h-4 w-4" stroke="1.8" />No sign-up</li>
-                <li class="inline-flex items-center gap-1.5"><TsnIcon name="clock" class="h-4 w-4" stroke="1.8" />Files auto-delete after first download or 15 min</li>
+                <li class="inline-flex items-center gap-1.5"><TsnIcon name="clock" class="h-4 w-4" stroke="1.8" />Files auto-delete after first download or expiry</li>
                 <li class="inline-flex items-center gap-1.5"><TsnIcon name="lock" class="h-4 w-4" stroke="1.8" />Scanned for malware</li>
                 <li class="inline-flex items-center gap-1.5"><TsnIcon name="globe" class="h-4 w-4" stroke="1.8" />Any browser, any device</li>
             </ul>
@@ -185,7 +185,7 @@ const steps = [
     {
         num: '02',
         title: 'Get a short code',
-        desc: 'A unique 5-character code is generated instantly. Valid for 15 minutes.',
+        desc: 'A unique 5-character code and shareable link are generated instantly. You choose the expiry: 10 min, 30 min or 1 h.',
     },
     {
         num: '03',
@@ -203,7 +203,7 @@ const advantages = [
     {
         icon: 'clock',
         title: 'Auto-Delete After Download',
-        desc: 'Each file is single-use. After the first download or 15 minutes, it\'s permanently deleted. No archives, no backups.',
+        desc: 'Each file is single-use. After the first download or when its timer ends — 10 min, 30 min or 1 h — it\'s permanently deleted. No archives, no backups.',
     },
     {
         icon: 'lock',
@@ -240,7 +240,7 @@ const faqs = [
     },
     {
         q: 'How long does a file stay on the server?',
-        a: 'Files are available for 15 minutes or until the first download — whichever comes first. After that, the file and its metadata are permanently deleted.',
+        a: 'Files are available until the first download or until their timer ends — whichever comes first. The sender chooses 10 minutes, 30 minutes or 1 hour. After that, the file and its metadata are permanently deleted.',
     },
     {
         q: 'Are files scanned for malware?',

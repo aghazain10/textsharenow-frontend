@@ -72,11 +72,11 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "When you submit text through our Send feature, it is stored in an encrypted temporary data store with a time-to-live (TTL) of 10 minutes.",
+                text: "When you submit text through our Send feature, it is stored in an encrypted temporary data store with a time-to-live (TTL) you choose when sharing: 10 minutes, 30 minutes or 1 hour.",
             },
             {
                 type: "p",
-                text: "When you upload a file, it is stored on a dedicated server with a TTL of 15 minutes. All uploaded files are scanned for malware using ClamAV before becoming available for download. Files that fail the malware scan are immediately deleted and are never served.",
+                text: "When you upload a file, it is stored on a dedicated server with the same choice of TTL: 10 minutes, 30 minutes or 1 hour. All uploaded files are scanned for malware using ClamAV before becoming available for download. Files that fail the malware scan are immediately deleted and are never served.",
             },
             {
                 type: "p",
@@ -205,7 +205,7 @@ const sections = [
             },
             {
                 type: "p",
-                text: "Because TextShareNow does not require accounts and deletes submitted text automatically within 10 minutes, we generally do not hold personal data beyond short-lived server logs. Any such request can be made using the contact details below.",
+                text: "Because TextShareNow does not require accounts and deletes submitted text automatically at first retrieval or within 1 hour of sharing at the latest, we generally do not hold personal data beyond short-lived server logs. Any such request can be made using the contact details below.",
             },
         ],
     },

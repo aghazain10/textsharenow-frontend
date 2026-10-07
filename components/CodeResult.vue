@@ -23,7 +23,21 @@
                     <div ref="flapsEl" class="mt-3 flex gap-1.5 sm:gap-2" role="img" :aria-label="`Code ${code.split('').join(' ')}`">
                         <span v-for="(c, i) in code" :key="i" class="flap flap-lg">·</span>
                     </div>
-                    <p v-if="!expired" class="mt-3 text-[13px] text-muted">On the other device, go to textsharenow.com/r and enter this code.</p>
+                    <!-- Share link: same destination as the QR code, copyable in one tap -->
+                    <button
+                        v-if="!expired && qrUrl"
+                        type="button"
+                        class="mt-4 flex w-full items-center gap-2.5 rounded-lg border border-line bg-bg px-3 py-2.5 text-left transition-colors hover:bg-surface-2"
+                        aria-label="Copy share link"
+                        @click="copyLink"
+                    >
+                        <TsnIcon name="link" class="h-4 w-4 shrink-0 text-muted" stroke="1.8" />
+                        <span class="min-w-0 flex-1 truncate font-mono text-[14px] text-ink">{{ shortLink }}</span>
+                        <span class="shrink-0 text-[13px] font-medium" :class="linkCopied ? 'text-ok' : 'text-muted'">
+                            {{ linkCopied ? "Copied" : "Copy link" }}
+                        </span>
+                    </button>
+                    <p v-if="!expired" class="mt-3 text-[13px] text-muted">On the other device, go to textsharenow.com/r and enter this code — or just open the link.</p>
                     <p v-else class="mt-3 text-[13px] text-muted">Nobody opened it in time, so it was deleted. Share again to get a new code.</p>
                     <div v-if="!expired" class="mt-4 flex flex-wrap gap-2">
                         <button ref="copyBtn" type="button" class="btn-primary" :disabled="copied" @click="doCopy">
@@ -87,9 +101,20 @@ const CIRC = 2 * Math.PI * 18;
 const flapsEl = ref(null);
 const copyBtn = ref(null);
 const copied = ref(false);
+const linkCopied = ref(false);
 const left = ref(props.ttl);
 const expired = computed(() => left.value <= 0);
-const clock = computed(() => `${Math.floor(left.value / 60)}:${String(left.value % 60).padStart(2, "0")}`);
+const clock = computed(() => {
+    const h = Math.floor(left.value / 3600);
+    const m = Math.floor((left.value % 3600) / 60);
+    const s = left.value % 60;
+    const mm = String(m).padStart(2, "0");
+    const ss = String(s).padStart(2, "0");
+    return h ? `${h}:${mm}:${ss}` : `${m}:${ss}`;
+});
+
+// The share link is the same URL the QR code encodes, shown without the scheme
+const shortLink = computed(() => props.qrUrl.replace(/^https?:\/\//, ""));
 
 let timer;
 onMounted(async () => {
@@ -125,6 +150,13 @@ async function doCopy() {
     if (await copyText(props.code)) {
         copied.value = true;
         setTimeout(() => (copied.value = false), 1600);
+    }
+}
+
+async function copyLink() {
+    if (props.qrUrl && (await copyText(props.qrUrl))) {
+        linkCopied.value = true;
+        setTimeout(() => (linkCopied.value = false), 1600);
     }
 }
 </script>

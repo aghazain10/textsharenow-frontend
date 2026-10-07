@@ -46,19 +46,25 @@
                 <TsnIcon name="alert" class="h-4 w-4 shrink-0" />{{ error }}
             </p>
 
+            <div class="mt-3 rounded-lg border border-line px-4 py-2.5">
+                <ExpirySelect v-model="expires" />
+            </div>
+
             <div class="mt-3 flex flex-wrap items-center justify-between gap-3 pl-2">
-                <p class="text-[13px] text-muted">Deleted after one download, or after 15 minutes.</p>
+                <p class="text-[13px] text-muted">Deleted after one download, or after {{ expiryLabel(expires) }}.</p>
                 <button type="button" class="btn-primary" :disabled="!file || uploading" @click="upload">
                     {{ uploading ? "Uploading…" : "Generate code" }}
                 </button>
             </div>
         </div>
 
-        <CodeResult v-else :code="code" :ttl="900" :qr-url="qrUrl" @reset="reset" />
+        <CodeResult v-else :code="code" :ttl="resultTtl" :qr-url="qrUrl" @reset="reset" />
     </div>
 </template>
 
 <script setup>
+import { DEFAULT_EXPIRY, expiryLabel } from "~/utils/expiry.js";
+
 const config = useRuntimeConfig();
 const API_URL = config.public.FILES_API_URL;
 
@@ -73,6 +79,8 @@ const progress = ref(0);
 const code = ref("");
 const qrUrl = ref("");
 const error = ref("");
+const expires = ref(DEFAULT_EXPIRY); // seconds: 10 min, 30 min or 1 h
+const resultTtl = ref(DEFAULT_EXPIRY); // server-confirmed TTL for the countdown
 
 const size = (b) => (b < 1024 ? b + " B" : b < 1048576 ? (b / 1024).toFixed(1) + " KB" : (b / 1048576).toFixed(1) + " MB");
 
@@ -110,6 +118,7 @@ async function upload() {
     try {
         const form = new FormData();
         form.append("file", file.value);
+        form.append("expires", String(expires.value));
         const result = await new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             xhr.upload.addEventListener("progress", (e) => {
@@ -118,7 +127,7 @@ async function upload() {
             xhr.addEventListener("load", () => {
                 try {
                     const data = JSON.parse(xhr.responseText);
-                    xhr.status >= 200 && xhr.status < 300 ? resolve(data.code) : reject(new Error(data.message || "Upload failed. Please try again."));
+                    xhr.status >= 200 && xhr.status < 300 ? resolve(data) : reject(new Error(data.message || data.error || "Upload failed. Please try again."));
                 } catch {
                     reject(new Error("Upload failed. Please try again."));
                 }
@@ -127,7 +136,8 @@ async function upload() {
             xhr.open("POST", `${API_URL}/upload`);
             xhr.send(form);
         });
-        code.value = result;
+        resultTtl.value = Number(result.expires_in) || expires.value;
+        code.value = result.code;
         qrUrl.value = `${window.location.origin}/r?fcode=${result}`;
         // Record the file share in the aggregate counter (best-effort).
         $fetch(`${config.public.API_BASE}/api/file-share`, { method: "POST" }).catch(() => {});
@@ -143,5 +153,6 @@ function reset() {
     code.value = "";
     qrUrl.value = "";
     progress.value = 0;
+    resultTtl.value = expires.value;
 }
 </script>

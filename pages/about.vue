@@ -38,7 +38,8 @@
                     <p class="mt-4">
                         When you submit text, it is stored in an encrypted
                         temporary key-value store with a time-to-live (TTL) of
-                        10 minutes. A unique 5-character alphanumeric code is
+                        your choice — 10 minutes, 30 minutes or 1 hour. A unique
+                        5-character alphanumeric code is
                         generated and tied to your content as the key. The code
                         space gives over 33 million combinations, and our
                         rate-limiting prevents brute-force enumeration.
@@ -67,7 +68,8 @@
                         downloads. No accounts, no apps, no cloud storage
                         sitting around. Files are scanned for malware before
                         becoming available, and automatically deleted after the
-                        first download or 15 minutes — whichever comes first.
+                        first download or when the sender's timer ends — 10
+                        minutes, 30 minutes or 1 hour — whichever comes first.
                     </p>
                     <p class="mt-4">
                         Supported formats include PNG, JPEG, WebP, MP4, and
@@ -197,7 +199,7 @@ const principles = [
 const sidebarStats = [
     { value: "~8s", label: "Average transfer time" },
     { value: "5", label: "Characters in every code" },
-    { value: "10 min", label: "Maximum data retention" },
+    { value: "1 h", label: "Maximum data retention" },
     { value: "0", label: "Accounts needed" },
     { value: "10,000", label: "Max characters per transfer" },
 ];

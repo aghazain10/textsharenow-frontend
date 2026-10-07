@@ -40,7 +40,7 @@
                 <!-- Auto-Delete Privacy -->
                 <article class="tile">
                     <h3 class="text-[22px] font-semibold tracking-[-0.03em]">Auto-Delete Privacy</h3>
-                    <p class="mt-2 text-muted">Text is permanently deleted from our servers after first read or 10 minutes.</p>
+                    <p class="mt-2 text-muted">Text is permanently deleted from our servers after first read or when it expires — 10 min, 30 min or 1 h.</p>
                     <div class="relative mt-6 flex w-fit gap-1" aria-hidden="true">
                         <span v-for="c in 'K7Q2P'" :key="c" class="flap flap-xs !text-[13px]">{{ c }}</span>
                         <span class="stamp absolute -right-5 -top-3 rounded-md border border-ink bg-bg px-1.5 py-0.5 text-[11px] font-semibold text-ink shadow-card">Used</span>

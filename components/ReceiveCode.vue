@@ -54,7 +54,7 @@
         <div v-else>
             <div class="rounded-lg border border-line p-5 sm:p-7">
                 <!-- Text -->
-                <ReceivedText v-if="result.type === 'text'" :text="result.text" />
+                <ReceivedText v-if="result.type === 'text'" :text="result.text" :code="result.code" />
 
                 <!-- File -->
                 <template v-else>
@@ -156,7 +156,7 @@ function fail(title, body) {
     requestAnimationFrame(() => (shake.value = true));
 }
 
-const NOT_FOUND = ["Code not found or expired", "Check each character and try again. Text codes last 10 minutes, file codes last 15."];
+const NOT_FOUND = ["Code not found or expired", "Check each character and try again. Codes last between 10 minutes and 1 hour, depending on what the sender chose."];
 
 async function getText(code) {
     try {
