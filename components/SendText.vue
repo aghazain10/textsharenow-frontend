@@ -5,49 +5,53 @@
             class="rounded-lg border border-line bg-bg"
         >
             <label for="send-textarea" class="sr-only">Text, link or note to share</label>
-            <textarea
-                id="send-textarea"
-                ref="area"
-                v-model="text"
-                maxlength="10000"
-                rows="8"
-                placeholder="Paste a link, a note, an address… anything up to 10,000 characters."
-                class="block w-full resize-none rounded-t-lg bg-transparent px-5 pb-2 pt-5 text-[17px] leading-relaxed placeholder:text-muted/70 !outline-none focus:!outline-none focus-visible:!outline-none"
-                @keydown.enter.meta.prevent="send"
-                @keydown.enter.ctrl.prevent="send"
-            />
+            <div class="relative">
+                <textarea
+                    id="send-textarea"
+                    ref="area"
+                    v-model="text"
+                    maxlength="10000"
+                    rows="8"
+                    placeholder="Paste a link, a note, an address… anything up to 10,000 characters."
+                    class="block w-full resize-none rounded-t-lg bg-transparent px-5 pb-9 pt-5 text-[17px] leading-relaxed placeholder:text-muted/70 !outline-none focus:!outline-none focus-visible:!outline-none"
+                    @keydown.enter.meta.prevent="send"
+                    @keydown.enter.ctrl.prevent="send"
+                />
+                <div class="pointer-events-none absolute inset-x-5 bottom-2 flex items-center justify-between gap-3 text-[13px]">
+                    <span class="pointer-events-auto flex items-center gap-2">
+                        <button
+                            v-if="canPaste && !text.length"
+                            type="button"
+                            class="inline-flex items-center gap-1.5 rounded-md border border-line px-2 py-1 font-medium text-ink hover:bg-surface-2"
+                            @click="pasteIn"
+                        >
+                            <TsnIcon name="clipboard" class="h-3.5 w-3.5" />Paste
+                        </button>
+                        <span v-if="pasteHint" class="text-muted">{{ pasteHint }}</span>
+                    </span>
+                    <span class="pointer-events-auto flex items-center gap-1.5">
+                        <span
+                            class="tabular-nums"
+                            :class="text.length >= 10000 ? 'font-semibold text-bad' : text.length >= 9000 ? 'font-semibold text-ink' : 'text-muted'"
+                            aria-live="polite"
+                        >{{ text.length.toLocaleString("en-US") }} / 10,000</span>
+                        <button
+                            v-if="text.length"
+                            type="button"
+                            class="rounded-md px-2 py-1 font-medium text-muted hover:bg-surface-2 hover:text-ink"
+                            @click="text = ''"
+                        >
+                            Clear
+                        </button>
+                    </span>
+                </div>
+            </div>
             <p v-if="error" class="mx-5 mb-2 flex items-center gap-2 text-[14px] text-bad" role="alert">
                 <TsnIcon name="alert" class="h-4 w-4 shrink-0" />{{ error }}
             </p>
-            <div class="border-t border-line px-5 py-2.5">
+            <div class="flex flex-wrap items-center gap-3 px-3 pb-3 pl-5">
                 <ExpirySelect v-model="ttl" />
-            </div>
-            <div class="flex flex-wrap items-center justify-between gap-3 px-3 pb-3 pl-5">
-                <div class="flex items-center gap-3 text-[13px]">
-                    <span
-                        class="tabular-nums"
-                        :class="text.length >= 10000 ? 'font-semibold text-bad' : text.length >= 9000 ? 'font-semibold text-ink' : 'text-muted'"
-                        aria-live="polite"
-                    >{{ text.length.toLocaleString("en-US") }} / 10,000</span>
-                    <button
-                        v-if="canPaste && !text.length"
-                        type="button"
-                        class="inline-flex items-center gap-1.5 rounded-md border border-line px-2 py-1 font-medium text-ink hover:bg-surface-2"
-                        @click="pasteIn"
-                    >
-                        <TsnIcon name="clipboard" class="h-3.5 w-3.5" />Paste
-                    </button>
-                    <span v-if="pasteHint" class="text-muted">{{ pasteHint }}</span>
-                    <button
-                        v-if="text.length"
-                        type="button"
-                        class="rounded-md px-2 py-1 font-medium text-muted hover:bg-surface-2 hover:text-ink"
-                        @click="text = ''"
-                    >
-                        Clear
-                    </button>
-                </div>
-                <div class="flex items-center gap-3">
+                <div class="ml-auto flex items-center gap-3">
                     <kbd class="hidden rounded-md border border-line px-1.5 py-0.5 font-sans text-[12px] text-muted sm:inline">{{ shortcut }}</kbd>
                     <button type="button" class="btn-primary" :disabled="!text.trim() || loading" @click="send">
                         {{ loading ? "Generating…" : "Generate code" }}

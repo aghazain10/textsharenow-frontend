@@ -46,13 +46,17 @@
                 <TsnIcon name="alert" class="h-4 w-4 shrink-0" />{{ error }}
             </p>
 
-            <div class="mt-3 rounded-lg border border-line px-4 py-2.5">
+            <div class="mt-3 rounded-lg border border-line px-4 py-2.5 lg:hidden">
                 <ExpirySelect v-model="expires" />
             </div>
 
-            <div class="mt-3 flex flex-wrap items-center justify-between gap-3 pl-2">
-                <p class="text-[13px] text-muted">Deleted after one download, or after {{ expiryLabel(expires) }}.</p>
-                <button type="button" class="btn-primary" :disabled="!file || uploading" @click="upload">
+            <div class="mt-3 flex flex-wrap items-center gap-3 pl-2">
+                <p class="text-[13px] text-muted lg:hidden">Deleted after one download, or after {{ expiryLabel(expires) }}.</p>
+                <div class="hidden items-center gap-3 lg:flex">
+                    <p class="text-[13px] text-muted">Deleted after one download.</p>
+                    <ExpirySelect v-model="expires" />
+                </div>
+                <button type="button" class="btn-primary ml-auto" :disabled="!file || uploading" @click="upload">
                     {{ uploading ? "Uploading…" : "Generate code" }}
                 </button>
             </div>

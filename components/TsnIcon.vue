@@ -41,6 +41,7 @@ const paths = {
     alert: '<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/>',
     mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
     arrow: '<path d="M5 12h14m-5-5 5 5-5 5"/>',
+    "chevron-down": '<path d="m6 9 6 6 6-6"/>',
     back: '<path d="M19 12H5m5 5-5-5 5-5"/>',
     expand: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
     trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
