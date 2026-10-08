@@ -48,6 +48,11 @@
           <p>
             This approach solves the fundamental friction of cross-device text transfer: <strong class="font-semibold text-ink">you don't need to install anything, sign in anywhere, or be on the same Wi-Fi.</strong> It just works.
           </p>
+          <p>
+            Need to move a photo, screenshot, or short video instead of text? TextShareNow uses the same short-code flow for files —
+            <NuxtLink to="/share-files-online" class="text-link">share files online</NuxtLink>
+            with a 5-character code: upload once, type the code on the other device, download, done. No app, no sign-up, and the file is deleted after the first download.
+          </p>
         </div>
       </div>
     </section>

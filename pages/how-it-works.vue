@@ -33,6 +33,16 @@
               <NuxtLink to="/online-text-sharing" class="text-link">Read our dedicated online text sharing guide</NuxtLink>.
             </p>
           </section>
+
+          <section>
+            <h2 class="text-[26px] font-semibold tracking-[-0.03em] text-ink">Share Files Between Devices: Photos, Screenshots, Short Videos</h2>
+            <p class="mt-4 text-[16px] leading-7 text-muted">
+              The file flow works the same way: upload on one device, get a 5-character code, type it on the other device, download.
+              Files are single-use, scanned for malware, and deleted after the first download or when their timer ends — 10 minutes,
+              30 minutes or 1 hour. For supported formats, size limits, and a step-by-step walkthrough, see the
+              <NuxtLink to="/share-files-online" class="text-link">share files online guide</NuxtLink>.
+            </p>
+          </section>
         </div>
       </div>
     </section>

@@ -19,6 +19,9 @@
                     </span>
                     <h3 class="mt-5 text-[19px] font-semibold tracking-[-0.02em]">{{ uc.title }}</h3>
                     <p class="mt-2 text-[15px] leading-relaxed text-muted">{{ uc.description }}</p>
+                    <p v-if="uc.to" class="mt-3">
+                        <NuxtLink :to="uc.to" class="text-link">{{ uc.linkText }}</NuxtLink>
+                    </p>
                 </article>
             </div>
         </div>
@@ -56,6 +59,8 @@ const useCases = [
         title: "Sharing a Screenshot or Quick Photo",
         description:
             "Took a screenshot on your phone and need it on your laptop? Upload it, get a code, download on the other device — no WhatsApp compression, no email attachment limits, no cloud upload.",
+        to: "/share-files-online",
+        linkText: "Share a file online with a short code",
     },
 ];
 </script>

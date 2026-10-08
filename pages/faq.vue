@@ -37,6 +37,7 @@
                 </button>
                 <div v-show="openKey === `${ci}-${i}`" class="pb-4">
                   <p class="max-w-[68ch] text-[15px] leading-7 text-muted">{{ item.answer }}</p>
+                  <NuxtLink v-if="item.link" :to="item.link.to" class="text-link mt-2 inline-block">{{ item.link.text }}</NuxtLink>
                 </div>
               </div>
             </div>
@@ -188,6 +189,10 @@ const categories = [
         question: 'What file types can I share?',
         answer:
           'TextShareNow supports PNG, JPEG, WebP, MP4, and WebM files. Images are re-encoded from raw pixels for security before being stored. SVG files are explicitly rejected.',
+        link: {
+          to: '/share-files-online',
+          text: 'Share files online — free, no sign-up',
+        },
       },
       {
         question: 'What is the maximum file size?',
@@ -223,6 +228,10 @@ const categories = [
         question: 'Can I share files or images?',
         answer:
           'Yes. TextShareNow supports file sharing alongside text. You can upload PNG, JPEG, WebP, MP4, and WebM files up to 10 MB. Switch to the "Share Files" tab to send a file, and use the "Receive File" tab on the other device to download it with a short code.',
+        link: {
+          to: '/share-files-online',
+          text: 'Open the file sharing tool',
+        },
       },
       {
         question: 'Does it work without an internet connection?',

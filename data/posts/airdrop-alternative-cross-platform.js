@@ -5,7 +5,7 @@ export default {
     "tag": "Guide",
     "date": "March 2026",
     "datePublished": "2026-03-05",
-    "dateModified": "2026-08-07",
+    "dateModified": "2026-10-08",
     "readTime": "5 min read",
     "content": [
         {
@@ -105,6 +105,10 @@ export default {
                     "text": "AirDrop alternative for Windows: 3 ways to send files and text"
                 },
                 {
+                    "to": "/blog/airdrop-alternative-online",
+                    "text": "AirDrop alternative online: share files with a code"
+                },
+                {
                     "to": "/blog/iphone-windows-text-transfer-without-icloud",
                     "text": "iPhone to Windows text transfer without iCloud"
                 }
@@ -112,7 +116,7 @@ export default {
         },
         {
             "type": "h2",
-            "text": "Which One Should You Actually Use"
+            "text": "Matching the Transfer to the Tool"
         },
         {
             "type": "ul",

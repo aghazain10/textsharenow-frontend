@@ -6,7 +6,7 @@
                 TextShareNow
             </NuxtLink>
 
-            <nav class="hidden items-center md:flex" aria-label="Main">
+            <nav class="hidden items-center lg:flex" aria-label="Main">
                 <NuxtLink v-for="l in LINKS" :key="l.to" :to="l.to" class="nav-link" exact-active-class="!text-ink">{{ l.label }}</NuxtLink>
             </nav>
 
@@ -20,7 +20,7 @@
                 <NuxtLink to="/#tool" class="btn-primary hidden !h-9 sm:inline-flex">Share now</NuxtLink>
                 <button
                     type="button"
-                    class="btn-icon md:hidden"
+                    class="btn-icon lg:hidden"
                     :aria-expanded="open"
                     aria-controls="mobile-nav"
                     :aria-label="open ? 'Close menu' : 'Open menu'"
@@ -31,7 +31,7 @@
             </div>
         </div>
 
-        <nav v-if="open" id="mobile-nav" class="mx-auto mb-3 max-w-6xl rounded-lg border border-line bg-bg p-1 shadow-card md:hidden" aria-label="Mobile">
+        <nav v-if="open" id="mobile-nav" class="mx-auto mb-3 max-w-6xl rounded-lg border border-line bg-bg p-1 shadow-card lg:hidden" aria-label="Mobile">
             <NuxtLink
                 v-for="l in LINKS"
                 :key="l.to"
@@ -45,6 +45,7 @@
 <script setup>
 const LINKS = [
     { to: "/", label: "Tool" },
+    { to: "/share-files-online", label: "Share Files" },
     { to: "/how-it-works", label: "How It Works" },
     { to: "/faq", label: "FAQ" },
     { to: "/blog", label: "Blog" },

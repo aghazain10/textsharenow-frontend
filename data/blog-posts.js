@@ -20,6 +20,9 @@ import post19 from "./posts/cross-device-sharing-glossary.js";
 import post20 from "./posts/how-short-code-sharing-works.js";
 import post21 from "./posts/sharing-code-not-working.js";
 import post22 from "./posts/what-happens-to-your-text.js";
+import post23 from "./posts/share-files-between-phone-and-laptop.js";
+import post24 from "./posts/airdrop-alternative-online.js";
+import post25 from "./posts/file-sharing-websites-without-login.js";
 
 export const blogPosts = [
     post1,
@@ -44,4 +47,7 @@ export const blogPosts = [
     post20,
     post21,
     post22,
+    post23,
+    post24,
+    post25,
 ];

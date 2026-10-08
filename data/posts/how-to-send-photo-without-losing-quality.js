@@ -5,7 +5,7 @@ export default {
     "tag": "Guide",
     "date": "September 2026",
     "datePublished": "2026-09-17",
-    "dateModified": "2026-09-17",
+    "dateModified": "2026-10-08",
     "readTime": "6 min read",
     "content": [
         {
@@ -155,6 +155,10 @@ export default {
                 {
                     "to": "/blog/free-temporary-file-sharing",
                     "text": "Free temporary file sharing: how it works and when to use it"
+                },
+                {
+                    "to": "/blog/share-files-between-phone-and-laptop",
+                    "text": "How to share files between phone and laptop without a cable"
                 },
                 {
                     "to": "/blog/airdrop-alternative-cross-platform",

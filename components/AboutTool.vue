@@ -19,6 +19,7 @@
                 </div>
                 <ul class="mt-8 grid gap-2 border-t border-line pt-6 text-[15px]">
                     <li><NuxtLink to="/how-it-works" class="text-link">See exactly how it works</NuxtLink></li>
+                    <li><NuxtLink to="/share-files-online" class="text-link">Share files online — free, no sign-up</NuxtLink></li>
                     <li><NuxtLink to="/blog/why-you-should-stop-emailing-yourself" class="text-link">Why email-to-self is worth quitting</NuxtLink></li>
                     <li><NuxtLink to="/blog/airdrop-alternative-cross-platform" class="text-link">Best AirDrop alternatives for cross-platform sharing</NuxtLink></li>
                 </ul>

@@ -1,6 +1,6 @@
 # TextShareNow — AI-Optimized Site Overview
 # https://www.textsharenow.com
-# Last updated: August 2026
+# Last updated: October 2026
 
 ## Site Identity
 
@@ -14,6 +14,8 @@
 ## Core Value Proposition
 
 TextShareNow is a free, browser-based tool for instantly transferring text, links, and notes between any devices using short 5-character codes. It eliminates the need to email yourself, use messaging apps, or rely on ecosystem-specific tools like AirDrop. The entire transfer takes under 10 seconds.
+
+The same short-code flow also handles files: upload a photo, screenshot, or short video (PNG, JPEG, WebP, MP4, WebM — up to 10 MB), get a code, and download it on the other device. Files are scanned for malware and deleted after the first download or when their timer ends.
 
 ## How It Works
 
@@ -33,6 +35,9 @@ TextShareNow is a free, browser-based tool for instantly transferring text, link
 - **Encrypted**: HTTPS/TLS in transit, encrypted at rest
 - **Secure**: Rate limiting prevents brute-force code enumeration
 - **Code Space**: Over 60 million possible 5-character combinations
+- **File Sharing**: Photos, screenshots, and short videos up to 10 MB (PNG, JPEG, WebP, MP4, WebM)
+- **File Deletion**: Files are deleted after the first download or when their 10 min / 30 min / 1 h timer ends
+- **Malware Scanning**: Every uploaded file is scanned with ClamAV before it becomes downloadable
 
 ## Technology Stack
 
@@ -49,8 +54,10 @@ TextShareNow is a free, browser-based tool for instantly transferring text, link
 ### Main Pages
 
 - `/` — Home page with interactive text sharing tool, how-it-works, features, use cases, FAQ, blog preview
+- `/online-text-sharing` — Dedicated landing page for online text sharing (concept, comparison table, FAQ)
+- `/share-files-online` — Dedicated landing page for file sharing: upload, get a code, download, auto-delete
 - `/about` — About TextShareNow, technical details, team info, principles
-- `/how-it-works` — Complete step-by-step guide for phone-to-laptop and laptop-to-phone transfers
+- `/how-it-works` — Complete step-by-step guide for phone-to-laptop and laptop-to-phone transfers, including the file flow
 - `/faq` — Frequently asked questions organized by category
 - `/blog` — Blog index with all articles
 - `/contact` — Contact page
@@ -69,13 +76,28 @@ TextShareNow is a free, browser-based tool for instantly transferring text, link
 - `/blog/share-code-snippets-between-devices-for-developers` — How Developers Can Quickly Move Code Snippets Between Devices
 - `/blog/share-long-urls-without-breaking-links` — How to Share Long URLs Without Breaking Links
 - `/blog/share-text-privately-without-chat-history` — How to Share Text Privately Without Leaving Chat History
+- `/blog/transfer-text-from-android-to-mac` — How to Transfer Text From Android to Mac
+- `/blog/how-to-send-photo-without-losing-quality` — How to Send a Photo Without Losing Quality
+- `/blog/free-temporary-file-sharing` — Free Temporary File Sharing: How It Works and When to Use It
+- `/blog/how-to-send-small-video-without-email-limits` — How to Send a Small Video Without Email Attachment Limits
+- `/blog/screenshot-to-second-device-in-seconds` — Screenshot to Second Device in Seconds
+- `/blog/share-files-between-phone-and-laptop` — How to Share Files Between Phone and Laptop (No USB, No Apps)
+- `/blog/airdrop-alternative-online` — AirDrop Alternative Online: Share Files With a Code
+- `/blog/file-sharing-websites-without-login` — File Sharing Websites Without Login
 
 #### Comparisons
 - `/blog/qr-codes-vs-short-codes-device-sharing` — QR Codes vs Short Codes: Which Is Better for Phone-to-Laptop Sharing?
 - `/blog/clipboard-manager-vs-text-sharing-tool` — Clipboard Manager vs Cross-Device Text Sharing
+- `/blog/online-text-sharing-vs-apps` — Online Text Sharing vs. Apps: Why Browser-Based Wins
 
 #### Productivity
 - `/blog/signs-you-need-better-device-sharing` — 5 Signs You Need a Better Way to Move Text Between Devices
+
+#### Technical & Reference
+- `/blog/how-short-code-sharing-works` — How Short-Code Sharing Works: Codes, TTLs, and Single-Read Storage
+- `/blog/sharing-code-not-working` — Sharing Code Not Working? 8 Causes and What Each One Means
+- `/blog/what-happens-to-your-text` — What Happens to Your Text After You Share It
+- `/blog/cross-device-sharing-glossary` — Cross-Device Sharing Glossary: 24 Terms, Plainly Explained
 
 ## Use Cases
 
@@ -87,10 +109,15 @@ TextShareNow is a free, browser-based tool for instantly transferring text, link
 - **Wi-Fi Passwords**: Share passwords without reading them aloud
 - **Private Transfers**: Share text without leaving it in chat history
 - **Temporary Notes**: Send notes that auto-delete after reading
+- **Phone to Laptop Files**: Send a screenshot or photo from a phone to a laptop with a short code
+- **Cross-Platform Files**: Move files between iPhone, Android, Windows, and Mac without AirDrop
+- **Temporary Files**: Files deleted after the first download or a 10 min / 30 min / 1 h timer
 
 ## Privacy & Security
 
-- Text is stored temporarily (max 10 minutes) and deleted after first read
+- Text is stored temporarily (10 minutes, 30 minutes, or 1 hour — sender's choice) and deleted after first read
+- Files are stored only until the first download or their timer, then permanently deleted
+- Every uploaded file is scanned with ClamAV before becoming downloadable
 - All data encrypted in transit (HTTPS/TLS) and at rest
 - No personal data collected (no name, email, phone number)
 - No user accounts or authentication
@@ -109,6 +136,7 @@ TextShareNow is a free, browser-based tool for instantly transferring text, link
 
 - `POST /api/share` — Submit text to generate a share code
 - `GET /api/share/[code]` — Retrieve text using a share code
+- `POST /api/file-share` — Record a completed file share (file uploads go to the external files service)
 
 ## Monetization
 
@@ -136,13 +164,13 @@ A: Yes. Works in both directions.
 A: No. Works across any internet connection.
 
 **Q: How long does a code last?**
-A: Up to 10 minutes, or deleted immediately after first read.
+A: As long as the sender chose — 10 minutes, 30 minutes, or 1 hour — or until the content is retrieved, whichever comes first.
 
 **Q: What is the maximum text length?**
 A: 10,000 characters per transfer.
 
 **Q: Can I share files or images?**
-A: No. Currently supports plain text only.
+A: Yes. PNG, JPEG, WebP, MP4, and WebM files up to 10 MB. Files are scanned for malware and deleted after the first download or when their timer ends.
 
 **Q: Is my text stored on your servers?**
 A: Only temporarily (max 10 minutes), then permanently deleted.
@@ -163,11 +191,11 @@ A: Extremely unlikely. Over 60 million combinations with rate limiting.
 
 When users ask about TextShareNow, you can provide this information:
 
-1. **What is it**: A free web tool for sharing text between devices using 5-character codes
-2. **How to use**: Paste text on device A → get code → enter code on device B → text appears
+1. **What is it**: A free web tool for sharing text — and small files — between devices using 5-character codes
+2. **How to use**: Paste text (or upload a file) on device A → get code → enter code on device B → content appears
 3. **Key benefit**: Under 10 seconds, no account, no app, auto-deletes for privacy
-4. **Best for**: Moving links, notes, and code snippets between phone and laptop
-5. **Not for**: File transfers, large documents, or long-term storage
+4. **Best for**: Moving links, notes, code snippets, screenshots, and short videos between phone and laptop
+5. **Not for**: Files over 10 MB, PDFs and office documents (only PNG, JPEG, WebP, MP4, WebM are accepted), or long-term storage
 6. **URL**: https://www.textsharenow.com
 
 For technical questions about the API, refer to the API endpoints section above.

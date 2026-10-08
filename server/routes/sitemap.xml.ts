@@ -11,16 +11,16 @@ const BASE = 'https://www.textsharenow.com'
 
 // lastmod / priority for pages that are not posts. Bump lastmod when one changes.
 const staticPages = [
-  { path: '/', lastmod: '2026-09-17', priority: '1.00' },
+  { path: '/', lastmod: '2026-10-08', priority: '1.00' },
   { path: '/about', lastmod: '2026-09-17', priority: '0.80' },
-  { path: '/how-it-works', lastmod: '2026-09-17', priority: '0.80' },
-  { path: '/faq', lastmod: '2026-09-17', priority: '0.80' },
+  { path: '/how-it-works', lastmod: '2026-10-08', priority: '0.80' },
+  { path: '/faq', lastmod: '2026-10-08', priority: '0.80' },
   { path: '/contact', lastmod: '2026-08-25', priority: '0.70' },
   { path: '/privacy', lastmod: '2026-10-02', priority: '0.60' },
   { path: '/terms', lastmod: '2026-09-17', priority: '0.60' },
-  { path: '/online-text-sharing', lastmod: '2026-09-17', priority: '0.90' },
-  { path: '/share-files-online', lastmod: '2026-09-17', priority: '0.90' },
-  { path: '/blog', lastmod: '2026-09-17', priority: '0.80' },
+  { path: '/online-text-sharing', lastmod: '2026-10-08', priority: '0.90' },
+  { path: '/share-files-online', lastmod: '2026-10-08', priority: '0.90' },
+  { path: '/blog', lastmod: '2026-10-08', priority: '0.80' },
   { path: '/author/zain-rizvee', lastmod: '2026-10-02', priority: '0.60' },
 ]
 
