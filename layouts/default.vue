@@ -10,5 +10,6 @@
         </main>
         <AppFooter />
         <ConsentBanner />
+        <ProModal />
     </div>
 </template>

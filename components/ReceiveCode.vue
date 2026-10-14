@@ -34,6 +34,28 @@
                 />
             </div>
 
+            <!-- Password prompt for protected shares -->
+            <div v-if="passwordNeeded" class="mx-auto mt-5 max-w-xs text-left">
+                <label for="pw-input" class="flex items-center gap-1.5 text-[13px] font-medium text-ink">
+                    <TsnIcon name="lock" class="h-3.5 w-3.5 shrink-0 text-muted" stroke="1.8" />
+                    This share has a password
+                </label>
+                <input
+                    id="pw-input"
+                    ref="pwInput"
+                    v-model="password"
+                    type="password"
+                    autocomplete="off"
+                    placeholder="Enter the password"
+                    class="mt-1.5 w-full rounded-md border border-line bg-bg px-3 py-2 text-[15px] text-ink placeholder:text-muted/70 !outline-none"
+                    @keydown.enter.prevent="unlock"
+                />
+                <p v-if="passwordError" class="mt-1.5 text-[13px] text-bad" role="alert">{{ passwordError }}</p>
+                <button type="button" class="btn-primary mt-2 w-full" :disabled="!password || loading" @click="unlock">
+                    {{ loading ? "Checking…" : "Unlock" }}
+                </button>
+            </div>
+
             <div v-if="error" id="receive-error" class="mx-auto mt-5 max-w-md rounded-lg border border-bad/30 bg-bad-soft px-4 py-3 text-left text-[14px]" role="alert">
                 <p class="font-semibold text-bad">{{ error.title }}</p>
                 <p class="mt-0.5 text-ink/75">{{ error.body }}</p>
@@ -74,7 +96,9 @@
 
                 <p class="mt-3 flex items-start justify-center gap-1.5 text-center text-[13px] text-muted">
                     <TsnIcon name="trash" class="mt-px h-3.5 w-3.5 shrink-0" stroke="1.8" />
-                    <span>Deleted from our server. Code {{ result.code }} won't work again.</span>
+                    <span v-if="result.type === 'text' && result.readsLeft === null">Available until the sender's expiry time.</span>
+                    <span v-else-if="result.type === 'text' && result.readsLeft > 0">Read {{ result.readsLeft }} more time{{ result.readsLeft === 1 ? "" : "s" }} before it's deleted.</span>
+                    <span v-else>Deleted from our server. Code {{ result.code }} won't work again.</span>
                 </p>
 
                 <TipCard where="receive" class="!mt-4" />
@@ -92,6 +116,8 @@
  * share, we check the files service with a HEAD request, which doesn't use up
  * the download, then hand the browser the real download link.
  */
+import { hashPassword } from "~/utils/hash.js";
+
 const props = defineProps({
     initialCode: { type: String, default: "" },
     initialKind: { type: String, default: "" }, // "text" | "file" from a scanned QR link
@@ -108,6 +134,12 @@ const shake = ref(false);
 const result = ref(null);
 const inputEl = ref(null);
 const slots = ref([]);
+
+// Password-protected shares
+const passwordNeeded = ref(false);
+const password = ref("");
+const passwordError = ref("");
+const pwInput = ref(null);
 
 const canPaste = ref(false);
 const pasteHint = ref("");
@@ -156,15 +188,28 @@ function fail(title, body) {
     requestAnimationFrame(() => (shake.value = true));
 }
 
-const NOT_FOUND = ["Code not found or expired", "Check each character and try again. Codes last between 10 minutes and 1 hour, depending on what the sender chose."];
+const NOT_FOUND = ["Code not found or expired", "Check each character and try again. Codes last as long as the sender chose — from 10 minutes up to never."];
 
-async function getText(code) {
+async function getText(code, pwHash) {
     try {
-        const res = await $fetch(`${config.public.API_BASE}/api/share/${code}`);
-        return { type: "text", text: res.text, code };
+        const res = await $fetch(`${config.public.API_BASE}/api/share/${code}`, {
+            query: pwHash ? { pw: pwHash } : undefined,
+        });
+        return { type: "text", text: res.text, code, readsLeft: res.readsLeft };
     } catch (e) {
-        if (e?.response?.status === 404) return null;
-        if (e?.response?.status === 429) throw new Error("Too many tries. Wait a minute and try again.");
+        const status = e?.status ?? e?.response?.status;
+        if (status === 404) return null;
+        if (status === 401) {
+            const err = new Error("password required");
+            err.code = "PASSWORD";
+            throw err;
+        }
+        if (status === 403) {
+            const err = new Error("Incorrect password. Try again.");
+            err.code = "WRONG_PASSWORD";
+            throw err;
+        }
+        if (status === 429) throw new Error("Too many tries. Wait a minute and try again.");
         throw new Error("Couldn't reach TextShareNow. Check your internet connection and try again.");
     }
 }
@@ -177,27 +222,48 @@ async function getFile(code) {
     return { type: "file", code };
 }
 
-async function receive(kind) {
+async function receive(kind, pwHash) {
     const code = value.value;
     if (code.length < 5 || loading.value) return;
     loading.value = true;
     error.value = null;
     try {
         let res = null;
-        if (kind !== "file") res = await getText(code);
+        if (kind !== "file") res = await getText(code, pwHash);
         if (!res && kind !== "text") res = await getFile(code);
         if (!res) return fail(...NOT_FOUND);
+        passwordNeeded.value = false;
+        passwordError.value = "";
         result.value = res;
     } catch (e) {
-        fail("Something went wrong", e.message);
+        if (e?.code === "PASSWORD") {
+            passwordNeeded.value = true;
+            passwordError.value = "";
+            nextTick(() => pwInput.value?.focus());
+        } else if (e?.code === "WRONG_PASSWORD") {
+            passwordNeeded.value = true;
+            passwordError.value = e.message;
+            nextTick(() => pwInput.value?.select());
+        } else {
+            fail("Something went wrong", e.message);
+        }
     } finally {
         loading.value = false;
     }
 }
 
+async function unlock() {
+    if (!password.value || loading.value) return;
+    const hash = await hashPassword(password.value);
+    receive("", hash);
+}
+
 function reset() {
     result.value = null;
     value.value = "";
+    passwordNeeded.value = false;
+    password.value = "";
+    passwordError.value = "";
     nextTick(() => inputEl.value?.focus());
 }
 
