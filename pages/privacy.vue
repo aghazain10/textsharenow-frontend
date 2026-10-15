@@ -93,26 +93,21 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "TextShareNow sets no first-party cookies of its own, and we run no analytics or advertising software ourselves. Two optional Google services do, and both are held behind your consent.",
+                text: "TextShareNow sets no first-party cookies of its own, and we run no analytics or advertising software ourselves. Two optional Google services do: Google Analytics and Google AdSense.",
             },
             {
                 type: "p",
-                text: "Analytics — we use Google Analytics 4 to measure aggregate, anonymised usage of this site: which pages are visited, which devices and languages are used, and how visitors arrive here. The Google tag loads with every consent category set to denied, so no analytics storage is written until you press Accept all in the cookie banner. If you decline, the visit is not recorded in Google Analytics.",
+                text: "Analytics — we use Google Analytics 4 to measure aggregate, anonymised usage of this site: which pages are visited, which devices and languages are used, and how visitors arrive here.",
             },
             {
                 type: "p",
-                text: "Advertising — we use Google AdSense to display advertisements on this site. Google, as a third-party vendor, and its advertising partners may use cookies, including the DoubleClick cookie, to serve ads based on a visitor's prior visits to this site or other sites on the internet. The AdSense tag follows the same consent default and only stores advertising cookies once you accept.",
-            },
-            {
-                type: "p",
-                text: "If you are located in the European Economic Area, the United Kingdom or Switzerland, personalised advertising is only enabled through a Google-certified consent management platform operating under the IAB Transparency and Consent Framework, as required by Google's EU user consent policy.",
+                text: "Advertising — we use Google AdSense to display advertisements on this site. Google, as a third-party vendor, and its advertising partners may use cookies, including the DoubleClick cookie, to serve ads based on a visitor's prior visits to this site or other sites on the internet.",
             },
             {
                 type: "ul",
                 items: [
                     "Google Analytics event data is kept only for the retention period configured in our Analytics property (Google's default is 2 months).",
                     "The lifetime of Google's advertising cookies is governed by Google's own cookie policy.",
-                    "Your consent choice is stored on your own device only — we receive no consent identifier.",
                 ],
             },
             {
@@ -140,19 +135,8 @@ const sections = [
                 ],
             },
             {
-                type: "links",
-                prefix: "You can change or withdraw your consent for this site at any time with",
-                links: [
-                    {
-                        text: "the cookie preferences panel",
-                        href: "#cookie-preferences",
-                        external: false,
-                    },
-                ],
-            },
-            {
                 type: "p",
-                text: "Withdrawing consent is as easy as giving it. You can also disable cookies entirely through your browser settings, though this may affect functionality on other websites.",
+                text: "You can also disable cookies entirely through your browser settings, though this may affect functionality on other websites.",
             },
         ],
     },
