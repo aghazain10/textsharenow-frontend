@@ -38,11 +38,70 @@
                         <span class="text-[15px] font-bold text-ink">$5<span class="text-[13px] font-medium text-muted">/month</span></span>
                     </div>
 
-                    <button type="button" class="btn-primary mt-4 w-full" @click="goPro">Go Pro — unlock everything</button>
-                    <button type="button" class="mt-2 w-full rounded-md py-2 text-[14px] font-medium text-muted transition-colors hover:text-ink" @click="close">
-                        Maybe later
-                    </button>
-                    <p class="mt-3 text-center text-[12px] text-muted">Preview: turns Pro on instantly. Billing comes at launch.</p>
+                    <!-- Already activated on this device -->
+                    <div v-if="isPro" class="mt-4 rounded-lg border border-line bg-surface-2 p-4 text-center">
+                        <p class="text-[14px] font-semibold text-ink">Pro is active on this device 🎉</p>
+                        <p class="mt-1 text-[13px] text-muted">All power features are unlocked.</p>
+                        <button
+                            type="button"
+                            class="mt-3 rounded-md border border-line bg-bg px-3 py-1.5 text-[13px] font-medium text-muted transition-colors hover:text-ink"
+                            @click="deactivate"
+                        >
+                            Deactivate Pro
+                        </button>
+                    </div>
+
+                    <!-- Not activated: buy or redeem a key -->
+                    <template v-else>
+                        <a
+                            :href="PRO_URL"
+                            target="_blank"
+                            rel="noopener noopener"
+                            class="btn-primary mt-4 flex w-full items-center justify-center"
+                        >
+                            Get Pro — $5/month
+                        </a>
+
+                        <button
+                            type="button"
+                            class="mt-3 w-full text-[13px] font-medium text-brand transition-colors hover:underline"
+                            @click="showKey = !showKey"
+                        >
+                            {{ showKey ? "Hide license key entry" : "I already have a license key" }}
+                        </button>
+
+                        <div v-if="showKey" class="mt-2 flex gap-2">
+                            <input
+                                v-model="licenseKey"
+                                type="text"
+                                placeholder="XXXX-XXXX-XXXX-XXXX"
+                                aria-label="License key"
+                                class="min-w-0 flex-1 rounded-md border border-line bg-bg px-3 py-2 font-mono text-[13px] text-ink placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-brand"
+                                autocomplete="off"
+                                spellcheck="false"
+                                @keyup.enter="onActivate"
+                            />
+                            <button
+                                type="button"
+                                class="btn-primary !px-4"
+                                :disabled="activating || !licenseKey.trim()"
+                                @click="onActivate"
+                            >
+                                {{ activating ? "…" : "Activate" }}
+                            </button>
+                        </div>
+
+                        <p
+                            v-if="feedback"
+                            class="mt-2 text-center text-[13px]"
+                            :class="feedbackOk ? 'text-ok' : 'text-bad'"
+                            role="status"
+                        >{{ feedback }}</p>
+
+                        <button type="button" class="mt-2 w-full rounded-md py-2 text-[14px] font-medium text-muted transition-colors hover:text-ink" @click="close">
+                            Maybe later
+                        </button>
+                    </template>
                 </div>
             </div>
         </Transition>
@@ -51,7 +110,7 @@
 
 <script setup>
 const { isOpen, copy, close } = useProModal();
-const { isPro } = usePremium();
+const { isPro, activating, activate, deactivate } = usePremium();
 
 const FEATURES = [
     "Up to 100,000 characters per share",
@@ -62,13 +121,36 @@ const FEATURES = [
     "Custom code & link — coming soon",
 ];
 
+const PRO_URL = useRuntimeConfig().public.PRO_URL;
+
+const showKey = ref(false);
+const licenseKey = ref("");
+const feedback = ref("");
+const feedbackOk = ref(false);
+
+async function onActivate() {
+    const key = licenseKey.value.trim();
+    if (!key || activating.value) return;
+    feedback.value = "";
+    const res = await activate(key);
+    feedbackOk.value = res.ok;
+    feedback.value = res.message;
+    if (res.ok) {
+        licenseKey.value = "";
+        setTimeout(() => {
+            feedback.value = "";
+            close();
+        }, 1200);
+    }
+}
+
+async function onDeactivate() {
+    await deactivate();
+    feedback.value = "";
+}
+
 const panel = ref(null);
 let lastFocus = null;
-
-function goPro() {
-    isPro.value = true;
-    close();
-}
 
 function onKey(e) {
     if (e.key === "Escape") close();
@@ -79,6 +161,7 @@ watch(isOpen, (open) => {
         lastFocus = document.activeElement;
         document.body.style.overflow = "hidden";
         document.addEventListener("keydown", onKey);
+        feedback.value = "";
         nextTick(() => panel.value?.querySelector("button")?.focus());
     } else {
         document.body.style.overflow = "";

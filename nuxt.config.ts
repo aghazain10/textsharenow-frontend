@@ -36,9 +36,17 @@ export default defineNuxtConfig({
         // Server-only (not exposed to browser)
         UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL || "",
         UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN || "",
+        // Gumroad product behind Pro (license-key verification).
+        GUMROAD_PRODUCT_ID: process.env.GUMROAD_PRODUCT_ID || "mxmFVLmVr5JZImT_nJazIw==",
+        // Secret for signing the pro session cookie. Falls back to a value
+        // derived from the Upstash token so no secret lives in the repo;
+        // set explicitly in production if you prefer (PRO_SECRET=...).
+        PRO_SECRET: process.env.PRO_SECRET || "",
         // Public (exposed to browser)
         public: {
             FILES_API_URL: process.env.NUXT_PUBLIC_FILES_API_URL || "https://files.textsharenow.com",
+            // Gumroad checkout page for the Pro membership.
+            PRO_URL: process.env.NUXT_PUBLIC_PRO_URL || "https://textsharenow.gumroad.com/l/pro",
             // Where /api/share and /api/stats live. Empty = this same server (production).
             // Set NUXT_PUBLIC_API_BASE=https://www.textsharenow.com locally to test against the live API.
             API_BASE: process.env.NUXT_PUBLIC_API_BASE || "",

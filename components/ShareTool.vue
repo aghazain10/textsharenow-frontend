@@ -22,6 +22,7 @@
                 </button>
             </div>
             <button
+                v-if="isDev"
                 type="button"
                 class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] font-semibold transition-colors"
                 :class="isPro ? 'border-brand bg-brand-soft text-ink' : 'border-line text-muted hover:bg-surface-2 hover:text-ink'"
@@ -64,6 +65,8 @@ const tabEls = ref([]);
 const receiver = ref(null);
 const sender = ref(null);
 const { isPro } = usePremium();
+// Preview pill is dev-only: in production pro comes from the license session.
+const isDev = import.meta.dev;
 
 // Paste a screenshot anywhere on the page: switch to Send files and pick it up
 const IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"];

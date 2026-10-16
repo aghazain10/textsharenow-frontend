@@ -19,6 +19,8 @@
  * Returns a unique 5-character alphanumeric code.
  */
 
+import { isPro } from '../utils/pro'
+
 const CHARSET     = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 const CODE_LENGTH = 5
 const TTL_SECONDS = 600
@@ -76,9 +78,13 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 422, message: 'Please provide text to share.' })
   }
 
-  // Premium flag. TODO: derive from the session once auth lands — never
-  // trust a client flag in production.
-  const pro = body?.pro === true
+  // Premium flag. Never trust the client in production — entitlement comes
+  // from the signed pro session cookie (verified against Gumroad). In dev the
+  // "Try Pro" preview pill may still toggle `pro` locally.
+  let pro = await isPro(event)
+  if (!pro && process.env.NODE_ENV !== 'production' && body?.pro === true) {
+    pro = true
+  }
 
   const maxChars = pro ? PRO_MAX_CHARS : FREE_MAX_CHARS
   if (text.length > maxChars) {
