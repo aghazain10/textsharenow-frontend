@@ -88,7 +88,7 @@ useHead({
             name: 'Is TextShareNow free?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Yes, TextShareNow is completely free with no sign-up required.',
+              text: 'Yes. The core tool is free with no sign-up required — no credits, no hidden fees. An optional Pro plan adds power features like longer expiry, 100 MB files, multi-reads, and password protection.',
             },
           },
           {

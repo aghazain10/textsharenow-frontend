@@ -57,15 +57,15 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "TextShareNow is a free, browser-based tool that lets users transfer short pieces of text or files between devices using a temporary, single-use code. The Service does not require account creation and does not permanently store submitted content.",
+                text: "TextShareNow is a browser-based tool with a free plan and an optional paid membership (\"Pro\") that lets users transfer short pieces of text or files between devices using a temporary code. The free plan does not require account creation, and the Service does not permanently store submitted content.",
             },
             {
                 type: "p",
-                text: "Submitted text is automatically deleted after first retrieval or when its timer ends (10 minutes, 30 minutes or 1 hour), whichever occurs first. Uploaded files are automatically deleted after first download or when their timer ends (the same 10 minute to 1 hour range), whichever occurs first, as described in our Privacy Policy.",
+                text: "Submitted text is automatically deleted after first retrieval or when its timer ends (10 minutes, 30 minutes or 1 hour on the free plan; Pro shares may be configured for longer), whichever occurs first. Uploaded files are automatically deleted after first download or when their timer ends, whichever occurs first, as described in our Privacy Policy.",
             },
             {
                 type: "p",
-                text: "Accepted file types for the file sharing feature are limited to PNG, JPEG, WebP, MP4, and WebM, with a maximum size of 10 MB per file. All uploaded files are scanned for malware before becoming available for download.",
+                text: "Accepted file types for the free file sharing plan are limited to PNG, JPEG, WebP, MP4, and WebM, with a maximum size of 10 MB per file (the Pro plan supports additional file types up to 100 MB). All uploaded files are scanned for malware before becoming available for download.",
             },
         ],
     },
@@ -125,7 +125,7 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "TextShareNow is a free service and may display advertisements served by Google AdSense and other advertising partners to help cover the cost of running the Service. Advertisements are provided by third parties, and we are not responsible for the content of ads displayed.",
+                text: "The free plan of TextShareNow may display advertisements served by Google AdSense and other advertising partners to help cover the cost of running the Service. Advertisements are provided by third parties, and we are not responsible for the content of ads displayed. The optional Pro plan removes ads and unlocks additional features.",
             },
             {
                 type: "p",

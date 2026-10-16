@@ -50,15 +50,13 @@
                     </div>
                 </div>
 
-                <!-- QR: beside the code on bigger screens, under the tip card on phones -->
+                <!-- QR: beside the code on bigger screens, last on phones -->
                 <figure v-if="!expired && qrUrl" class="order-last flex items-center gap-4 sm:order-none sm:row-span-2 sm:flex-col sm:justify-start sm:gap-2">
                     <div class="w-24 shrink-0 overflow-hidden rounded-lg border border-line bg-white p-1.5 sm:w-32 [&_canvas]:!h-auto [&_canvas]:!w-full">
                         <QrCode :text="qrUrl" :size="120" />
                     </div>
                     <figcaption class="text-[13px] text-muted sm:text-center">Or scan with your<br class="hidden sm:inline" /> phone camera</figcaption>
                 </figure>
-
-                <TipCard where="share" class="!mt-0" />
             </div>
 
             <button type="button" class="btn-ghost mt-5 w-full" @click="$emit('reset')">Share something else</button>

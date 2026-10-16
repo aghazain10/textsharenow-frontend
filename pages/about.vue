@@ -92,33 +92,23 @@
                     </p>
                     <p class="mt-4">
                         TextShareNow is free to use and doesn't require an
-                        account, a subscription, or your email address. To keep
-                        it free and cover the cost of running the servers, the
-                        site may show a small number of ads. There's no catch
-                        beyond that — no data resale, no hidden tiers, just a
-                        tool built to solve a real, everyday problem.
+                        account, a subscription, or your email address. To
+                        cover the cost of running the servers, the free plan
+                        may show a small number of ads, and power users can
+                        optionally subscribe to Pro. There's no catch
+                        beyond that — no data resale, no forced upgrades, just
+                        a tool built to solve a real, everyday problem.
                     </p>
 
-                    <h2 class="mt-12 border-t border-line pt-12 text-[26px] font-semibold tracking-[-0.03em] text-ink">Keep This Free</h2>
+                    <h2 class="mt-12 border-t border-line pt-12 text-[26px] font-semibold tracking-[-0.03em] text-ink">Free for Everyone</h2>
                     <p class="mt-4">
-                        TextShareNow is free to use, and that's not changing.
-                        Running it costs a little in hosting and time, though
-                        — if it's saved you a few minutes here and there, you
-                        can support it directly. No account or subscription
-                        needed on your end, just a one-time show of support
-                        if you'd like to.
+                        TextShareNow's free plan isn't going anywhere — no
+                        account, no subscription, no features held hostage.
+                        Running it costs a little in hosting and time, covered
+                        by a small number of ads and by the users who choose
+                        the optional Pro plan. You don't have to pay anything
+                        to keep using the tool.
                     </p>
-                    <a
-                        :href="tipUrl"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="btn-ghost mt-6"
-                        aria-label="Support TextShareNow with a donation via Gumroad"
-                        @click="countTipClick"
-                    >
-                        <TsnIcon name="heart" class="h-4 w-4" />
-                        Support via Gumroad
-                    </a>
 
                     <h2 class="mt-12 border-t border-line pt-12 text-[26px] font-semibold tracking-[-0.03em] text-ink">Our Principles</h2>
                     <div class="mt-6 grid gap-4 sm:grid-cols-2">
@@ -163,9 +153,6 @@
 </template>
 
 <script setup>
-const tipUrl = TIP_URL;
-const apiBase = useRuntimeConfig().public.API_BASE;
-const countTipClick = () => trackTip("click", "about", apiBase);
 useSeo({
     title: "About — Why We Built TextShareNow",
     description:
@@ -199,8 +186,8 @@ const principles = [
 const sidebarStats = [
     { value: "~8s", label: "Average transfer time" },
     { value: "5", label: "Characters in every code" },
-    { value: "1 h", label: "Maximum data retention" },
+    { value: "1 h", label: "Max retention, free plan" },
     { value: "0", label: "Accounts needed" },
-    { value: "10,000", label: "Max characters per transfer" },
+    { value: "10,000", label: "Max characters, free plan" },
 ];
 </script>

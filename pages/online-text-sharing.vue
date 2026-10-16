@@ -27,7 +27,7 @@
         <li class="inline-flex items-center gap-1.5"><TsnIcon name="user-x" class="h-4 w-4" stroke="1.8" />0 sign-ups needed</li>
         <li class="inline-flex items-center gap-1.5"><TsnIcon name="lock" class="h-4 w-4" stroke="1.8" />5-character code + share link</li>
         <li class="inline-flex items-center gap-1.5"><TsnIcon name="clock" class="h-4 w-4" stroke="1.8" />Text auto-deletes after first read or expiry (10 min–1 h)</li>
-        <li class="inline-flex items-center gap-1.5"><TsnIcon name="globe" class="h-4 w-4" stroke="1.8" />No account · No app · Free forever</li>
+        <li class="inline-flex items-center gap-1.5"><TsnIcon name="globe" class="h-4 w-4" stroke="1.8" />No account · No app · Free to start</li>
       </ul>
     </section>
 
@@ -215,7 +215,7 @@ const faqs = [
   },
   {
     question: 'Is TextShareNow free for online text sharing?',
-    answer: 'Yes. TextShareNow is completely free for everyday use. No subscription, no credits, no hidden fees. The service is supported by a small number of non-intrusive ads.',
+          answer: 'Yes. TextShareNow is free for everyday use with no sign-up — up to 10,000 characters, files up to 10 MB, and expiry up to 1 hour. An optional Pro plan adds longer expiry, bigger files, multi-reads, and password protection.',
   },
   {
     question: 'Can I share text online between iPhone and Windows?',

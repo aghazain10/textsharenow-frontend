@@ -56,11 +56,11 @@
                     </ul>
                 </article>
 
-                <!-- Completely Free -->
+                <!-- Free to Use -->
                 <article class="tile">
                     <p class="text-[40px] font-bold leading-none tracking-[-0.05em]" aria-hidden="true">$0</p>
-                    <h3 class="mt-4 text-[22px] font-semibold tracking-[-0.03em]">Completely Free</h3>
-                    <p class="mt-2 text-muted">No subscription, no credits, no hidden fees. Free for everyday use.</p>
+                    <h3 class="mt-4 text-[22px] font-semibold tracking-[-0.03em]">Free to Use</h3>
+                    <p class="mt-2 text-muted">No account, no credits, no hidden fees. The core tool is free — Pro is optional for power features.</p>
                 </article>
 
                 <!-- No Account Needed -->

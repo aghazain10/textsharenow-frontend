@@ -101,10 +101,7 @@
                     <span v-else>Deleted from our server. Code {{ result.code }} won't work again.</span>
                 </p>
 
-                <TipCard where="receive" class="!mt-4" />
-
-                <button type="button" class="btn-ghost mt-4 w-full" @click="reset">Enter another code</button>
-            </div>
+                <button type="button" class="btn-ghost mt-4 w-full" @click="reset">Enter another code</button>            </div>
         </div>
     </div>
 </template>

@@ -308,7 +308,7 @@ const faqs = [
     },
     {
         q: 'Is this really free?',
-        a: 'Yes. No account, no subscription, no hidden fees. The site may show a small number of ads to cover server costs.',
+        a: 'Yes. The free plan needs no account and no subscription — files up to 10 MB with a small number of ads covering server costs. An optional Pro plan adds 100 MB files and any file type.',
     },
 ]
 

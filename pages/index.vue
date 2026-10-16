@@ -6,7 +6,7 @@
 
             <div class="mx-auto max-w-6xl text-center">
                 <p class="inline-flex items-center gap-2 rounded-full border border-line bg-bg px-3 py-1 text-[13px] font-medium text-ink shadow-card">
-                    <i class="live-dot" aria-hidden="true" />No account · No app · Free forever
+                    <i class="live-dot" aria-hidden="true" />No account · No app · Free to start
                 </p>
 
                 <h1 id="hero-title" class="mx-auto mt-7 text-[clamp(2.5rem,5.4vw,4.9rem)] font-bold leading-[1.04] tracking-[-0.05em]">
@@ -47,7 +47,6 @@
         <UseCases />
         <BlogPreview />
         <FaqSection />
-        <SupportSection />
     </div>
 </template>
 
