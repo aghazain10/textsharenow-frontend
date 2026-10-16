@@ -12,11 +12,12 @@
                             :class="expired ? 'text-bad' : 'text-muted'"
                             role="timer"
                         >
-                            <svg v-if="!expired" class="timer-ring h-3.5 w-3.5" viewBox="0 0 44 44" aria-hidden="true">
+                            <svg v-if="!expired && !never" class="timer-ring h-3.5 w-3.5" viewBox="0 0 44 44" aria-hidden="true">
                                 <circle class="track" cx="22" cy="22" r="18" style="stroke-width: 7" />
                                 <circle class="bar" cx="22" cy="22" r="18" style="stroke-width: 7" :stroke-dasharray="CIRC" :stroke-dashoffset="CIRC * (1 - left / ttl)" />
                             </svg>
-                            <template v-if="!expired">{{ clock }} · works once</template>
+                            <template v-if="never">Never expires<template v-if="passwordSet"> · password</template></template>
+                            <template v-else-if="!expired">{{ clock }} · {{ readLabel }}<template v-if="passwordSet"> · password</template></template>
                             <template v-else>Expired</template>
                         </span>
                     </div>
@@ -81,7 +82,11 @@
                     <span v-for="(c, i) in code" :key="i" class="flap" style="--w: min(16vw, 10rem)">{{ c }}</span>
                 </div>
                 <p class="text-[15px] text-muted">
-                    <template v-if="!expired">Expires in <span class="tabular-nums font-semibold text-ink">{{ clock }}</span>. Works once.</template>
+                    <template v-if="!expired">
+                        <template v-if="never">No expiry. </template>
+                        <template v-else>Expires in <span class="tabular-nums font-semibold text-ink">{{ clock }}</span>. </template>
+                        {{ bigReadLabel }}
+                    </template>
                     <template v-else>This code expired.</template>
                 </p>
             </div>
@@ -92,18 +97,27 @@
 <script setup>
 const props = defineProps({
     code: { type: String, required: true },
-    ttl: { type: Number, required: true }, // seconds
+    ttl: { type: Number, required: true }, // seconds, 0 = never
     qrUrl: { type: String, default: "" },
+    maxReads: { type: Number, default: 1 }, // 1, 5, 10 or 0 = unlimited
+    passwordSet: { type: Boolean, default: false },
 });
 defineEmits(["reset"]);
 
 const CIRC = 2 * Math.PI * 18;
+const never = computed(() => props.ttl === 0);
 const flapsEl = ref(null);
 const copyBtn = ref(null);
 const copied = ref(false);
 const linkCopied = ref(false);
 const left = ref(props.ttl);
-const expired = computed(() => left.value <= 0);
+const expired = computed(() => !never.value && left.value <= 0);
+const readLabel = computed(() =>
+    props.maxReads === 0 ? "unlimited reads" : props.maxReads > 1 ? `${props.maxReads} reads` : "works once"
+);
+const bigReadLabel = computed(() =>
+    props.maxReads === 0 ? "Unlimited reads." : props.maxReads > 1 ? `Works up to ${props.maxReads} times.` : "Works once."
+);
 const clock = computed(() => {
     const h = Math.floor(left.value / 3600);
     const m = Math.floor((left.value % 3600) / 60);
@@ -118,11 +132,13 @@ const shortLink = computed(() => props.qrUrl.replace(/^https?:\/\//, ""));
 
 let timer;
 onMounted(async () => {
-    const end = Date.now() + props.ttl * 1000;
-    timer = setInterval(() => {
-        left.value = Math.max(0, Math.round((end - Date.now()) / 1000));
-        if (!left.value) clearInterval(timer);
-    }, 1000);
+    if (!never.value) {
+        const end = Date.now() + props.ttl * 1000;
+        timer = setInterval(() => {
+            left.value = Math.max(0, Math.round((end - Date.now()) / 1000));
+            if (!left.value) clearInterval(timer);
+        }, 1000);
+    }
     await flipTo(Array.from(flapsEl.value.children), props.code);
     copyBtn.value?.focus({ preventScroll: true });
 });

@@ -14,6 +14,15 @@
                 <span class="mr-1 hidden items-center gap-2 rounded-full border border-line px-2.5 py-0.5 text-[12px] font-medium text-muted lg:inline-flex" role="status">
                     <i class="live-dot" :class="{ off: !online }" aria-hidden="true" />{{ online ? "Online" : "Offline" }}
                 </span>
+                <button
+                    type="button"
+                    class="inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] font-semibold transition-colors"
+                    :class="isPro ? 'border-brand bg-brand-soft text-ink' : 'border-brand/40 bg-brand/10 text-brand hover:bg-brand/20'"
+                    :title="isPro ? 'TextShareNow Pro is active' : 'Unlock TextShareNow Pro'"
+                    @click="openProModal('general')"
+                >
+                    <span aria-hidden="true">⭐</span> Pro
+                </button>
                 <button type="button" class="btn-icon" :aria-label="dark ? 'Switch to light theme' : 'Switch to dark theme'" @click="toggleTheme">
                     <TsnIcon :name="dark ? 'sun' : 'moon'" class="h-[18px] w-[18px]" stroke="1.9" />
                 </button>
@@ -52,6 +61,9 @@ const LINKS = [
     { to: "/about", label: "About" },
     { to: "/contact", label: "Contact" },
 ];
+
+const { isPro } = usePremium();
+const { open: openProModal } = useProModal();
 
 const open = ref(false);
 const online = ref(true);

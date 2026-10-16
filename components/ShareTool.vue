@@ -1,23 +1,37 @@
 <template>
     <div id="tool" class="tool-glow mx-auto rounded-xl border border-line bg-surface p-3 text-left sm:p-4" :class="wide ? 'max-w-5xl' : 'max-w-3xl'">
-        <div class="relative grid grid-cols-3 rounded-lg bg-surface-2 p-1 sm:max-w-md" role="tablist" aria-label="Choose what to do">
-            <span class="seg-thumb" :style="{ transform: `translateX(${index * 100}%)` }" aria-hidden="true" />
+        <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="relative grid flex-1 grid-cols-3 rounded-lg bg-surface-2 p-1 sm:max-w-md" role="tablist" aria-label="Choose what to do">
+                <span class="seg-thumb" :style="{ transform: `translateX(${index * 100}%)` }" aria-hidden="true" />
+                <button
+                    v-for="(t, i) in TABS"
+                    :id="`tab-${t.id}`"
+                    :key="t.id"
+                    ref="tabEls"
+                    role="tab"
+                    :aria-controls="`panel-${t.id}`"
+                    :aria-selected="tab === t.id"
+                    :tabindex="tab === t.id ? 0 : -1"
+                    class="relative z-10 rounded-md px-2 py-1.5 text-[14px] font-medium transition-colors"
+                    :class="tab === t.id ? 'text-ink' : 'text-muted'"
+                    @click="tab = t.id"
+                    @keydown.right.prevent="move(i, 1)"
+                    @keydown.left.prevent="move(i, -1)"
+                >
+                    {{ t.label }}
+                </button>
+            </div>
             <button
-                v-for="(t, i) in TABS"
-                :id="`tab-${t.id}`"
-                :key="t.id"
-                ref="tabEls"
-                role="tab"
-                :aria-controls="`panel-${t.id}`"
-                :aria-selected="tab === t.id"
-                :tabindex="tab === t.id ? 0 : -1"
-                class="relative z-10 rounded-md px-2 py-1.5 text-[14px] font-medium transition-colors"
-                :class="tab === t.id ? 'text-ink' : 'text-muted'"
-                @click="tab = t.id"
-                @keydown.right.prevent="move(i, 1)"
-                @keydown.left.prevent="move(i, -1)"
+                v-if="isDev"
+                type="button"
+                class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] font-semibold transition-colors"
+                :class="isPro ? 'border-brand bg-brand-soft text-ink' : 'border-line text-muted hover:bg-surface-2 hover:text-ink'"
+                :aria-pressed="isPro"
+                :title="isPro ? 'Premium preview is on' : 'Preview premium features'"
+                @click="isPro = !isPro"
             >
-                {{ t.label }}
+                <TsnIcon :name="isPro ? 'check' : 'lock'" class="h-3.5 w-3.5" stroke="2.2" />
+                {{ isPro ? "Pro preview" : "Try Pro" }}
             </button>
         </div>
 
@@ -50,6 +64,9 @@ const tab = ref(props.initialTab);
 const tabEls = ref([]);
 const receiver = ref(null);
 const sender = ref(null);
+const { isPro } = usePremium();
+// Preview pill is dev-only: in production pro comes from the license session.
+const isDev = import.meta.dev;
 
 // Paste a screenshot anywhere on the page: switch to Send files and pick it up
 const IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"];

@@ -1,7 +1,7 @@
 <template>
     <div class="inline-flex flex-wrap items-center gap-x-2.5 gap-y-2 text-[13px]">
         <span class="inline-flex items-center gap-1.5 text-muted">
-            <TsnIcon name="clock" class="h-3.5 w-3.5 shrink-0" stroke="1.8" />
+            <TsnIcon :name="icon" class="h-3.5 w-3.5 shrink-0" stroke="1.8" />
             <span class="max-[399px]:hidden">{{ label }}</span>
         </span>
         <span ref="wrap" class="relative inline-flex">
@@ -28,17 +28,20 @@
                 @keydown="onMenuKey"
             >
                 <button
-                    v-for="o in EXPIRY_OPTIONS"
-                    :key="o.seconds"
+                    v-for="o in options"
+                    :key="o.value"
                     type="button"
                     role="menuitemradio"
-                    :aria-checked="modelValue === o.seconds"
+                    :aria-checked="modelValue === o.value"
                     class="flex w-full items-center justify-between gap-3 whitespace-nowrap px-2.5 py-1.5 text-left text-[12px] font-medium transition-colors"
-                    :class="modelValue === o.seconds ? 'text-brand' : 'text-muted hover:bg-surface-2 hover:text-ink'"
-                    @click="pick(o.seconds)"
+                    :class="locked(o) ? 'text-muted hover:bg-surface-2' : modelValue === o.value ? 'text-brand' : 'text-muted hover:bg-surface-2 hover:text-ink'"
+                    @click="pick(o)"
                 >
-                    {{ o.label }}
-                    <TsnIcon v-if="modelValue === o.seconds" name="check" class="h-3.5 w-3.5 shrink-0" stroke="2.2" />
+                    <span class="inline-flex items-center gap-1.5">
+                        <TsnIcon v-if="locked(o)" name="lock" class="h-3 w-3 shrink-0" stroke="2" />
+                        {{ o.label }}
+                    </span>
+                    <TsnIcon v-if="!locked(o) && modelValue === o.value" name="check" class="h-3.5 w-3.5 shrink-0" stroke="2.2" />
                 </button>
             </span>
         </span>
@@ -49,17 +52,27 @@
 import { EXPIRY_OPTIONS } from "~/utils/expiry.js";
 
 const props = defineProps({
-    modelValue: { type: Number, required: true }, // seconds
+    modelValue: { type: Number, required: true }, // seconds (0 = never)
     label: { type: String, default: "Deletes after" },
+    icon: { type: String, default: "clock" },
+    // Items: { value, label, pro? } — pro options always show, but picking
+    // one as a free user opens the "Go Pro" modal instead of selecting.
+    options: { type: Array, default: () => EXPIRY_OPTIONS },
+    // What to tell the modal when a locked option is clicked
+    reason: { type: String, default: "expiry" },
 });
 const emit = defineEmits(["update:modelValue"]);
+
+const { isPro } = usePremium();
+const { open: openProModal } = useProModal();
 
 const open = ref(false);
 const wrap = ref(null);
 const trigger = ref(null);
 const menu = ref(null);
 
-const current = computed(() => EXPIRY_OPTIONS.find((o) => o.seconds === props.modelValue) || EXPIRY_OPTIONS[0]);
+const locked = (o) => !!o.pro && !isPro.value;
+const current = computed(() => props.options.find((o) => o.value === props.modelValue) || props.options[0]);
 
 function toggle() {
     open.value ? closeMenu(true) : openMenu();
@@ -77,8 +90,13 @@ function closeMenu(refocus = false) {
     if (refocus) trigger.value?.focus();
 }
 
-function pick(seconds) {
-    if (seconds !== props.modelValue) emit("update:modelValue", seconds);
+function pick(o) {
+    if (locked(o)) {
+        closeMenu(true);
+        openProModal(props.reason);
+        return;
+    }
+    if (o.value !== props.modelValue) emit("update:modelValue", o.value);
     closeMenu(true);
 }
 

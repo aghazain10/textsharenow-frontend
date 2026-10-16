@@ -9,5 +9,12 @@
             <slot />
         </main>
         <AppFooter />
+        <ProModal />
     </div>
 </template>
+
+<script setup>
+// Hydrate pro entitlement once per load — the signed session cookie decides.
+const { checkStatus } = usePremium();
+onMounted(() => checkStatus());
+</script>

@@ -14,14 +14,24 @@
                     <TsnIcon name="upload" class="h-7 w-7" />
                 </span>
                 <span class="mt-4 text-[17px] font-semibold tracking-[-0.01em]">Drop a file here, or <span class="underline underline-offset-4">browse</span></span>
-                <span class="mt-1 text-[14px] text-muted">Screenshots, photos and short videos, in original quality</span>
+                <span class="mt-1 text-[14px] text-muted">{{ dropHint }}</span>
                 <span class="mt-3 inline-flex flex-wrap items-center justify-center gap-1.5 text-[12px] font-medium">
                     <span class="rounded-md border border-line bg-bg px-2 py-0.5">1 file at a time</span>
-                    <span class="rounded-md border border-line bg-bg px-2 py-0.5">Up to 10 MB</span>
-                    <span class="rounded-md border border-line bg-bg px-2 py-0.5">PNG, JPEG, WebP, MP4, WebM</span>
+                    <span class="rounded-md border border-line bg-bg px-2 py-0.5">Up to {{ maxSizeLabel }}</span>
+                    <span class="rounded-md border border-line bg-bg px-2 py-0.5">{{ typeLabel }}</span>
+                    <button
+                        v-if="!isPro"
+                        type="button"
+                        class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-line bg-bg px-2 py-0.5 text-muted transition-colors hover:text-ink"
+                        title="Go Pro for 100 MB files of any type"
+                        @click="openProModal('file')"
+                    >
+                        <TsnIcon name="lock" class="h-3 w-3" stroke="2.2" />
+                        100 MB · any type with Pro
+                    </button>
                 </span>
                 <span class="mt-3 hidden text-[12px] text-muted sm:block">Tip: you can also paste a screenshot anywhere on this page</span>
-                <input id="file-input" ref="input" type="file" class="sr-only" :accept="ACCEPT" @change="onPick" />
+                <input id="file-input" ref="input" type="file" class="sr-only" :accept="accept" @change="onPick" />
             </label>
 
             <ul v-if="file" class="mt-3 grid gap-2" aria-label="Selected file">
@@ -47,14 +57,14 @@
             </p>
 
             <div class="mt-3 rounded-lg border border-line px-4 py-2.5 lg:hidden">
-                <ExpirySelect v-model="expires" />
+                <ExpirySelect v-model="expires" :options="FILE_EXPIRY_OPTIONS" />
             </div>
 
             <div class="mt-3 flex flex-wrap items-center gap-3 pl-2">
                 <p class="text-[13px] text-muted lg:hidden">Deleted after one download, or after {{ expiryLabel(expires) }}.</p>
                 <div class="hidden items-center gap-3 lg:flex">
                     <p class="text-[13px] text-muted">Deleted after one download.</p>
-                    <ExpirySelect v-model="expires" />
+                    <ExpirySelect v-model="expires" :options="FILE_EXPIRY_OPTIONS" />
                 </div>
                 <button type="button" class="btn-primary ml-auto" :disabled="!file || uploading" @click="upload">
                     {{ uploading ? "Uploading…" : "Generate code" }}
@@ -67,13 +77,13 @@
 </template>
 
 <script setup>
-import { DEFAULT_EXPIRY, expiryLabel } from "~/utils/expiry.js";
+import { DEFAULT_EXPIRY, FILE_EXPIRY_OPTIONS, expiryLabel } from "~/utils/expiry.js";
+import { FREE_MAX_FILE, PRO_MAX_FILE, FREE_FILE_ACCEPT, FREE_FILE_LABEL, PRO_FILE_LABEL } from "~/utils/premium.js";
 
 const config = useRuntimeConfig();
 const API_URL = config.public.FILES_API_URL;
-
-const ACCEPT = "image/png,image/jpeg,image/webp,video/mp4,video/webm";
-const MAX_SIZE = 10 * 1024 * 1024;
+const { isPro } = usePremium();
+const { open: openProModal } = useProModal();
 
 const input = ref(null);
 const file = ref(null);
@@ -83,20 +93,40 @@ const progress = ref(0);
 const code = ref("");
 const qrUrl = ref("");
 const error = ref("");
-const expires = ref(DEFAULT_EXPIRY); // seconds: 10 min, 30 min or 1 h
+const expires = ref(DEFAULT_EXPIRY); // seconds
 const resultTtl = ref(DEFAULT_EXPIRY); // server-confirmed TTL for the countdown
+
+const maxSize = computed(() => (isPro.value ? PRO_MAX_FILE : FREE_MAX_FILE));
+const maxSizeLabel = computed(() => (isPro.value ? "100 MB" : "10 MB"));
+const accept = computed(() => (isPro.value ? "" : FREE_FILE_ACCEPT));
+const typeLabel = computed(() => (isPro.value ? PRO_FILE_LABEL : FREE_FILE_LABEL));
+const dropHint = computed(() =>
+    isPro.value
+        ? "Any file, up to 100 MB, in original quality"
+        : "Screenshots, photos and short videos, in original quality"
+);
+
+// Turning Pro off resets a premium-only expiry choice
+watch(isPro, (pro) => {
+    if (!pro && ![600, 1800, 3600].includes(expires.value)) {
+        expires.value = DEFAULT_EXPIRY;
+    }
+});
 
 const size = (b) => (b < 1024 ? b + " B" : b < 1048576 ? (b / 1024).toFixed(1) + " KB" : (b / 1048576).toFixed(1) + " MB");
 
 function take(f) {
     error.value = "";
     if (!f) return;
-    if (!ACCEPT.split(",").includes(f.type)) {
-        error.value = "This file type isn't supported. Use PNG, JPEG, WebP, MP4 or WebM.";
+    // Free tier only accepts the whitelisted image/video types
+    if (!isPro.value && !FREE_FILE_ACCEPT.split(",").includes(f.type)) {
+        error.value = `This file type isn't supported on free. Use ${FREE_FILE_LABEL} — or go Pro for any file type.`;
+        openProModal("file");
         return;
     }
-    if (f.size > MAX_SIZE) {
-        error.value = `This file is ${size(f.size)}. The limit is 10 MB.`;
+    if (f.size > maxSize.value) {
+        error.value = `This file is ${size(f.size)}. The free limit is ${maxSizeLabel.value} — Pro goes up to 100 MB.`;
+        openProModal("file");
         return;
     }
     file.value = f;
@@ -142,7 +172,7 @@ async function upload() {
         });
         resultTtl.value = Number(result.expires_in) || expires.value;
         code.value = result.code;
-        qrUrl.value = `${window.location.origin}/r?fcode=${result}`;
+        qrUrl.value = `${window.location.origin}/r?fcode=${result.code}`;
         // Record the file share in the aggregate counter (best-effort).
         $fetch(`${config.public.API_BASE}/api/file-share`, { method: "POST" }).catch(() => {});
     } catch (e) {
