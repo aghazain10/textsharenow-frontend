@@ -118,6 +118,12 @@ const size = (b) => (b < 1024 ? b + " B" : b < 1048576 ? (b / 1024).toFixed(1) +
 function take(f) {
     error.value = "";
     if (!f) return;
+    // SVGs are blocked on every tier — they can carry scripts and file
+    // shares are served from the files domain.
+    if (f.type === "image/svg+xml" || /\.svg$/i.test(f.name)) {
+        error.value = "SVG files aren't supported because they can carry scripts. Convert to PNG and try again.";
+        return;
+    }
     // Free tier only accepts the whitelisted image/video types
     if (!isPro.value && !FREE_FILE_ACCEPT.split(",").includes(f.type)) {
         error.value = `This file type isn't supported on free. Use ${FREE_FILE_LABEL} — or go Pro for any file type.`;
@@ -153,6 +159,15 @@ async function upload() {
         const form = new FormData();
         form.append("file", file.value);
         form.append("expires", String(expires.value));
+        // Pro uploads need a single-use ticket minted by our API; the files
+        // service redeems it to authorize the larger size / longer TTL.
+        if (isPro.value) {
+            const t = await $fetch(`${config.public.API_BASE}/api/pro/upload-ticket`, {
+                method: "POST",
+                body: { expires: expires.value, size: file.value.size },
+            });
+            form.append("ticket", t.ticket);
+        }
         const result = await new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             xhr.upload.addEventListener("progress", (e) => {
@@ -176,7 +191,7 @@ async function upload() {
         // Record the file share in the aggregate counter (best-effort).
         $fetch(`${config.public.API_BASE}/api/file-share`, { method: "POST" }).catch(() => {});
     } catch (e) {
-        error.value = e?.message || "Upload failed. Please try again.";
+        error.value = e?.data?.message || e?.message || "Upload failed. Please try again.";
     } finally {
         uploading.value = false;
     }
