@@ -14,6 +14,7 @@ const staticPages = [
   { path: '/', lastmod: '2026-10-08', priority: '1.00' },
   { path: '/about', lastmod: '2026-09-17', priority: '0.80' },
   { path: '/how-it-works', lastmod: '2026-10-08', priority: '0.80' },
+  { path: '/pricing', lastmod: '2026-10-16', priority: '0.90' },
   { path: '/faq', lastmod: '2026-10-08', priority: '0.80' },
   { path: '/contact', lastmod: '2026-08-25', priority: '0.70' },
   { path: '/privacy', lastmod: '2026-10-02', priority: '0.60' },

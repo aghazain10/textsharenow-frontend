@@ -139,6 +139,7 @@ export default defineNuxtConfig({
         "/contact": { prerender: true },
         "/blog": { prerender: true },
         "/how-it-works": { prerender: true },
+        "/pricing": { prerender: true },
         "/online-text-sharing": { prerender: true },
         "/share-files-online": { prerender: true },
         "/r": { prerender: true },
