@@ -1,18 +1,32 @@
 /**
- * GET /api/share/:code?pw=<sha256-hex>
+ * GET /api/share/:code?pw=<derived-hash>
  * Response: { text: string, readsLeft?: number | null }
  *
  * Retrieves text from Upstash Redis by code.
  *  - Plain-text (legacy / no-metadata) shares are deleted after one read.
- *  - Password-protected shares require ?pw= matching the stored SHA-256
- *    hash; wrong or missing password → 401/403, the share is NOT consumed.
+ *  - Password-protected shares require ?pw= matching the stored hash.
+ *    Missing password → 401 with the KDF params the browser needs to derive
+ *    the value (salt + iterations). Wrong password → 403, and ten wrong
+ *    attempts within 15 minutes permanently delete the share.
  *  - Multi-read shares (mr > 1) keep a per-share read counter and delete
  *    only once the limit is reached. mr === 0 means unlimited reads.
  * Returns 404 if code not found or expired.
  */
 
+import { timingSafeEqual } from 'node:crypto'
+import { P2_RE } from '~~/utils/hash'
+
 const KEY_PREFIX  = 'share:'
 const READS_PREFIX = 'reads:'
+const ATTEMPTS_PREFIX = 'pwa:'
+const MAX_PW_ATTEMPTS = 10
+const PW_ATTEMPT_WINDOW = 900
+
+function safeEqual(a: string, b: string): boolean {
+  const ab = Buffer.from(a)
+  const bb = Buffer.from(b)
+  return ab.length === bb.length && timingSafeEqual(ab, bb)
+}
 
 async function upstashRequest(url: string, token: string, command: unknown[]) {
   const response = await fetch(url, {
@@ -109,15 +123,41 @@ export default defineEventHandler(async (event) => {
   if (payload.pw) {
     const provided = String(getQuery(event)?.pw || '')
     if (!provided) {
+      const p2 = P2_RE.exec(payload.pw)
       throw createError({
         statusCode: 401,
         message: 'This share is password protected.',
-        data: { passwordRequired: true },
+        data: p2
+          ? {
+              passwordRequired: true,
+              kdf: 'pbkdf2',
+              iterations: Number(p2[1]),
+              salt: p2[2],
+            }
+          : { passwordRequired: true, kdf: 'sha256' },
       })
     }
-    if (provided !== payload.pw) {
+    if (!safeEqual(provided, payload.pw)) {
+      const attemptsKey = ATTEMPTS_PREFIX + code
+      const attempts = await upstashRequest(redisUrl, redisToken, ['INCR', attemptsKey])
+      if (attempts.result === 1) {
+        await upstashRequest(redisUrl, redisToken, ['EXPIRE', attemptsKey, PW_ATTEMPT_WINDOW])
+      }
+      if (attempts.result >= MAX_PW_ATTEMPTS) {
+        // Burn the share: repeated guessing destroys the content so it
+        // cannot be brute-forced slowly over many IPs.
+        await upstashRequest(redisUrl, redisToken, ['DEL', key])
+        await upstashRequest(redisUrl, redisToken, ['DEL', READS_PREFIX + code])
+        await upstashRequest(redisUrl, redisToken, ['DEL', attemptsKey])
+        throw createError({
+          statusCode: 403,
+          message: 'Too many incorrect attempts. This share has been permanently deleted.',
+        })
+      }
       throw createError({ statusCode: 403, message: 'Incorrect password. Try again.' })
     }
+    // Correct password — reset the wrong-attempt counter.
+    await upstashRequest(redisUrl, redisToken, ['DEL', ATTEMPTS_PREFIX + code])
   }
 
   const maxReads = typeof payload.mr === 'number' ? payload.mr : 1

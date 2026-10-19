@@ -8,7 +8,7 @@ export const PRO_MAX_FILE = 100 * 1024 * 1024;
 
 export const FREE_FILE_ACCEPT = "image/png,image/jpeg,image/webp,video/mp4,video/webm";
 export const FREE_FILE_LABEL = "PNG, JPEG, WebP, MP4, WebM";
-export const PRO_FILE_LABEL = "Any file type";
+export const PRO_FILE_LABEL = "Any non-executable type";
 
 export const FREE_MAX_READS = 1;
 

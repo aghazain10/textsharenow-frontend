@@ -1,6 +1,6 @@
 <template>
     <div>
-        <PageHero title="Privacy Policy" meta="Last updated: October 2026" lead="What we store, how long we keep it, and how analytics and advertising cookies are handled on this site." />
+        <PageHero title="Privacy Policy" meta="Last updated: October 2026" lead="What we store, how long we keep it, and how analytics, advertising, and payments are handled on this site." />
 
         <section class="section">
             <div class="wrap">
@@ -32,6 +32,11 @@
                             For privacy questions or data requests, contact us at
                             <a href="mailto:info@textsharenow.com" class="text-link">info@textsharenow.com</a>.
                         </p>
+                        <p class="mt-3 text-[16px] leading-7 text-muted">
+                            To report abusive or illegal content, use our
+                            <NuxtLink to="/abuse" class="text-link">abuse report page</NuxtLink>
+                            or email the same address.
+                        </p>
                     </section>
                 </div>
             </div>
@@ -43,7 +48,7 @@
 useSeo({
     title: "Privacy Policy",
     description:
-        "TextShareNow privacy policy — how we handle your data, what we store, how your content is deleted after use, and how analytics and advertising cookies are used.",
+        "TextShareNow privacy policy — what we store, how long text and files are kept on the free and Pro plans, how deletion works, and how analytics, advertising, and payments are handled.",
     pagePath: "/privacy",
 });
 
@@ -59,7 +64,8 @@ const sections = [
                 type: "ul",
                 items: [
                     "Text content you submit is temporarily stored only to fulfil the transfer request.",
-                    "File uploads (images and videos) are temporarily stored only to fulfil the transfer request and are scanned for malware before becoming available.",
+                    "Files you upload are temporarily stored only to fulfil the transfer request and are scanned for malware before becoming available. The free plan accepts PNG, JPEG, WebP, MP4 and WebM files up to 10 MB. Pro accepts any non-executable file type up to 100 MB per file, within a per-license storage allowance.",
+                    "If you activate Pro, the license key you enter is stored in a signed, http-only cookie on your device for up to 30 days, and a SHA-256 hash of the key is cached on our servers for up to 24 hours so we do not have to contact Gumroad on every request. We send the key to Gumroad to verify the subscription.",
                     "We do not collect your name, email address, phone number, or any personally identifying information to use the tool.",
                     "We may collect anonymised server metrics such as request counts and response times for performance monitoring.",
                     "Standard web server logs (IP addresses, timestamps) may be retained for up to 7 days for security purposes.",
@@ -72,19 +78,23 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "When you submit text through our Send feature, it is stored in an encrypted temporary data store with a time-to-live (TTL) you choose when sharing: 10 minutes, 30 minutes or 1 hour.",
+                text: "When you submit text through our Send feature, it is stored in an encrypted temporary data store with a time-to-live (TTL) you choose when sharing: 10 minutes, 30 minutes or 1 hour on the free plan. Pro shares can be set to 1 day, 7 days, 30 days, or never expire.",
             },
             {
                 type: "p",
-                text: "When you upload a file, it is stored on a dedicated server with the same choice of TTL: 10 minutes, 30 minutes or 1 hour. All uploaded files are scanned for malware using ClamAV before becoming available for download. Files that fail the malware scan are immediately deleted and are never served.",
+                text: "When you upload a file, it is stored on a dedicated server. Free uploads use the same TTL choices: 10 minutes, 30 minutes or 1 hour. Pro uploads can be kept for 1 day, 7 days or 30 days. All uploaded files are scanned for malware using ClamAV before becoming available for download. Files that fail the malware scan are immediately deleted and are never served.",
             },
             {
                 type: "p",
-                text: "Upon first successful retrieval (text) or download (file), the content is immediately and permanently deleted. If not retrieved within the respective TTL window, it is automatically deleted.",
+                text: "Free text shares are deleted immediately upon their first successful retrieval. Pro shares can allow 5, 10, or unlimited reads and are deleted when their read limit is reached or their timer ends, whichever comes first. Files are deleted after their first successful download or when their timer ends. Pro text shares set to never expire remain stored until their read limit is reached (if one applies) or until we remove them for a violation of our Terms; a Pro share with no expiry and unlimited reads remains stored indefinitely.",
             },
             {
                 type: "p",
-                text: "We do not archive, back up, or retain any copies of submitted text or uploaded files beyond the TTL window.",
+                text: "We do not archive or back up submitted text or uploaded files. Content is retained only as described above.",
+            },
+            {
+                type: "p",
+                text: "Executable files and installers (such as .exe, .msi, .bat, .cmd, .scr, .jar, .apk, .dmg, .deb and .rpm) are blocked on every plan, including Pro. Pro uploads are also subject to a live storage allowance per license.",
             },
         ],
     },
@@ -93,7 +103,7 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "TextShareNow sets no first-party cookies of its own, and we run no analytics or advertising software ourselves. Two optional Google services do: Google Analytics and Google AdSense.",
+                text: "TextShareNow sets no first-party cookies except the Pro session cookie described above, and we run no analytics or advertising software ourselves. Two optional Google services do: Google Analytics and Google AdSense. Pro payments are handled separately by Gumroad.",
             },
             {
                 type: "p",
@@ -101,7 +111,11 @@ const sections = [
             },
             {
                 type: "p",
-                text: "Advertising — we use Google AdSense to display advertisements on this site. Google, as a third-party vendor, and its advertising partners may use cookies, including the DoubleClick cookie, to serve ads based on a visitor's prior visits to this site or other sites on the internet.",
+                text: "Advertising — we have integrated Google AdSense on this site, which may display advertisements. Google, as a third-party vendor, and its advertising partners may use cookies, including the DoubleClick cookie, to serve ads based on a visitor's prior visits to this site or other sites on the internet.",
+            },
+            {
+                type: "p",
+                text: "Payments — Pro subscriptions are processed by Gumroad. When you check out, you interact directly with Gumroad's website and their privacy policy governs the payment information you provide there. We never receive or store your card details.",
             },
             {
                 type: "ul",
@@ -153,7 +167,7 @@ const sections = [
             },
             {
                 type: "p",
-                text: "We apply rate limiting to prevent brute-force enumeration of codes. Each code allows a limited number of retrieval attempts per IP address per minute.",
+                text: "We apply rate limiting to prevent brute-force enumeration of codes. Each code allows a limited number of retrieval attempts per IP address per minute. Password-protected shares also delete themselves after ten wrong password attempts within a short window.",
             },
         ],
     },
@@ -162,7 +176,11 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "We do not sell, rent, or share your submitted text or uploaded files with any third parties. Your content is used solely to fulfil your transfer request and is then deleted.",
+                text: "We do not sell, rent, or share your submitted text or uploaded files with any third parties. Your content is used solely to fulfil your transfer request and is then deleted as described above.",
+            },
+            {
+                type: "p",
+                text: "Gumroad processes Pro subscription payments and license verification. Their privacy policy applies to the information you provide at checkout.",
             },
             {
                 type: "p",
@@ -189,7 +207,7 @@ const sections = [
             },
             {
                 type: "p",
-                text: "Because TextShareNow does not require accounts and deletes submitted text automatically at first retrieval or within 1 hour of sharing at the latest, we generally do not hold personal data beyond short-lived server logs. Any such request can be made using the contact details below.",
+                text: "Because TextShareNow does not require accounts and deletes submitted content automatically after its last permitted read or when its timer ends, we generally do not hold personal data beyond short-lived server logs. Pro shares configured never to expire are retained until read (if a read limit applies) or removed for abuse. Any such request can be made using the contact details below.",
             },
         ],
     },

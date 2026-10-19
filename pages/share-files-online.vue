@@ -308,7 +308,7 @@ const faqs = [
     },
     {
         q: 'Is this really free?',
-        a: 'Yes. The free plan needs no account and no subscription — files up to 10 MB with a small number of ads covering server costs. An optional Pro plan adds 100 MB files and any file type.',
+        a: 'Yes. The free plan needs no account and no subscription — files up to 10 MB in common image and video formats. An optional Pro plan raises that to 100 MB and accepts any non-executable file type.',
     },
 ]
 

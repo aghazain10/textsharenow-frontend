@@ -11,7 +11,9 @@
  * Anything invalid falls back to the 10 minute default.
  *
  * Premium extras:
- *  - passwordHash: SHA-256 hex of the password (plaintext never sent)
+ *  - passwordHash: PBKDF2-derived password string
+ *    (p2$iterations$salt$hash); legacy bare SHA-256 hex is still accepted
+ *    for compatibility, but the browser client always sends PBKDF2 now
  *  - maxReads: 1 (burn after read), 5, 10, or 0 (unlimited)
  *
  * Shares that need metadata are stored as JSON tagged with __tsn; plain
@@ -22,6 +24,7 @@
 import { createHash } from 'node:crypto'
 import { isPro, getProLicenseKey } from '../utils/pro'
 import { CUSTOM_CODE_RE, RESERVED_CODES, normalizeCustomCode } from '~~/utils/customCode'
+import { P2_RE, PBKDF2_ITERATIONS } from '~~/utils/hash'
 
 const CHARSET     = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 const CODE_LENGTH = 5
@@ -99,11 +102,16 @@ export default defineEventHandler(async (event) => {
   const requestedTtl = Number(body?.ttl)
   const ttl = allowedTtls.includes(requestedTtl) ? requestedTtl : TTL_SECONDS
 
-  // Password (premium only) — client sends a SHA-256 hex digest
+  // Password (premium only) — client sends a PBKDF2-derived string. A bare
+  // SHA-256 digest is still accepted so cached legacy clients keep working.
   let passwordHash: string | null = null
   const rawHash = typeof body?.passwordHash === 'string' ? body.passwordHash.trim() : ''
   if (rawHash) {
-    if (!pro || !SHA256_HEX.test(rawHash)) {
+    const p2 = P2_RE.exec(rawHash)
+    if (p2 && p2[1] !== String(PBKDF2_ITERATIONS)) {
+      throw createError({ statusCode: 422, message: 'Invalid password.' })
+    }
+    if (!pro || (!p2 && !SHA256_HEX.test(rawHash))) {
       throw createError({ statusCode: 422, message: 'Invalid password.' })
     }
     passwordHash = rawHash

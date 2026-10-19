@@ -98,8 +98,8 @@
 
                 <p class="mt-8 max-w-[68ch] text-[16px] leading-7 text-muted">
                     Both plans share the same engine: instant 5-character codes, QR codes and shareable links, malware
-                    scanning, no account required, and content that is deleted from our servers the moment it's read or
-                    expires. Pro only raises the ceilings.
+                    scanning, no account required, and content that is deleted from our servers when its read limit or
+                    timer is reached. Pro only raises the ceilings.
                 </p>
             </div>
         </section>
@@ -174,13 +174,13 @@
                         </p>
                         <p>
                             TextShareNow runs on paid infrastructure — servers, bandwidth, malware scanning, and the
-                            external file service. Until now that was covered by ads and out of pocket. Pro gives the
-                            people who lean hardest on the tool a way to pay for it directly, in exchange for real
-                            upgrades: bigger limits, longer expiry, multi-reads, and passwords.
+                            external file service. Pro gives the people who lean hardest on the tool a way to pay for
+                            it directly, in exchange for real upgrades: bigger limits, longer expiry, multi-reads,
+                            passwords, and custom codes.
                         </p>
                         <p>
-                            Ads support the free plan; subscriptions fund everything else. If you never pay a cent,
-                            nothing breaks — that's the whole point of keeping the free tier intact.
+                            Subscriptions fund the service. If you never pay a cent, nothing breaks — that's the whole
+                            point of keeping the free tier intact.
                         </p>
                     </div>
                 </div>
@@ -261,12 +261,11 @@ const freeFeatures = [
 const proFeatures = [
     "Everything in Free, plus:",
     "Up to 100,000 characters per share (10×)",
-    "Files up to 100 MB — any file type",
+    "Files up to 100 MB — any non-executable type",
     "Expiry: 1 day, 7 days, 30 days — or never",
     "Read limits: 1, 5, 10 or unlimited reads",
     "Password-protect any share",
     "Custom share codes (e.g. coffee-menu)",
-    "No ads",
 ];
 
 // [feature, free cell, pro cell] — cell = [kind, label]; kind: good | bad | text
@@ -275,14 +274,13 @@ const compareRows = [
     ["Account required", ["good", "None"], ["good", "None — just a license key"]],
     ["Text per share", ["text", "10,000 characters"], ["text", "100,000 characters"]],
     ["File size", ["text", "10 MB"], ["text", "100 MB"]],
-    ["File types", ["text", "PNG, JPEG, WebP, MP4, WebM"], ["good", "Any file type"]],
+    ["File types", ["text", "PNG, JPEG, WebP, MP4, WebM"], ["good", "Any non-executable type"]],
     ["Share expiry", ["text", "10 min, 30 min, 1 h"], ["text", "10 min – 30 days, or never"]],
     ["Reads per share", ["text", "1 (single-use)"], ["text", "1, 5, 10 or unlimited"]],
     ["Password protection", ["bad", "Not included"], ["good", "Included"]],
     ["Custom code", ["text", "Random 5 characters"], ["good", "Any available name"]],
     ["QR code + share link", ["good", "Included"], ["good", "Included"]],
     ["Malware scanning", ["good", "Included"], ["good", "Included"]],
-    ["Ads", ["text", "A few, non-intrusive"], ["good", "None"]],
     ["Manage or cancel", ["text", "Nothing to manage"], ["good", "Cancel anytime"]],
 ];
 
@@ -301,8 +299,8 @@ const proDetails = [
     },
     {
         icon: "upload",
-        title: "100 MB files, any type",
-        desc: "Send HD screen recordings, ZIP archives, PDFs, PSDs — anything up to 100 MB. The free plan stays at 10 MB and five formats; Pro lifts both limits.",
+        title: "100 MB files, any non-executable type",
+        desc: "Send HD screen recordings, ZIP archives, PDFs, PSDs — anything up to 100 MB. The free plan stays at 10 MB and five formats; Pro lifts both limits. Executables and installers stay blocked for everyone.",
     },
     {
         icon: "clock",
@@ -317,12 +315,12 @@ const proDetails = [
     {
         icon: "lock",
         title: "Password protection",
-        desc: "Viewers must enter your password before the text is revealed. It's stored as a SHA-256 hash, so wrong passwords are rejected without consuming a read — and we never see the original.",
+        desc: "Viewers must enter your password before the text is revealed. It's stored as a salted, slow password hash, so wrong passwords are rejected without consuming a read — and we never see the original.",
     },
     {
-        icon: "check",
-        title: "Ad-free browsing",
-        desc: "Pro hides all ads across the site. Ads keep the free plan running; your subscription is what lets you browse without them.",
+        icon: "link",
+        title: "Custom share codes",
+        desc: "Pick a memorable code like coffee-menu or team-notes instead of a random string. Availability is checked instantly, and custom codes are protected like any other share — add a password for extra privacy.",
     },
 ];
 
@@ -343,7 +341,7 @@ const faqs = [
     },
     {
         q: "What exactly do I get with Pro?",
-        a: "100,000 characters per share (10× the free limit), file uploads up to 100 MB with no file-type restrictions, expiry choices of 1 day, 7 days, 30 days or never, read limits of 1, 5, 10 or unlimited, password protection for any share, and an ad-free site.",
+        a: "100,000 characters per share (10× the free limit), file uploads up to 100 MB for any non-executable file type, expiry choices of 1 day, 7 days, 30 days or never, read limits of 1, 5, 10 or unlimited, password protection for any share, and custom share codes.",
     },
     {
         q: "How do I activate my license key?",

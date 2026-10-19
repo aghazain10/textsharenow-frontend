@@ -23,11 +23,11 @@
                         v-if="!isPro"
                         type="button"
                         class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-line bg-bg px-2 py-0.5 text-muted transition-colors hover:text-ink"
-                        title="Go Pro for 100 MB files of any type"
+                        title="Go Pro for files up to 100 MB (executables stay blocked)"
                         @click="openProModal('file')"
                     >
                         <TsnIcon name="lock" class="h-3 w-3" stroke="2.2" />
-                        100 MB · any type with Pro
+                        100 MB files with Pro
                     </button>
                 </span>
                 <span class="mt-3 hidden text-[12px] text-muted sm:block">Tip: you can also paste a screenshot anywhere on this page</span>
@@ -79,6 +79,7 @@
 <script setup>
 import { DEFAULT_EXPIRY, FILE_EXPIRY_OPTIONS, expiryLabel } from "~/utils/expiry.js";
 import { FREE_MAX_FILE, PRO_MAX_FILE, FREE_FILE_ACCEPT, FREE_FILE_LABEL, PRO_FILE_LABEL } from "~/utils/premium.js";
+import { isBlockedFile } from "~/utils/filePolicy.js";
 
 const config = useRuntimeConfig();
 const API_URL = config.public.FILES_API_URL;
@@ -102,7 +103,7 @@ const accept = computed(() => (isPro.value ? "" : FREE_FILE_ACCEPT));
 const typeLabel = computed(() => (isPro.value ? PRO_FILE_LABEL : FREE_FILE_LABEL));
 const dropHint = computed(() =>
     isPro.value
-        ? "Any file, up to 100 MB, in original quality"
+        ? "Any non-executable file, up to 100 MB, in original quality"
         : "Screenshots, photos and short videos, in original quality"
 );
 
@@ -124,9 +125,14 @@ function take(f) {
         error.value = "SVG files aren't supported because they can carry scripts. Convert to PNG and try again.";
         return;
     }
+    // Executables and installers are blocked on every plan, including Pro.
+    if (isBlockedFile(f.name, f.type)) {
+        error.value = "Executable files and installers (.exe, .msi, .bat, .apk and similar) aren't supported on any plan. Zip the file or share it another way.";
+        return;
+    }
     // Free tier only accepts the whitelisted image/video types
     if (!isPro.value && !FREE_FILE_ACCEPT.split(",").includes(f.type)) {
-        error.value = `This file type isn't supported on free. Use ${FREE_FILE_LABEL} — or go Pro for any file type.`;
+        error.value = `This file type isn't supported on free. Use ${FREE_FILE_LABEL} — or go Pro for any non-executable type.`;
         openProModal("file");
         return;
     }
@@ -164,7 +170,12 @@ async function upload() {
         if (isPro.value) {
             const t = await $fetch(`${config.public.API_BASE}/api/pro/upload-ticket`, {
                 method: "POST",
-                body: { expires: expires.value, size: file.value.size },
+                body: {
+                    expires: expires.value,
+                    size: file.value.size,
+                    name: file.value.name,
+                    type: file.value.type,
+                },
             });
             form.append("ticket", t.ticket);
         }

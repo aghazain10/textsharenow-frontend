@@ -112,7 +112,7 @@
  * share, we check the files service with a HEAD request, which doesn't use up
  * the download, then hand the browser the real download link.
  */
-import { hashPassword } from "~/utils/hash.js";
+import { hashPassword, hashLegacyPassword } from "~/utils/hash.js";
 
 const props = defineProps({
     initialCode: { type: String, default: "" },
@@ -136,6 +136,7 @@ const passwordNeeded = ref(false);
 const password = ref("");
 const passwordError = ref("");
 const pwInput = ref(null);
+const kdfParams = ref(null); // { kdf, salt, iterations } from the 401 response
 
 const canPaste = ref(false);
 const pasteHint = ref("");
@@ -201,13 +202,20 @@ async function getText(code, pwHash) {
         const status = e?.status ?? e?.response?.status;
         if (status === 404) return null;
         if (status === 401) {
+            const params = e?.data?.data || e?.data || {};
+            kdfParams.value = {
+                kdf: params.kdf || "sha256",
+                salt: params.salt || "",
+                iterations: params.iterations || 0,
+            };
             const err = new Error("password required");
             err.code = "PASSWORD";
             throw err;
         }
         if (status === 403) {
-            const err = new Error("Incorrect password. Try again.");
-            err.code = "WRONG_PASSWORD";
+            const message = e?.data?.message || "Incorrect password. Try again.";
+            const err = new Error(message);
+            err.code = /permanently deleted/i.test(message) ? "BURNED" : "WRONG_PASSWORD";
             throw err;
         }
         if (status === 429) throw new Error("Too many tries. Wait a minute and try again.");
@@ -245,6 +253,11 @@ async function receive(kind, pwHash) {
             passwordNeeded.value = true;
             passwordError.value = e.message;
             nextTick(() => pwInput.value?.select());
+        } else if (e?.code === "BURNED") {
+            passwordNeeded.value = false;
+            password.value = "";
+            kdfParams.value = null;
+            fail("Share deleted", e.message);
         } else {
             fail("Something went wrong", e.message);
         }
@@ -255,7 +268,11 @@ async function receive(kind, pwHash) {
 
 async function unlock() {
     if (!password.value || loading.value) return;
-    const hash = await hashPassword(password.value);
+    const params = kdfParams.value;
+    const hash =
+        params?.kdf === "pbkdf2" && params.salt && params.iterations
+            ? await hashPassword(password.value, params.salt, params.iterations)
+            : await hashLegacyPassword(password.value);
     receive("", hash);
 }
 
@@ -265,6 +282,7 @@ function reset() {
     passwordNeeded.value = false;
     password.value = "";
     passwordError.value = "";
+    kdfParams.value = null;
     nextTick(() => inputEl.value?.focus());
 }
 

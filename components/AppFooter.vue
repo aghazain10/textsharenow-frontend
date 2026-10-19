@@ -42,6 +42,7 @@ const COLS = [
         title: "Info",
         links: [
             { label: "Pricing", to: "/pricing" },
+            { label: "TextShareNow Pro", href: PRO_URL },
             { label: "FAQ", to: "/faq" },
             { label: "Blog", to: "/blog" },
             { label: "About", to: "/about" },
@@ -53,7 +54,7 @@ const COLS = [
         links: [
             { label: "Privacy Policy", to: "/privacy" },
             { label: "Terms of Use", to: "/terms" },
-            { label: "TextShareNow Pro", href: PRO_URL },
+            { label: "Report Abuse", to: "/abuse" },
         ],
     },
 ];

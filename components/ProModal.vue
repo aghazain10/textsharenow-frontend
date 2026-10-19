@@ -114,7 +114,7 @@ const { isPro, activating, activate, deactivate } = usePremium();
 
 const FEATURES = [
     "Up to 100,000 characters per share",
-    "Files up to 100 MB — any type",
+    "Files up to 100 MB — any non-executable type",
     "Custom expiry: 1 day, 7 days, 30 days or never",
     "Read limits: 5, 10 or unlimited reads",
     "Password-protect any share",

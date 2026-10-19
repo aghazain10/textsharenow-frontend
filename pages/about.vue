@@ -92,12 +92,11 @@
                     </p>
                     <p class="mt-4">
                         TextShareNow is free to use and doesn't require an
-                        account, a subscription, or your email address. To
-                        cover the cost of running the servers, the free plan
-                        may show a small number of ads, and power users can
-                        optionally subscribe to Pro. There's no catch
-                        beyond that — no data resale, no forced upgrades, just
-                        a tool built to solve a real, everyday problem.
+                        account, a subscription, or your email address.
+                        Running it is funded by the people who choose the
+                        optional Pro plan. There's no catch beyond that — no
+                        data resale, no forced upgrades, just a tool built to
+                        solve a real, everyday problem.
                     </p>
 
                     <h2 class="mt-12 border-t border-line pt-12 text-[26px] font-semibold tracking-[-0.03em] text-ink">Free for Everyone</h2>
@@ -105,9 +104,8 @@
                         TextShareNow's free plan isn't going anywhere — no
                         account, no subscription, no features held hostage.
                         Running it costs a little in hosting and time, covered
-                        by a small number of ads and by the users who choose
-                        the optional Pro plan. You don't have to pay anything
-                        to keep using the tool.
+                        by the users who choose the optional Pro plan. You
+                        don't have to pay anything to keep using the tool.
                     </p>
 
                     <h2 class="mt-12 border-t border-line pt-12 text-[26px] font-semibold tracking-[-0.03em] text-ink">Our Principles</h2>

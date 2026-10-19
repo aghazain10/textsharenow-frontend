@@ -135,6 +135,7 @@ export default defineNuxtConfig({
         "/about": { prerender: true },
         "/privacy": { prerender: true },
         "/terms": { prerender: true },
+        "/abuse": { prerender: true },
         "/faq": { prerender: true },
         "/contact": { prerender: true },
         "/blog": { prerender: true },

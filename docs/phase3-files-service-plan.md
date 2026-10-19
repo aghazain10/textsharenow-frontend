@@ -147,3 +147,49 @@ the Nuxt side can stay idle indefinitely.
 - No download-count / multi-download for files (files stay first-download-delete).
 - No auth/accounts on the files service.
 - No changes to the public API shape beyond `expires_in` correctness.
+
+## 9. Phase 3b addendum — executable denylist (required)
+
+The Nuxt side now rejects executables in two places (`utils/filePolicy.js`):
+
+- browser pick-time check in `SendFile.vue`;
+- `POST /api/pro/upload-ticket` rejects the request when `name`/`type` are supplied
+  and match the denylist.
+
+Both are bypassable: a caller with a valid ticket can post arbitrary bytes straight
+to the files service. The files service must enforce the same denylist in
+`validateProUpload()` (and ideally for free uploads too) using the original
+filename and/or content type:
+
+```
+svg exe dll msi msp msix appx bat cmd com scr pif hta cpl msc reg
+vbs vbe js jse wsf wsh ps1 psm1 sh bash jar apk aab deb rpm dmg pkg app run
+lnk url desktop service
+```
+
+Also reject these MIME types: `image/svg+xml`, `application/x-msdownload`,
+`application/x-msdos-program`, `application/x-ms-installer`,
+`application/vnd.microsoft.portable-executable`, `application/x-msi`,
+`application/java-archive`, `application/vnd.android.package-archive`,
+`application/vnd.debian.binary-package`, `application/x-rpm`,
+`application/x-apple-diskimage`, `application/x-sh`, `application/x-bat`,
+`application/x-ms-shortcut`, `application/x-executable`, `application/x-elf`.
+
+Missing/mismatched filenames must fail closed only for Pro uploads if the ticket
+body carried a blocked type; the mint endpoint already rejects known-bad values.
+
+**Storage backstop:** the Nuxt mint endpoint caps each license at 2 GB of live
+uploads and 50 live file shares via a Redis ledger (`pro:fu:<licHash>`). If easy,
+mirror the accounting in the files service (increment on store, decrement on
+delete/expiry cleanup) and reject uploads that would exceed ~2.5 GB per license.
+At minimum, alert on disk usage — the ledger is best-effort and non-atomic.
+
+### Additional acceptance tests
+
+| # | Case | Expect |
+|---|---|---|
+| 13 | Valid ticket, browser pick of `setup.exe` | Blocked client-side with message |
+| 14 | Valid ticket minted with `name: "setup.exe"` | 422 from `/api/pro/upload-ticket` |
+| 15 | Valid ticket, direct `POST /upload` with `evil.exe` (no name/type in mint) | 422 from the files service |
+| 16 | Valid ticket, direct upload with `application/x-msdownload` | 422 from the files service |
+| 17 | Mint while license ledger is at 2 GB / 50 live files | 422 with storage-limit message |

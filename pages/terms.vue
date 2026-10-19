@@ -1,6 +1,6 @@
 <template>
     <div>
-        <PageHero title="Terms of Use" meta="Last updated: August 2026" lead="The rules and conditions for using the TextShareNow text and file transfer tool." />
+        <PageHero title="Terms of Use" meta="Last updated: October 2026" lead="The rules and conditions for using the TextShareNow text and file transfer tool." />
 
         <section class="section">
             <div class="wrap">
@@ -22,6 +22,8 @@
                         <p class="mt-4 text-[16px] leading-7 text-muted">
                             Questions about these Terms can be sent to
                             <a href="mailto:info@textsharenow.com" class="text-link">info@textsharenow.com</a>.
+                            Abuse reports can also be filed through our
+                            <NuxtLink to="/abuse" class="text-link">abuse report page</NuxtLink>.
                         </p>
                     </section>
                 </div>
@@ -34,7 +36,7 @@
 useSeo({
     title: "Terms of Use",
     description:
-        "Terms of Use for TextShareNow — the rules and conditions for using our free text transfer tool.",
+        "Terms of Use for TextShareNow — the rules for using our free and Pro text and file transfer service, including billing, cancellation, refunds, and acceptable use.",
     pagePath: "/terms",
 });
 
@@ -57,15 +59,15 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "TextShareNow is a browser-based tool with a free plan and an optional paid membership (\"Pro\") that lets users transfer short pieces of text or files between devices using a temporary code. The free plan does not require account creation, and the Service does not permanently store submitted content.",
+                text: "TextShareNow is a browser-based tool with a free plan and an optional paid membership (\"Pro\") that lets users transfer short pieces of text or files between devices using a temporary code. The free plan does not require account creation, and the Service does not permanently store submitted content except where a Pro user explicitly chooses an unlimited, non-expiring share.",
             },
             {
                 type: "p",
-                text: "Submitted text is automatically deleted after first retrieval or when its timer ends (10 minutes, 30 minutes or 1 hour on the free plan; Pro shares may be configured for longer), whichever occurs first. Uploaded files are automatically deleted after first download or when their timer ends, whichever occurs first, as described in our Privacy Policy.",
+                text: "Free shares are automatically deleted after first retrieval or when their timer ends (10 minutes, 30 minutes or 1 hour), whichever occurs first. Pro shares can be configured with a longer expiry (1 day, 7 days, 30 days or never), multiple reads (5, 10 or unlimited), or both, and are deleted when their read limit is reached, when their timer ends, or after retrieval on single-read shares. A Pro share configured never to expire remains stored until its read limit is reached (if one applies) or until it is removed under these Terms. Files are automatically deleted after first download or when their timer ends, and file shares are available for up to 30 days on Pro. This is described in more detail in our Privacy Policy.",
             },
             {
                 type: "p",
-                text: "Accepted file types for the free file sharing plan are limited to PNG, JPEG, WebP, MP4, and WebM, with a maximum size of 10 MB per file (the Pro plan supports additional file types up to 100 MB). All uploaded files are scanned for malware before becoming available for download.",
+                text: "Accepted file types for the free plan are limited to PNG, JPEG, WebP, MP4 and WebM, with a maximum size of 10 MB per file. Pro accepts any non-executable file type up to 100 MB per file, within a per-license live storage allowance. Executable files and installers are blocked on every plan. All uploaded files are scanned for malware before becoming available for download.",
             },
         ],
     },
@@ -82,7 +84,10 @@ const sections = [
                     "Transmit content that is illegal, defamatory, obscene, or infringes on the rights of others.",
                     "Distribute malware, phishing links, or other malicious content.",
                     "Upload files containing viruses, trojans, or other harmful code — all uploads are scanned and rejected if malware is detected.",
-                    "Upload files that exceed 10 MB or are not in an accepted format (PNG, JPEG, WebP, MP4, WebM).",
+                    "Upload executables, installers, or scripts designed to run automatically. These are blocked on every plan, including Pro.",
+                    "Upload files that exceed the limits of your plan or use a format blocked on that plan (free: the five formats above up to 10 MB; Pro: any non-executable file up to 100 MB, within the storage allowance).",
+                    "Circumvent storage caps, rate limits, or other restrictions by creating multiple licenses or accounts, or by automated means.",
+                    "Use Pro to host or distribute malware, phishing pages, pirated software, or other illegal content under our domain.",
                     "Attempt to overwhelm, disrupt, or gain unauthorised access to the Service or its infrastructure.",
                     "Attempt to brute-force, guess, or otherwise access another user's code or content.",
                     "Use the Service for spam, bulk automated transfers, or any activity that abuses its intended purpose.",
@@ -90,7 +95,7 @@ const sections = [
             },
             {
                 type: "p",
-                text: "We reserve the right to block or rate-limit access, without notice, for any use that violates these terms or threatens the stability of the Service.",
+                text: "To report abuse, contact info@textsharenow.com or use our abuse report page with the share code or link and a description of the problem. We review every report and may remove content and suspend or revoke access, including Pro access, without notice where a violation is found or the stability of the Service is threatened.",
             },
         ],
     },
@@ -99,7 +104,7 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "Because TextShareNow has no accounts or user authentication, we cannot verify the identity of anyone sending or retrieving a code. Codes are short-lived and single-use by design, but you are responsible for who you share a code with.",
+                text: "Because TextShareNow has no accounts or user authentication, we cannot verify the identity of anyone sending or retrieving a code. Codes are short-lived and single-use by default; Pro shares may allow multiple reads or longer lifetimes, but you are responsible for who you share a code with.",
             },
             {
                 type: "p",
@@ -125,7 +130,7 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "The free plan of TextShareNow may display advertisements served by Google AdSense and other advertising partners to help cover the cost of running the Service. Advertisements are provided by third parties, and we are not responsible for the content of ads displayed. The optional Pro plan removes ads and unlocks additional features.",
+                text: "The free plan of TextShareNow may display advertisements served by Google AdSense and other advertising partners to help cover the cost of running the Service. Advertisements are provided by third parties, and we are not responsible for the content of ads displayed. The optional Pro plan unlocks additional features and directly supports the Service.",
             },
             {
                 type: "p",
@@ -134,7 +139,36 @@ const sections = [
         ],
     },
     {
-        title: "7. Disclaimer of Warranties",
+        title: "7. Pro Subscriptions, Billing & Cancellation",
+        content: [
+            {
+                type: "p",
+                text: "Pro is billed at $5 USD per month through Gumroad, our third-party payment processor. Subscriptions renew automatically each month until cancelled.",
+            },
+            {
+                type: "p",
+                text: "You can cancel at any time using the management link in your Gumroad receipt email. Cancellation stops future charges, and you keep Pro access until the end of the period you have already paid for. We cannot cancel or modify a Gumroad subscription on your behalf.",
+            },
+            {
+                type: "p",
+                text: "Your license key is proof of purchase. Treat it like a password: anyone with your key can activate Pro, so keep it private. We may deactivate a key if a payment is refunded, reversed, or charged back.",
+            },
+            {
+                type: "p",
+                text: "Refunds are handled case by case through Gumroad. Contact us at info@textsharenow.com if a key will not activate, or if you do not recognise a charge. If a refund or chargeback is issued, Pro access may be revoked.",
+            },
+            {
+                type: "p",
+                text: "Prices may change in the future. Changes will not apply retroactively to periods you have already paid for, and we will give notice through Gumroad before a change affects your renewal.",
+            },
+            {
+                type: "p",
+                text: "Pro access depends on third-party services, including Gumroad for license verification and our file host for uploads. We do not guarantee uninterrupted availability of Pro features.",
+            },
+        ],
+    },
+    {
+        title: "8. Disclaimer of Warranties",
         content: [
             {
                 type: "p",
@@ -147,7 +181,7 @@ const sections = [
         ],
     },
     {
-        title: "8. Limitation of Liability",
+        title: "9. Limitation of Liability",
         content: [
             {
                 type: "p",
@@ -156,7 +190,7 @@ const sections = [
         ],
     },
     {
-        title: "9. Changes to the Service or Terms",
+        title: "10. Changes to the Service or Terms",
         content: [
             {
                 type: "p",
@@ -165,7 +199,7 @@ const sections = [
         ],
     },
     {
-        title: "10. Governing Law",
+        title: "11. Governing Law",
         content: [
             {
                 type: "p",
