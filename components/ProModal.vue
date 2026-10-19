@@ -54,10 +54,9 @@
                     <!-- Not activated: buy or redeem a key -->
                     <template v-else>
                         <a
-                            :href="PRO_URL"
-                            target="_blank"
-                            rel="noopener noopener"
+                            :href="checkoutHref"
                             class="btn-primary mt-4 flex w-full items-center justify-center"
+                            @click="onBuyClick"
                         >
                             Get Pro — $5/month
                         </a>
@@ -109,7 +108,10 @@
 </template>
 
 <script setup>
-const { isOpen, copy, close } = useProModal();
+import { proCheckoutPath } from "~/utils/checkout.js";
+import { trackProEvent } from "~/composables/useProTracking.js";
+
+const { isOpen, copy, reason, close } = useProModal();
 const { isPro, activating, activate, deactivate } = usePremium();
 
 const FEATURES = [
@@ -121,7 +123,11 @@ const FEATURES = [
     "Custom share codes (e.g. coffee-menu)",
 ];
 
-const PRO_URL = useRuntimeConfig().public.PRO_URL;
+const checkoutHref = computed(() => proCheckoutPath({ plan: "monthly", location: "pro_modal" }));
+
+function onBuyClick() {
+    trackProEvent("pro_cta_click", { location: "pro_modal", plan: "monthly", reason: reason.value });
+}
 
 const showKey = ref(false);
 const licenseKey = ref("");
@@ -136,6 +142,7 @@ async function onActivate() {
     feedbackOk.value = res.ok;
     feedback.value = res.message;
     if (res.ok) {
+        trackProEvent("pro_activated", { source: "modal" });
         licenseKey.value = "";
         setTimeout(() => {
             feedback.value = "";

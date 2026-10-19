@@ -130,6 +130,14 @@ export default defineNuxtConfig({
 
     ssr: true,
 
+    // /go/pro is a redirect route, not a page — keep the prerender crawler
+    // from following it to Gumroad.
+    nitro: {
+        prerender: {
+            ignore: ["/go", "/go/**"],
+        },
+    },
+
     routeRules: {
         "/": { prerender: true },
         "/about": { prerender: true },

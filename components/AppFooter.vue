@@ -26,7 +26,6 @@
 
 <script setup>
 const year = new Date().getFullYear();
-const PRO_URL = useRuntimeConfig().public.PRO_URL;
 const COLS = [
     {
         title: "Tool",
@@ -42,7 +41,7 @@ const COLS = [
         title: "Info",
         links: [
             { label: "Pricing", to: "/pricing" },
-            { label: "TextShareNow Pro", href: PRO_URL },
+            { label: "TextShareNow Pro", to: "/pricing" },
             { label: "FAQ", to: "/faq" },
             { label: "Blog", to: "/blog" },
             { label: "About", to: "/about" },

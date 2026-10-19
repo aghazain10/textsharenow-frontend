@@ -103,11 +103,15 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "TextShareNow sets no first-party cookies except the Pro session cookie described above, and we run no analytics or advertising software ourselves. Two optional Google services do: Google Analytics and Google AdSense. Pro payments are handled separately by Gumroad.",
+                text: "TextShareNow sets no first-party cookies except the Pro session cookie described above. We use Google Analytics and Google AdSense, plus Vercel Analytics for aggregate traffic and event measurement. Pro payments are handled separately by Gumroad.",
             },
             {
                 type: "p",
                 text: "Analytics — we use Google Analytics 4 to measure aggregate, anonymised usage of this site: which pages are visited, which devices and languages are used, and how visitors arrive here.",
+            },
+            {
+                type: "p",
+                text: "We also use Vercel Analytics, which counts page views and anonymous events (such as which pricing button was clicked) without cookies or cross-site tracking. Pro checkout clicks are stored in our own database only as aggregate numbers — never linked to you or your license key.",
             },
             {
                 type: "p",
@@ -122,6 +126,7 @@ const sections = [
                 items: [
                     "Google Analytics event data is kept only for the retention period configured in our Analytics property (Google's default is 2 months).",
                     "The lifetime of Google's advertising cookies is governed by Google's own cookie policy.",
+                    "Anonymous Pro checkout click counts are stored in aggregate form for up to 400 days.",
                 ],
             },
             {
