@@ -19,7 +19,9 @@
  * Returns a unique 5-character alphanumeric code.
  */
 
-import { isPro } from '../utils/pro'
+import { createHash } from 'node:crypto'
+import { isPro, getProLicenseKey } from '../utils/pro'
+import { CUSTOM_CODE_RE, RESERVED_CODES, normalizeCustomCode } from '~~/utils/customCode'
 
 const CHARSET     = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 const CODE_LENGTH = 5
@@ -32,6 +34,7 @@ const KEY_PREFIX  = 'share:'
 const COUNT_KEY   = 'stats:shares'
 const SHA256_HEX  = /^[a-f0-9]{64}$/
 const READ_COUNTS = [1, 5, 10, 0]
+const CUSTOM_CODE_CAP = 20 // active custom codes per license
 
 function dailyCountKey(date = new Date()): string {
   return `stats:shares:daily:${date.toISOString().slice(0, 10)}`
@@ -127,20 +130,40 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 429, message: 'Too many requests. Please wait a moment.' })
   }
 
-  // Generate a unique code (retry up to 5 times on collision)
-  let code = ''
-  for (let attempt = 0; attempt < 5; attempt++) {
-    const candidate = generateCode()
-    const exists    = await upstashRequest(redisUrl, redisToken, ['EXISTS', KEY_PREFIX + candidate])
-
-    if (exists.result === 0) {
-      code = candidate
-      break
+  // Custom code (premium only) — validated, reserved-list checked, then
+  // claimed atomically with SET NX so two users can never race the same name.
+  const rawCustom = typeof body?.customCode === 'string' ? body.customCode.trim() : ''
+  let customCode = ''
+  let ownerKey: string | null = null
+  if (rawCustom) {
+    if (!pro) {
+      throw createError({ statusCode: 403, message: 'Custom codes are a Pro feature.' })
     }
-  }
-
-  if (!code) {
-    throw createError({ statusCode: 500, message: 'Could not generate a unique code. Please try again.' })
+    customCode = normalizeCustomCode(rawCustom)
+    if (!CUSTOM_CODE_RE.test(customCode)) {
+      throw createError({ statusCode: 422, message: 'Codes are 3–30 characters: letters, numbers, - and _.' })
+    }
+    if (RESERVED_CODES.has(customCode)) {
+      throw createError({ statusCode: 422, message: 'That code is reserved — pick another.' })
+    }
+    // Per-license cap so one subscription can't squat the whole code space.
+    const licenseKey = getProLicenseKey(event)
+    if (licenseKey) {
+      ownerKey = `custom:owner:${createHash('sha256').update(licenseKey.trim()).digest('hex')}`
+      const card = await upstashRequest(redisUrl, redisToken, ['SCARD', ownerKey])
+      if (card.result >= CUSTOM_CODE_CAP) {
+        // Best-effort sweep of codes that have since been read or expired.
+        const members = await upstashRequest(redisUrl, redisToken, ['SMEMBERS', ownerKey])
+        for (const m of (members.result || []).slice(0, 50)) {
+          const ex = await upstashRequest(redisUrl, redisToken, ['EXISTS', KEY_PREFIX + m])
+          if (ex.result === 0) await upstashRequest(redisUrl, redisToken, ['SREM', ownerKey, m])
+        }
+        const after = await upstashRequest(redisUrl, redisToken, ['SCARD', ownerKey])
+        if (after.result >= CUSTOM_CODE_CAP) {
+          throw createError({ statusCode: 422, message: `You already have ${CUSTOM_CODE_CAP} active custom codes. Wait for some to expire.` })
+        }
+      }
+    }
   }
 
   // Plain text when there is no metadata (keeps the legacy format), JSON
@@ -152,11 +175,42 @@ export default defineEventHandler(async (event) => {
     stored = JSON.stringify(payload)
   }
 
-  // Store with TTL — ttl 0 ("never") is stored without an expiry
-  if (ttl === 0) {
-    await upstashRequest(redisUrl, redisToken, ['SET', KEY_PREFIX + code, stored])
+  let code = ''
+  if (customCode) {
+    // Atomic claim: NX guarantees a single winner even under concurrency.
+    const setCmd: unknown[] = ['SET', KEY_PREFIX + customCode, stored, 'NX']
+    if (ttl > 0) setCmd.push('EX', ttl)
+    const setRes = await upstashRequest(redisUrl, redisToken, setCmd)
+    if (setRes.result !== 'OK') {
+      throw createError({ statusCode: 422, message: 'That code was just taken — try another.' })
+    }
+    code = customCode
+    if (ownerKey) {
+      // Track for the cap — a failure here must not block the share.
+      try { await upstashRequest(redisUrl, redisToken, ['SADD', ownerKey, customCode]) } catch {}
+    }
   } else {
-    await upstashRequest(redisUrl, redisToken, ['SETEX', KEY_PREFIX + code, ttl, stored])
+    // Generate a unique random code (retry up to 5 times on collision)
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const candidate = generateCode()
+      const exists    = await upstashRequest(redisUrl, redisToken, ['EXISTS', KEY_PREFIX + candidate])
+
+      if (exists.result === 0) {
+        code = candidate
+        break
+      }
+    }
+
+    if (!code) {
+      throw createError({ statusCode: 500, message: 'Could not generate a unique code. Please try again.' })
+    }
+
+    // Store with TTL — ttl 0 ("never") is stored without an expiry
+    if (ttl === 0) {
+      await upstashRequest(redisUrl, redisToken, ['SET', KEY_PREFIX + code, stored])
+    } else {
+      await upstashRequest(redisUrl, redisToken, ['SETEX', KEY_PREFIX + code, ttl, stored])
+    }
   }
 
   // Increment the aggregate, anonymous all-time share counter and a daily

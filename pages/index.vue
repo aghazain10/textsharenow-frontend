@@ -90,17 +90,17 @@ const STATS = [
     { label: "files shared using textsharenow", counter: "file", wide: true },
 ];
 
-const clean = (v) => (v || "").toString().trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+const clean = (v) => (v || "").toString().trim().replace(/[^A-Za-z0-9_-]/g, "").slice(0, 30);
 
 onMounted(() => {
     // A scanned QR opens the Receive tab and fetches straight away:
     // /?code=XXXXX for text, /?fcode=XXXXX for files
     const code = clean(route.query.code);
     const fcode = clean(route.query.fcode);
-    if (code.length >= 4 || fcode.length >= 4) {
+    if (code.length >= 3 || fcode.length >= 3) {
         tab.value = "receive";
-        scannedKind.value = code.length >= 4 ? "text" : "file";
-        scannedCode.value = code.length >= 4 ? code : fcode;
+        scannedKind.value = code.length >= 3 ? "text" : "file";
+        scannedCode.value = code.length >= 3 ? code : fcode;
         router.replace({ query: {} });
     } else if (route.hash === "#receive") {
         tab.value = "receive";

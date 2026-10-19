@@ -166,6 +166,11 @@ function readSessionLicense(event: any): string | null {
   return unsign(cookie, secret)
 }
 
+/** The Pro license key bound to this session, if any (no verification). */
+export function getProLicenseKey(event: any): string | null {
+  return readSessionLicense(event)
+}
+
 /** Server-side entitlement check — the only source of truth for `pro`. */
 export async function isPro(event: any): Promise<boolean> {
   const config = useRuntimeConfig()

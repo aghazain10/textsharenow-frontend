@@ -21,7 +21,7 @@
                             <template v-else>Expired</template>
                         </span>
                     </div>
-                    <div ref="flapsEl" class="mt-3 flex gap-1.5 sm:gap-2" role="img" :aria-label="`Code ${code.split('').join(' ')}`">
+                    <div ref="flapsEl" class="mt-3 flex flex-wrap gap-1.5 sm:gap-2" role="img" :aria-label="`Code ${code.split('').join(' ')}`">
                         <span v-for="(c, i) in code" :key="i" class="flap flap-lg">·</span>
                     </div>
                     <!-- Share link: same destination as the QR code, copyable in one tap -->
@@ -76,7 +76,7 @@
                     <TsnIcon name="x" class="h-4 w-4" stroke="2.2" />Close
                 </button>
                 <p class="text-[17px] font-medium text-muted">Enter this code on your other device</p>
-                <div class="flex gap-[2vw]" role="img" :aria-label="`Code ${code.split('').join(' ')}`">
+                <div class="flex flex-wrap justify-center gap-[2vw]" role="img" :aria-label="`Code ${code.split('').join(' ')}`">
                     <span v-for="(c, i) in code" :key="i" class="flap" style="--w: min(16vw, 10rem)">{{ c }}</span>
                 </div>
                 <p class="text-[15px] text-muted">

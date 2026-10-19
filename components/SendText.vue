@@ -77,6 +77,27 @@
                         @click="onPasswordFocus"
                     />
                 </label>
+                <label class="inline-flex min-w-[190px] flex-1 cursor-pointer items-center gap-1.5 text-[13px] text-muted">
+                    <TsnIcon name="link" class="h-3.5 w-3.5 shrink-0" :class="isPro ? 'text-muted' : ''" stroke="1.8" />
+                    <input
+                        v-model="customCode"
+                        type="text"
+                        autocomplete="off"
+                        autocapitalize="off"
+                        autocorrect="off"
+                        spellcheck="false"
+                        placeholder="Custom code (optional)"
+                        aria-label="Custom code (Pro)"
+                        class="w-full rounded-md border border-line bg-bg px-2.5 py-1 text-[12px] text-ink placeholder:text-muted/70 !outline-none"
+                        :class="isPro ? '' : 'cursor-pointer'"
+                        :readonly="!isPro"
+                        @focus="onCustomFocus"
+                        @click="onCustomFocus"
+                    />
+                    <span v-if="customStatus === 'taken'" class="shrink-0 text-[11px] font-semibold text-bad" role="status">taken</span>
+                    <span v-else-if="customStatus === 'available'" class="shrink-0 text-[11px] font-semibold text-ok" role="status">free</span>
+                    <span v-else-if="customStatus === 'invalid'" class="shrink-0 text-[11px] font-semibold text-bad" role="status">invalid</span>
+                </label>
             </div>
 
             <p v-if="error" class="mx-5 mb-2 flex items-center gap-2 text-[14px] text-bad" role="alert">
@@ -110,6 +131,7 @@ import { DEFAULT_EXPIRY } from "~/utils/expiry.js";
 import { READ_OPTIONS, DEFAULT_READS } from "~/utils/reads.js";
 import { FREE_MAX_CHARS, PRO_MAX_CHARS } from "~/utils/premium.js";
 import { hashPassword } from "~/utils/hash.js";
+import { normalizeCustomCode, isValidCustomCode } from "~/utils/customCode.js";
 
 const API_BASE = useRuntimeConfig().public.API_BASE;
 const { isPro } = usePremium();
@@ -120,6 +142,9 @@ const qrUrl = ref("");
 const ttl = ref(DEFAULT_EXPIRY); // seconds, 0 = never
 const maxReads = ref(DEFAULT_READS); // 1, 5, 10 or 0 = unlimited
 const password = ref("");
+const customCode = ref("");
+const customStatus = ref(""); // "" | "checking" | "available" | "taken" | "invalid"
+let customTimer = null;
 const loading = ref(false);
 const error = ref("");
 const shortcut = ref("Ctrl Enter");
@@ -156,12 +181,45 @@ function onPasswordFocus(e) {
     openProModal("password");
 }
 
+// Same for the custom code field.
+function onCustomFocus(e) {
+    if (isPro.value) return;
+    e.target.blur();
+    openProModal("code");
+}
+
+// Keep the input lowercase + trimmed to the legal charset as they type.
+watch(customCode, (v) => {
+    const n = normalizeCustomCode(v);
+    if (v !== n) customCode.value = n;
+});
+
+// Debounced availability check against the server.
+watch(customCode, (v) => {
+    clearTimeout(customTimer);
+    if (!v || v.length < 3 || !isValidCustomCode(v)) {
+        customStatus.value = v && v.length >= 3 && !isValidCustomCode(v) ? "invalid" : "";
+        return;
+    }
+    customStatus.value = "checking";
+    customTimer = setTimeout(async () => {
+        try {
+            const res = await $fetch(`${API_BASE}/api/share/custom-check`, { query: { code: v } });
+            customStatus.value = res.available ? "available" : "taken";
+        } catch {
+            customStatus.value = "";
+        }
+    }, 400);
+});
+
 // Turning Pro off resets anything premium that was selected
 watch(isPro, (pro) => {
     if (pro) return;
     if (![600, 1800, 3600].includes(ttl.value)) ttl.value = DEFAULT_EXPIRY;
     maxReads.value = DEFAULT_READS;
     password.value = "";
+    customCode.value = "";
+    customStatus.value = "";
     if (text.value.length > FREE_MAX_CHARS) text.value = text.value.slice(0, FREE_MAX_CHARS);
     limitModalShown.value = false;
 });
@@ -208,6 +266,7 @@ async function send() {
         if (isPro.value) {
             body.maxReads = maxReads.value;
             if (password.value) body.passwordHash = await hashPassword(password.value);
+            if (customCode.value) body.customCode = customCode.value;
         }
         const res = await $fetch(`${API_BASE}/api/share`, { method: "POST", body });
         code.value = res.code;

@@ -118,7 +118,7 @@ const FEATURES = [
     "Custom expiry: 1 day, 7 days, 30 days or never",
     "Read limits: 5, 10 or unlimited reads",
     "Password-protect any share",
-    "Custom code & link — coming soon",
+    "Custom share codes (e.g. coffee-menu)",
 ];
 
 const PRO_URL = useRuntimeConfig().public.PRO_URL;

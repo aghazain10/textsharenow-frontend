@@ -2,16 +2,16 @@
     <div>
         <form v-if="!result" class="rounded-lg border border-line px-4 py-8 text-center sm:px-8 sm:py-10" novalidate @submit.prevent="receive">
             <label for="code-input" class="text-[17px] font-semibold tracking-[-0.01em]">Enter the code from your other device</label>
-            <p class="mt-1 text-[14px] text-muted">Codes are 5 characters</p>
+            <p class="mt-1 text-[14px] text-muted">Codes are 5 characters — or a custom code with Pro</p>
 
             <div class="code-field relative mx-auto mt-6 w-fit" :class="{ error: !!error, shake }">
-                <div class="flex gap-1.5 sm:gap-2.5" aria-hidden="true">
+                <div class="flex flex-wrap justify-center gap-1.5 sm:gap-2.5" aria-hidden="true">
                     <span
-                        v-for="i in 5"
+                        v-for="i in slotCount"
                         :key="i"
                         ref="slots"
                         class="flap slot"
-                        :class="{ empty: !value[i - 1], filled: !!value[i - 1], active: focused && i - 1 === Math.min(value.length, 4) }"
+                        :class="{ empty: !value[i - 1], filled: !!value[i - 1], active: focused && i - 1 === Math.min(value.length, slotCount - 1) }"
                     >{{ value[i - 1] || "·" }}</span>
                 </div>
                 <input
@@ -19,10 +19,9 @@
                     ref="inputEl"
                     :value="value"
                     type="text"
-                    maxlength="5"
+                    maxlength="30"
                     inputmode="text"
                     autocomplete="one-time-code"
-                    autocapitalize="characters"
                     autocorrect="off"
                     spellcheck="false"
                     class="absolute inset-0 h-full w-full cursor-text rounded-xl bg-transparent text-[16px] text-transparent caret-transparent opacity-0"
@@ -62,7 +61,7 @@
             </div>
 
             <div class="mx-auto mt-6 flex w-full max-w-xs flex-col gap-2">
-                <button type="submit" class="btn-primary w-full" :disabled="value.length < 5 || loading">
+                <button type="submit" class="btn-primary w-full" :disabled="value.length < 3 || loading">
                     {{ loading ? "Opening…" : "Receive" }}
                 </button>
                 <button v-if="canPaste && !value" type="button" class="btn-ghost w-full" @click="pasteCode">
@@ -141,15 +140,18 @@ const pwInput = ref(null);
 const canPaste = ref(false);
 const pasteHint = ref("");
 
+// 5 slots for random codes; more (wrapped) as a custom code grows.
+const slotCount = computed(() => Math.max(5, value.value.length));
+
 // Paste a code (or a copied share link) from the clipboard, then open it
 async function pasteCode() {
     pasteHint.value = "";
     try {
         const clip = (await navigator.clipboard.readText()) || "";
-        const fromLink = clip.match(/[?&]f?code=([A-Za-z0-9]{5})/);
+        const fromLink = clip.match(/[?&]f?code=([A-Za-z0-9_-]{3,32})/);
         const code = clean(fromLink ? fromLink[1] : clip);
-        if (code.length < 5) {
-            pasteHint.value = "There's no 5-character code on your clipboard.";
+        if (code.length < 3) {
+            pasteHint.value = "There's no code on your clipboard.";
             return;
         }
         value.value = code;
@@ -160,7 +162,9 @@ async function pasteCode() {
     }
 }
 
-const clean = (s) => s.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 5);
+// Random codes are uppercase; custom codes lowercase with - and _ allowed.
+// Case is preserved as typed — the server tries both storage forms.
+const clean = (s) => s.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 30);
 
 function onInput(e) {
     const before = e.target.value;
@@ -221,7 +225,7 @@ async function getFile(code) {
 
 async function receive(kind, pwHash) {
     const code = value.value;
-    if (code.length < 5 || loading.value) return;
+    if (code.length < 3 || loading.value) return;
     loading.value = true;
     error.value = null;
     try {
@@ -267,7 +271,7 @@ function reset() {
 // A scanned QR link (/?code= or /?fcode=) opens straight away
 function openInitial() {
     const code = clean(props.initialCode || "");
-    if (code.length >= 5) {
+    if (code.length >= 3) {
         value.value = code;
         receive(props.initialKind);
     }

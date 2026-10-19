@@ -265,6 +265,7 @@ const proFeatures = [
     "Expiry: 1 day, 7 days, 30 days — or never",
     "Read limits: 1, 5, 10 or unlimited reads",
     "Password-protect any share",
+    "Custom share codes (e.g. coffee-menu)",
     "No ads",
 ];
 
@@ -278,6 +279,7 @@ const compareRows = [
     ["Share expiry", ["text", "10 min, 30 min, 1 h"], ["text", "10 min – 30 days, or never"]],
     ["Reads per share", ["text", "1 (single-use)"], ["text", "1, 5, 10 or unlimited"]],
     ["Password protection", ["bad", "Not included"], ["good", "Included"]],
+    ["Custom code", ["text", "Random 5 characters"], ["good", "Any available name"]],
     ["QR code + share link", ["good", "Included"], ["good", "Included"]],
     ["Malware scanning", ["good", "Included"], ["good", "Included"]],
     ["Ads", ["text", "A few, non-intrusive"], ["good", "None"]],

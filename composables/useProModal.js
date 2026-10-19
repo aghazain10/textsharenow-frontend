@@ -22,6 +22,10 @@ const COPY = {
         title: "Longer expiry is Pro",
         line: "Free shares delete after up to 1 hour. Pro keeps them up to 30 days — or forever.",
     },
+    code: {
+        title: "Custom codes are Pro",
+        line: "Claim a memorable code like coffee-menu or invoice-2026 instead of 5 random characters.",
+    },
     general: {
         title: "Unlock TextShareNow Pro",
         line: "Everything in free, plus the power features:",

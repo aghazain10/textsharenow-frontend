@@ -28,14 +28,14 @@ const route = useRoute();
 const router = useRouter();
 const code = ref("");
 const kind = ref("");
-const clean = (v) => (v || "").toString().trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+const clean = (v) => (v || "").toString().trim().replace(/[^A-Za-z0-9_-]/g, "").slice(0, 30);
 
 onMounted(() => {
     const c = clean(route.query.code);
     const f = clean(route.query.fcode);
-    if (c.length >= 5 || f.length >= 5) {
-        kind.value = c.length >= 5 ? "text" : "file";
-        code.value = c.length >= 5 ? c : f;
+    if (c.length >= 3 || f.length >= 3) {
+        kind.value = c.length >= 3 ? "text" : "file";
+        code.value = c.length >= 3 ? c : f;
         router.replace({ query: {} });
     }
 });

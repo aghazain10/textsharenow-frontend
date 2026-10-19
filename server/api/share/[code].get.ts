@@ -46,11 +46,23 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   const { UPSTASH_REDIS_REST_URL: redisUrl, UPSTASH_REDIS_REST_TOKEN: redisToken } = config
 
-  // Get and sanitise the code from the URL
-  const rawCode = getRouterParam(event, 'code') || ''
-  const code    = rawCode.trim().toUpperCase().replace(/[^A-Z0-9]/g, '')
+  // Random codes are 5 uppercase alphanumerics; custom codes (Pro) are
+  // 3–30 lowercase [a-z0-9_-]. Try the most likely storage form first so the
+  // common random-code path stays a single Redis GET.
+  const rawInput = (getRouterParam(event, 'code') || '').trim()
+  const randomForm = rawInput.toUpperCase().replace(/[^A-Z0-9]/g, '')
+  const customForm = rawInput.toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 30)
 
-  if (code.length < 4) {
+  const forms: string[] = []
+  if (/^[A-Za-z0-9]{5}$/.test(rawInput)) {
+    forms.push(randomForm)
+    if (customForm !== randomForm) forms.push(customForm)
+  } else {
+    if (customForm.length >= 3) forms.push(customForm)
+    if (randomForm.length >= 4 && randomForm !== customForm) forms.push(randomForm)
+  }
+
+  if (!forms.length) {
     throw createError({ statusCode: 422, message: 'Invalid code format.' })
   }
 
@@ -67,13 +79,23 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 429, message: 'Too many requests. Please wait a moment.' })
   }
 
-  const key    = KEY_PREFIX + code
-  const getRes = await upstashRequest(redisUrl, redisToken, ['GET', key])
-  const raw    = getRes.result
+  // Resolve the stored form — first hit wins; miss across all forms → 404
+  let code = ''
+  let raw: string | null = null
+  for (const form of forms) {
+    const getRes = await upstashRequest(redisUrl, redisToken, ['GET', KEY_PREFIX + form])
+    if (getRes.result) {
+      code = form
+      raw = getRes.result
+      break
+    }
+  }
 
   if (!raw) {
     throw createError({ statusCode: 404, message: 'Code not found or has expired.' })
   }
+
+  const key = KEY_PREFIX + code
 
   const payload = parsePayload(raw)
 
