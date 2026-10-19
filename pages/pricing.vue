@@ -1,15 +1,36 @@
 <template>
     <div>
-        <PageHero
-            meta="Pricing"
-            title="TextShareNow Pricing: Free Plan, Pro at $5/Month"
-            lead="Share text and files for free with no sign-up — forever. Go Pro for 100,000 characters, 100 MB files, expiry up to never, multi-reads, and password protection."
-        >
-            <div class="mt-7 flex flex-wrap gap-3">
-                <a :href="PRO_URL" target="_blank" rel="noopener noopener" class="btn-primary">Get Pro — $5/month</a>
-                <NuxtLink to="/#tool" class="btn-ghost">Start with the free plan</NuxtLink>
+        <!-- Hero: pitch + live-looking Pro preview -->
+        <section class="relative isolate overflow-hidden px-4 pb-14 pt-14 sm:pb-16 sm:pt-20">
+            <div class="hero-grid absolute inset-0 -z-10" aria-hidden="true" />
+            <div class="wrap grid items-center gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-14">
+                <div>
+                    <p class="text-[13px] font-medium text-muted">Pricing</p>
+                    <h1 class="mt-3 max-w-[20ch] text-[clamp(2.4rem,6vw,4.2rem)] font-bold leading-[1.05] tracking-[-0.045em]">TextShareNow Pricing: Free Plan, Pro at $5/Month</h1>
+                    <p class="mt-5 max-w-[58ch] text-[18px] leading-relaxed text-muted">Share text and files for free with no sign-up — forever. Go Pro for 100,000 characters, 100 MB files, expiry up to never, multi-reads, and password protection.</p>
+                    <div class="mt-7 flex flex-wrap gap-3">
+                        <a :href="checkoutHref('hero')" class="btn-primary" @click="onCtaClick('hero')">Get Pro — $5/month</a>
+                        <NuxtLink to="/#tool" class="btn-ghost">Start with the free plan</NuxtLink>
+                    </div>
+                    <p class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] text-muted">
+                        <span class="inline-flex items-center gap-1.5"><TsnIcon name="lock" class="h-3.5 w-3.5" stroke="1.8" />Secure checkout by Gumroad</span>
+                        <span>Instant license key</span>
+                        <span>Cancel anytime</span>
+                    </p>
+                </div>
+                <ProPreview class="lg:justify-self-end" />
             </div>
-        </PageHero>
+        </section>
+
+        <!-- Live usage + trust strip -->
+        <section class="border-t border-line bg-surface-2/40 px-4 py-5">
+            <div class="wrap flex flex-wrap items-center justify-center gap-x-10 gap-y-2 text-[14px] text-muted">
+                <span><UsageCounter kind="text" /> texts shared</span>
+                <span><UsageCounter kind="file" /> files shared</span>
+                <span class="inline-flex items-center gap-1.5"><TsnIcon name="check" class="h-4 w-4 text-ok" stroke="2.4" />No account needed</span>
+                <span class="inline-flex items-center gap-1.5"><TsnIcon name="check" class="h-4 w-4 text-ok" stroke="2.4" />Pro is optional — the free plan stays free</span>
+            </div>
+        </section>
 
         <!-- Plans -->
         <section class="section" aria-labelledby="plans-title">
@@ -52,7 +73,8 @@
                                 <span class="text-ink">{{ f }}</span>
                             </li>
                         </ul>
-                        <a :href="PRO_URL" target="_blank" rel="noopener noopener" class="btn-primary mt-7 w-full">Get Pro — $5/month</a>
+                        <a :href="checkoutHref('plan_card')" class="btn-primary mt-7 w-full" @click="onCtaClick('plan_card')">Get Pro — $5/month</a>
+                        <p class="mt-2 text-center text-[12px] text-muted">Gumroad checkout · instant license key · cancel anytime</p>
                         <button type="button" class="mt-2 w-full rounded-md py-2 text-[14px] font-medium text-brand transition-colors hover:underline" @click="openProModal('general')">
                             Already have a license key? Activate it
                         </button>
@@ -195,7 +217,8 @@
                             </p>
                         </li>
                     </ol>
-                    <a :href="PRO_URL" target="_blank" rel="noopener noopener" class="btn-primary mt-6 w-full">Subscribe on Gumroad</a>
+                    <a :href="checkoutHref('how_to')" class="btn-primary mt-6 w-full" @click="onCtaClick('how_to')">Get Pro — $5/month</a>
+                    <p class="mt-2 text-center text-[12px] text-muted">You'll pay on Gumroad and get your key on the receipt.</p>
                     <button type="button" class="mt-2 w-full rounded-md py-2 text-[14px] font-medium text-brand transition-colors hover:underline" @click="openProModal('general')">
                         I already have a key — activate
                     </button>
@@ -210,7 +233,7 @@
                     <h2 class="section-title">Pricing Questions, Answered</h2>
                 </div>
                 <div class="border-t border-line">
-                    <details v-for="(item, i) in faqs" :key="i" class="faq border-b border-line" :open="i === 0">
+                    <details v-for="(item, i) in faqs" :key="i" class="faq border-b border-line" :open="i === 0" @toggle="onFaqToggle(i, $event)">
                         <summary class="flex items-center justify-between gap-4 py-4 text-[15px] font-medium hover:underline hover:underline-offset-4">
                             {{ item.q }}
                             <span class="plus grid h-6 w-6 shrink-0 place-items-center text-muted"><TsnIcon name="plus" class="h-3.5 w-3.5" stroke="2.6" /></span>
@@ -229,7 +252,7 @@
                     <p class="section-lead mx-auto">No sign-up for either. Pro unlocks the moment you paste your license key.</p>
                     <div class="mt-8 flex flex-wrap justify-center gap-3">
                         <NuxtLink to="/#tool" class="btn-ghost">Use the free tool</NuxtLink>
-                        <a :href="PRO_URL" target="_blank" rel="noopener noopener" class="btn-primary">Get Pro — $5/month</a>
+                        <a :href="checkoutHref('bottom')" class="btn-primary" @click="onCtaClick('bottom')">Get Pro — $5/month</a>
                     </div>
                 </div>
             </div>
@@ -238,6 +261,9 @@
 </template>
 
 <script setup>
+import { proCheckoutPath } from "~/utils/checkout.js";
+import { trackProEvent } from "~/composables/useProTracking.js";
+
 useSeo({
     title: "Pricing — Free Plan and Pro at $5/Month",
     description:
@@ -245,8 +271,32 @@ useSeo({
     pagePath: "/pricing",
 });
 
-const PRO_URL = useRuntimeConfig().public.PRO_URL;
 const { open: openProModal } = useProModal();
+
+// Every CTA links to /go/pro, which counts the click and redirects straight
+// to Gumroad's checkout with UTMs attached.
+const checkoutHref = (location) => proCheckoutPath({ plan: "monthly", location });
+const onCtaClick = (location) => trackProEvent("pro_cta_click", { location, plan: "monthly" });
+
+function onFaqToggle(index, event) {
+    if (event.target.open) trackProEvent("pricing_faq_open", { question_index: index });
+}
+
+onMounted(() => {
+    let sent = false;
+    const onScroll = () => {
+        if (sent) return;
+        const doc = document.documentElement;
+        const depth = (doc.scrollTop + window.innerHeight) / doc.scrollHeight;
+        if (depth >= 0.75) {
+            sent = true;
+            trackProEvent("pricing_scroll", { depth: 75 });
+            window.removeEventListener("scroll", onScroll);
+        }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onBeforeUnmount(() => window.removeEventListener("scroll", onScroll));
+});
 
 const freeFeatures = [
     "Up to 10,000 characters per share",
@@ -338,6 +388,10 @@ const faqs = [
     {
         q: "How much does TextShareNow Pro cost?",
         a: "Pro is $5 per month, billed in USD through Gumroad. There are no tiers, add-ons, or hidden fees, and you can cancel anytime from your Gumroad receipt.",
+    },
+    {
+        q: "What happens after I click Get Pro?",
+        a: "You go straight to Gumroad's secure checkout — there is no product page in between. After payment, Gumroad shows your license key on the receipt and emails it to you. Paste that key into the ⭐ Pro panel anywhere on this site and every limit lifts instantly.",
     },
     {
         q: "What exactly do I get with Pro?",
