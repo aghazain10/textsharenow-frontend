@@ -22,7 +22,7 @@ const staticPages = [
   { path: '/abuse', lastmod: '2026-10-19', priority: '0.40' },
   { path: '/online-text-sharing', lastmod: '2026-10-08', priority: '0.90' },
   { path: '/share-files-online', lastmod: '2026-10-08', priority: '0.90' },
-  { path: '/blog', lastmod: '2026-10-08', priority: '0.80' },
+  { path: '/blog', lastmod: '2026-10-19', priority: '0.80' },
   { path: '/author/zain-rizvee', lastmod: '2026-10-02', priority: '0.60' },
 ]
 

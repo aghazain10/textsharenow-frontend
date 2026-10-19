@@ -23,6 +23,7 @@ import post22 from "./posts/what-happens-to-your-text.js";
 import post23 from "./posts/share-files-between-phone-and-laptop.js";
 import post24 from "./posts/airdrop-alternative-online.js";
 import post25 from "./posts/file-sharing-websites-without-login.js";
+import post26 from "./posts/copy-paste-between-phone-and-computer.js";
 
 export const blogPosts = [
     post1,
@@ -50,4 +51,5 @@ export const blogPosts = [
     post23,
     post24,
     post25,
+    post26,
 ];
