@@ -65,6 +65,7 @@
                 <label class="inline-flex min-w-[190px] flex-1 cursor-pointer items-center gap-1.5 text-[13px] text-muted">
                     <TsnIcon name="lock" class="h-3.5 w-3.5 shrink-0" :class="isPro ? 'text-muted' : ''" stroke="1.8" />
                     <input
+                        ref="pwInput"
                         v-model="password"
                         type="password"
                         autocomplete="new-password"
@@ -99,6 +100,16 @@
                     <span v-else-if="customStatus === 'invalid'" class="shrink-0 text-[11px] font-semibold text-bad" role="status">invalid</span>
                 </label>
             </div>
+
+            <!-- Gentle nudge: custom codes are memorable (and guessable) -->
+            <Transition name="hint">
+                <p v-if="showCodePwHint" class="mx-5 -mt-1 mb-2 inline-flex items-center gap-1.5 rounded-md bg-surface-2 px-2.5 py-1.5 text-[12px] text-muted" role="status">
+                    <TsnIcon name="lock" class="h-3.5 w-3.5 shrink-0" stroke="1.8" />
+                    Custom codes are easy to guess —
+                    <button type="button" class="cursor-pointer font-medium text-ink underline decoration-line underline-offset-2 transition-colors hover:decoration-ink" @click="focusPassword">add a password</button>
+                    to keep this private.
+                </p>
+            </Transition>
 
             <p v-if="error" class="mx-5 mb-2 flex items-center gap-2 text-[14px] text-bad" role="alert">
                 <TsnIcon name="alert" class="h-4 w-4 shrink-0" />{{ error }}
@@ -149,6 +160,7 @@ const loading = ref(false);
 const error = ref("");
 const shortcut = ref("Ctrl Enter");
 const area = ref(null);
+const pwInput = ref(null);
 const canPaste = ref(false);
 const pasteHint = ref("");
 const limitModalShown = ref(false); // open the "Go Pro" modal only once per visit to the limit
@@ -158,6 +170,15 @@ const resultReads = ref(1);
 const resultPassword = ref(false);
 
 const maxChars = computed(() => (isPro.value ? PRO_MAX_CHARS : FREE_MAX_CHARS));
+
+// Nudge to add a password while a valid custom code is set unprotected.
+const showCodePwHint = computed(
+    () => isPro.value && customCode.value.length >= 3 && isValidCustomCode(customCode.value) && !password.value
+);
+
+function focusPassword() {
+    pwInput.value?.focus();
+}
 
 // Free user ran into the character cap (typing at the limit, or pasting
 // more than fits): show the Pro modal once until they're back under it.
@@ -290,3 +311,15 @@ function reset() {
     resultPassword.value = false;
 }
 </script>
+
+<style scoped>
+.hint-enter-active,
+.hint-leave-active {
+    transition: opacity 0.15s ease;
+}
+
+.hint-enter-from,
+.hint-leave-to {
+    opacity: 0;
+}
+</style>
