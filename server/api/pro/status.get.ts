@@ -1,12 +1,14 @@
 /**
  * GET /api/pro/status
- * Response: { pro: boolean }
+ * Response: { pro: boolean, via: 'bearer' | 'cookie' | null }
  *
- * Reads the signed session cookie, consulting the Redis cache and
- * re-verifying with Gumroad only when the cache has expired.
+ * Accepts either credential: the signed session cookie (browser) or an
+ * `Authorization: Bearer <license-key>` header (API + MCP clients). Both go
+ * through the same Gumroad cache, so the answer is always consistent.
  */
-import { isPro } from '../../utils/pro'
+import { resolvePro } from '../../utils/pro'
 
 export default defineEventHandler(async (event) => {
-  return { pro: await isPro(event) }
+  const { pro, via } = await resolvePro(event)
+  return { pro, via }
 })

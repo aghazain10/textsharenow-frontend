@@ -20,7 +20,7 @@
 import { createHash, randomBytes } from 'node:crypto'
 import { PRO_MAX_FILE, FILE_TTLS, FILE_TICKET_TTL } from '~~/utils/premium'
 import { isBlockedFile } from '~~/utils/filePolicy'
-import { getProLicenseKey } from '../../utils/pro'
+import { resolvePro } from '../../utils/pro'
 
 const STORAGE_CAP = 2 * 1024 * 1024 * 1024 // 2 GB of live file uploads per license
 const LIVE_FILE_LIMIT = 50
@@ -44,7 +44,8 @@ async function upstash(config: Upstash, command: unknown[]): Promise<any> {
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
 
-  if (!(await isPro(event))) {
+  const { pro, licenseKey } = await resolvePro(event)
+  if (!pro || !licenseKey) {
     throw createError({ statusCode: 403, message: 'Pro is required for this upload. Activate your license key to continue.' })
   }
 
@@ -74,11 +75,6 @@ export default defineEventHandler(async (event) => {
       statusCode: 422,
       message: 'Executable files and installers are blocked on every plan, including Pro.',
     })
-  }
-
-  const licenseKey = getProLicenseKey(event)
-  if (!licenseKey) {
-    throw createError({ statusCode: 403, message: 'Pro session expired. Activate your license key again.' })
   }
 
   // Live-storage ledger per license. Each entry is { s: bytes, e: unix-epoch }

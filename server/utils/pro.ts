@@ -195,3 +195,65 @@ export async function isPro(event: any): Promise<boolean> {
   clearProSession(event)
   return false
 }
+
+// ── Unified API auth (Bearer license key or browser cookie) ─────────────────
+
+const BEARER_RE = /^Bearer\s+(.+)$/i
+
+/** Raw `Authorization: Bearer <license-key>` value, if present. */
+export function getBearerLicenseKey(event: any): string | null {
+  const header = getRequestHeader(event, 'authorization') || ''
+  const match = BEARER_RE.exec(header)
+  const key = match?.[1]?.trim()
+  return key || null
+}
+
+// Caps Gumroad verifications per IP so random Bearer keys can't be used as a
+// verification oracle. Best-effort: Redis trouble never blocks a real user.
+async function allowGumroadVerify(config: any, event: any): Promise<boolean> {
+  try {
+    const ip = getRequestHeader(event, 'x-forwarded-for') || 'unknown'
+    const key = `rate:gumroad:${ip}`
+    const res = await upstash<{ result: number }>(config, ['INCR', key])
+    if (res.result === 1) await upstash(config, ['EXPIRE', key, 60])
+    return res.result <= 30
+  } catch {
+    return true
+  }
+}
+
+/**
+ * Entitlement for every endpoint, accepting either credential:
+ *   1. `Authorization: Bearer <license-key>`  (API + MCP clients)
+ *   2. the signed tsn_pro cookie              (browser)
+ * Both resolve through the same Gumroad cache, so limits and features are
+ * identical. Bearer keys fail closed on network errors; the cookie keeps its
+ * fail-open behavior because it proves a past successful verification.
+ */
+export async function resolvePro(
+  event: any,
+): Promise<{ pro: boolean; licenseKey: string | null; via: 'bearer' | 'cookie' | null }> {
+  const config = useRuntimeConfig()
+  const bearerKey = getBearerLicenseKey(event)
+
+  if (bearerKey) {
+    const cached = await readCache(config, bearerKey)
+    if (cached.hit) return { pro: true, licenseKey: bearerKey, via: 'bearer' }
+
+    if (!(await allowGumroadVerify(config, event))) {
+      return { pro: false, licenseKey: null, via: 'bearer' }
+    }
+
+    const check = await verifyGumroadLicense(bearerKey)
+    if (check.valid) {
+      await writeCache(config, bearerKey, check.email)
+      return { pro: true, licenseKey: bearerKey, via: 'bearer' }
+    }
+    return { pro: false, licenseKey: null, via: 'bearer' }
+  }
+
+  const cookieKey = readSessionLicense(event)
+  if (!cookieKey) return { pro: false, licenseKey: null, via: null }
+  const pro = await isPro(event)
+  return { pro, licenseKey: pro ? cookieKey : null, via: 'cookie' }
+}

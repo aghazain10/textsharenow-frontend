@@ -22,7 +22,7 @@
  */
 
 import { createHash } from 'node:crypto'
-import { isPro, getProLicenseKey } from '../utils/pro'
+import { resolvePro } from '../utils/pro'
 import { CUSTOM_CODE_RE, RESERVED_CODES, normalizeCustomCode } from '~~/utils/customCode'
 import { P2_RE, PBKDF2_ITERATIONS } from '~~/utils/hash'
 
@@ -84,10 +84,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 422, message: 'Please provide text to share.' })
   }
 
-  // Premium flag. Never trust the client in production — entitlement comes
-  // from the signed pro session cookie (verified against Gumroad). In dev the
-  // "Try Pro" preview pill may still toggle `pro` locally.
-  let pro = await isPro(event)
+  // Entitlement. Never trust the client in production — Pro comes from the
+  // signed pro session cookie (browser) or Authorization: Bearer <license-key>
+  // (API + MCP). In dev the "Try Pro" preview pill may still toggle `pro`.
+  let { pro, licenseKey } = await resolvePro(event)
   if (!pro && process.env.NODE_ENV !== 'production' && body?.pro === true) {
     pro = true
   }
@@ -138,6 +138,19 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 429, message: 'Too many requests. Please wait a moment.' })
   }
 
+  // Second per-license limit for Bearer clients so one key can't burst
+  // through many IPs (API + MCP friendly, still bounded).
+  if (licenseKey) {
+    const licKey = `rate:send:lic:${createHash('sha256').update(licenseKey.trim()).digest('hex')}`
+    const licRes = await upstashRequest(redisUrl, redisToken, ['INCR', licKey])
+    if (licRes.result === 1) {
+      await upstashRequest(redisUrl, redisToken, ['EXPIRE', licKey, 60])
+    }
+    if (licRes.result > 20) {
+      throw createError({ statusCode: 429, message: 'Too many requests for this license. Please wait a moment.' })
+    }
+  }
+
   // Custom code (premium only) — validated, reserved-list checked, then
   // claimed atomically with SET NX so two users can never race the same name.
   const rawCustom = typeof body?.customCode === 'string' ? body.customCode.trim() : ''
@@ -155,7 +168,6 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 422, message: 'That code is reserved — pick another.' })
     }
     // Per-license cap so one subscription can't squat the whole code space.
-    const licenseKey = getProLicenseKey(event)
     if (licenseKey) {
       ownerKey = `custom:owner:${createHash('sha256').update(licenseKey.trim()).digest('hex')}`
       const card = await upstashRequest(redisUrl, redisToken, ['SCARD', ownerKey])
@@ -219,6 +231,15 @@ export default defineEventHandler(async (event) => {
     } else {
       await upstashRequest(redisUrl, redisToken, ['SETEX', KEY_PREFIX + code, ttl, stored])
     }
+  }
+
+  // Remember Pro-created codes per license so DELETE /api/share/:code can
+  // verify ownership later. Best-effort: never block the share.
+  if (licenseKey) {
+    try {
+      const shareOwnerKey = `share:owner:${createHash('sha256').update(licenseKey.trim()).digest('hex')}`
+      await upstashRequest(redisUrl, redisToken, ['SADD', shareOwnerKey, code])
+    } catch {}
   }
 
   // Increment the aggregate, anonymous all-time share counter and a daily
