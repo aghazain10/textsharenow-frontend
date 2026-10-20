@@ -7,7 +7,7 @@
  *
  * Fail-open: if Redis is unreachable the redirect still happens.
  */
-import { proCheckoutUrl, normalizeProPlan, normalizeProLocation } from "../../../utils/checkout.js";
+import { proCheckoutUrl, normalizeProPlan, normalizeProLocation } from "~~/utils/checkout";
 
 async function bumpCounter(redisUrl: string, token: string, key: string, field: string, ttlSeconds?: number) {
     const headers = {

@@ -17,7 +17,7 @@ export const PRO_PLANS = {
 };
 
 // Where a CTA lives. Kept small and whitelisted so counts stay comparable.
-export const PRO_LOCATIONS = ["hero", "plan_card", "how_to", "bottom", "pro_modal", "footer"];
+export const PRO_LOCATIONS = ["hero", "plan_card", "how_to", "bottom", "pro_modal", "footer", "developers"];
 
 export function normalizeProPlan(plan) {
     const key = typeof plan === "string" ? plan.trim().toLowerCase() : "";

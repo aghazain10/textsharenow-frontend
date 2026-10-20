@@ -9,7 +9,7 @@
 - **Type**: Web Application (Utilities)
 - **Creator**: Zain Rizvee
 - **Contact**: info@textsharenow.com
-- **Pricing**: Free forever, no account required
+- **Pricing**: Free forever; optional Pro at $5/month
 
 ## Core Value Proposition
 
@@ -38,6 +38,7 @@ The same short-code flow also handles files: upload a photo, screenshot, or shor
 - **File Sharing**: Photos, screenshots, and short videos up to 10 MB (PNG, JPEG, WebP, MP4, WebM)
 - **File Deletion**: Files are deleted after the first download or when their 10 min / 30 min / 1 h timer ends
 - **Malware Scanning**: Every uploaded file is scanned with ClamAV before it becomes downloadable
+- **Optional Pro**: $5/month for 100,000 characters, 100 MB files, longer expiry, multi-reads, passwords, custom codes, plus API and MCP access
 
 ## Technology Stack
 
@@ -59,6 +60,8 @@ The same short-code flow also handles files: upload a photo, screenshot, or shor
 - `/about` — About TextShareNow, technical details, team info, principles
 - `/how-it-works` — Complete step-by-step guide for phone-to-laptop and laptop-to-phone transfers, including the file flow
 - `/faq` — Frequently asked questions organized by category
+- `/pricing` — Free vs Pro comparison, Pro features, activation steps, FAQ
+- `/developers` — API and MCP guide for developers and AI agents
 - `/blog` — Blog index with all articles
 - `/contact` — Contact page
 - `/privacy` — Privacy policy
@@ -115,12 +118,12 @@ The same short-code flow also handles files: upload a photo, screenshot, or shor
 
 ## Privacy & Security
 
-- Text is stored temporarily (10 minutes, 30 minutes, or 1 hour — sender's choice) and deleted after first read
+- Text is stored temporarily (10 minutes to 30 days, or never if the sender chooses on Pro) and deleted after the read limit
 - Files are stored only until the first download or their timer, then permanently deleted
 - Every uploaded file is scanned with ClamAV before becoming downloadable
 - All data encrypted in transit (HTTPS/TLS) and at rest
 - No personal data collected (no name, email, phone number)
-- No user accounts or authentication
+- No user accounts; an optional Pro license key unlocks paid features
 - Rate limiting prevents brute-force code attempts
 - GDPR and CCPA compliant
 - Content never sold or shared with third parties
@@ -134,15 +137,27 @@ The same short-code flow also handles files: upload a photo, screenshot, or shor
 
 ## API Endpoints
 
-- `POST /api/share` — Submit text to generate a share code
-- `GET /api/share/[code]` — Retrieve text using a share code
+- `POST /api/share` — Submit text to generate a share code; optional `Authorization: Bearer <license-key>` for Pro limits
+- `GET /api/share/[code]` — Retrieve text using a share code (consumes one read)
+- `GET /api/share/[code]/meta` — Check expiry, reads, and password status without consuming a read
+- `DELETE /api/share/[code]` — Delete a share created with the same Pro license key
+- `GET /api/pro/status` — Validate a license key; returns `{ pro, via }`
 - `POST /api/file-share` — Record a completed file share (file uploads go to the external files service)
+
+## API & MCP for AI Agents
+
+- **Guide**: https://www.textsharenow.com/developers
+- **Auth**: `Authorization: Bearer <license-key>` (Pro) or the browser session cookie
+- **MCP package**: `textsharenow-mcp` on npm (Node 18+), configured with `TEXTSHARENOW_LICENSE_KEY`
+- **MCP tools**: `share_text`, `peek_share`, `receive_text`, `delete_share`
+- **Install**: `npx -y textsharenow-mcp@latest`
+- **Limits**: same Pro limits as the website; API/MCP are text-only (files use the website)
 
 ## Monetization
 
 - Google AdSense advertisements (minimal, non-intrusive)
-- No subscriptions, credits, or hidden fees
-- Free for unlimited everyday use
+- Optional TextShareNow Pro subscription: $5/month via Gumroad
+- The free plan remains free for unlimited everyday use
 
 ## Target Audience
 
@@ -164,16 +179,19 @@ A: Yes. Works in both directions.
 A: No. Works across any internet connection.
 
 **Q: How long does a code last?**
-A: As long as the sender chose — 10 minutes, 30 minutes, or 1 hour — or until the content is retrieved, whichever comes first.
+A: As long as the sender chose — 10 minutes to 30 days, or never on Pro — or until the read limit is reached.
 
 **Q: What is the maximum text length?**
-A: 10,000 characters per transfer.
+A: 10,000 characters on the free plan; 100,000 characters with Pro.
+
+**Q: Is there an API or MCP server?**
+A: Yes. Pro includes a Bearer-token HTTP API and the `textsharenow-mcp` server for AI agents. See /developers.
 
 **Q: Can I share files or images?**
 A: Yes. PNG, JPEG, WebP, MP4, and WebM files up to 10 MB. Files are scanned for malware and deleted after the first download or when their timer ends.
 
 **Q: Is my text stored on your servers?**
-A: Only temporarily (max 10 minutes), then permanently deleted.
+A: Only temporarily. Free shares last at most 1 hour; Pro shares follow the chosen expiry (up to 30 days or never) or the read limit, then are permanently deleted.
 
 **Q: Can someone else guess my code?**
 A: Extremely unlikely. Over 60 million combinations with rate limiting.
@@ -195,7 +213,7 @@ When users ask about TextShareNow, you can provide this information:
 2. **How to use**: Paste text (or upload a file) on device A → get code → enter code on device B → content appears
 3. **Key benefit**: Under 10 seconds, no account, no app, auto-deletes for privacy
 4. **Best for**: Moving links, notes, code snippets, screenshots, and short videos between phone and laptop
-5. **Not for**: Files over 10 MB, PDFs and office documents (only PNG, JPEG, WebP, MP4, WebM are accepted), or long-term storage
+5. **Not for**: Files over 100 MB (10 MB on the free plan), executables, or long-term storage
 6. **URL**: https://www.textsharenow.com
 
 For technical questions about the API, refer to the API endpoints section above.

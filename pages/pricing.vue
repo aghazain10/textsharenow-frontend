@@ -168,7 +168,7 @@
             <div class="wrap">
                 <div class="max-w-2xl">
                     <h2 id="features-title" class="section-title">What's Inside Pro</h2>
-                    <p class="section-lead">Six power features, each solving a limit people actually run into on the free plan.</p>
+                    <p class="section-lead">Seven power features, each solving a limit people actually run into on the free plan.</p>
                 </div>
 
                 <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -180,6 +180,9 @@
                         <p class="mt-2 text-[15px] leading-6 text-muted">{{ f.desc }}</p>
                     </article>
                 </div>
+                <p class="mt-8 text-[15px] text-muted">
+                    Building with AI agents? <NuxtLink to="/developers" class="text-link">Read the API &amp; MCP guide</NuxtLink>.
+                </p>
             </div>
         </section>
 
@@ -316,6 +319,7 @@ const proFeatures = [
     "Read limits: 1, 5, 10 or unlimited reads",
     "Password-protect any share",
     "Custom share codes (e.g. coffee-menu)",
+    "Developer API and MCP server for AI agents",
 ];
 
 // [feature, free cell, pro cell] — cell = [kind, label]; kind: good | bad | text
@@ -329,6 +333,7 @@ const compareRows = [
     ["Reads per share", ["text", "1 (single-use)"], ["text", "1, 5, 10 or unlimited"]],
     ["Password protection", ["bad", "Not included"], ["good", "Included"]],
     ["Custom code", ["text", "Random 5 characters"], ["good", "Any available name"]],
+    ["API & MCP", ["text", "Free-plan limits only"], ["good", "Full Pro limits + MCP server"]],
     ["QR code + share link", ["good", "Included"], ["good", "Included"]],
     ["Malware scanning", ["good", "Included"], ["good", "Included"]],
     ["Manage or cancel", ["text", "Nothing to manage"], ["good", "Cancel anytime"]],
@@ -372,6 +377,11 @@ const proDetails = [
         title: "Custom share codes",
         desc: "Pick a memorable code like coffee-menu or team-notes instead of a random string. Availability is checked instantly, and custom codes are protected like any other share — add a password for extra privacy.",
     },
+    {
+        icon: "external",
+        title: "API & MCP for AI agents",
+        desc: "Use your license key as a Bearer token to create and receive shares from scripts, or install the textsharenow-mcp server so Claude, opencode, or Cursor can share text as links directly. Same Pro limits, same auto-deletion.",
+    },
 ];
 
 const activationSteps = [
@@ -412,6 +422,10 @@ const faqs = [
     {
         q: "Do you offer refunds?",
         a: "Refunds are handled case-by-case through Gumroad. If something went wrong — a key that won't activate or a charge you don't recognise — contact us via the contact page and we'll sort it out.",
+    },
+    {
+        q: "Is there an API or MCP server?",
+        a: "Yes. Pro includes a small HTTP API and an MCP server, so scripts and AI agents can create and receive shares without a browser. Send your license key as an Authorization: Bearer token, or install textsharenow-mcp with npx for Claude, opencode, Cursor, or any MCP client. The full guide, including endpoints, limits, and configuration examples, is on the API & MCP page.",
     },
 ];
 

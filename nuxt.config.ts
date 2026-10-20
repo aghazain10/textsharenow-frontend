@@ -151,6 +151,7 @@ export default defineNuxtConfig({
         "/pricing": { prerender: true },
         "/online-text-sharing": { prerender: true },
         "/share-files-online": { prerender: true },
+        "/developers": { prerender: true },
         "/r": { prerender: true },
         "/author/zain-rizvee": { prerender: true },
         ...blogPrerender,
