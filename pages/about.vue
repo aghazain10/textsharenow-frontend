@@ -95,10 +95,11 @@
                         account, a subscription, or your email address.
                         Running it is funded by the people who choose the
                         optional Pro plan. Pro adds larger limits, longer
-                        expiry, passwords, custom codes, and an API/MCP server
-                        for developers and AI agents. There's no catch beyond
-                        that — no data resale, no forced upgrades, just a tool
-                        built to solve a real, everyday problem.
+                        expiry, passwords, custom codes, a My Shares dashboard,
+                        and an API/MCP server for developers and AI agents.
+                        There's no catch beyond that — no data resale, no
+                        forced upgrades, just a tool built to solve a real,
+                        everyday problem.
                     </p>
 
                     <h2 class="mt-12 border-t border-line pt-12 text-[26px] font-semibold tracking-[-0.03em] text-ink">Free for Everyone</h2>

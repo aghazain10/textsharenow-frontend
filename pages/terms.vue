@@ -63,7 +63,7 @@ const sections = [
             },
             {
                 type: "p",
-                text: "Pro also includes a developer API and MCP server for programmatic text sharing. API and MCP requests authenticate with the Pro license key instead of a browser cookie, and the same content, expiry, read-limit, and password rules apply.",
+                text: "Pro also includes a My Shares dashboard plus a developer API and MCP server for programmatic text sharing. API and MCP requests authenticate with the Pro license key instead of a browser cookie, and the same content, expiry, read-limit, and password rules apply.",
             },
             {
                 type: "p",

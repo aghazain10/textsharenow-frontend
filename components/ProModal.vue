@@ -42,9 +42,10 @@
                     <div v-if="isPro" class="mt-4 rounded-lg border border-line bg-surface-2 p-4 text-center">
                         <p class="text-[14px] font-semibold text-ink">Pro is active on this device 🎉</p>
                         <p class="mt-1 text-[13px] text-muted">All power features are unlocked, including API &amp; MCP access.</p>
+                        <NuxtLink to="/my-shares" class="btn-ghost mt-3 w-full" @click="close">Manage my shares</NuxtLink>
                         <button
                             type="button"
-                            class="mt-3 rounded-md border border-line bg-bg px-3 py-1.5 text-[13px] font-medium text-muted transition-colors hover:text-ink"
+                            class="mt-2 rounded-md border border-line bg-bg px-3 py-1.5 text-[13px] font-medium text-muted transition-colors hover:text-ink"
                             @click="deactivate"
                         >
                             Deactivate Pro
@@ -121,6 +122,7 @@ const FEATURES = [
     "Read limits: 5, 10 or unlimited reads",
     "Password-protect any share",
     "Custom share codes (e.g. coffee-menu)",
+    "My Shares dashboard for active links",
     "API & MCP access for scripts and AI agents",
 ];
 

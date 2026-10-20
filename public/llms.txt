@@ -38,7 +38,7 @@ The same short-code flow also handles files: upload a photo, screenshot, or shor
 - **File Sharing**: Photos, screenshots, and short videos up to 10 MB (PNG, JPEG, WebP, MP4, WebM)
 - **File Deletion**: Files are deleted after the first download or when their 10 min / 30 min / 1 h timer ends
 - **Malware Scanning**: Every uploaded file is scanned with ClamAV before it becomes downloadable
-- **Optional Pro**: $5/month for 100,000 characters, 100 MB files, longer expiry, multi-reads, passwords, custom codes, plus API and MCP access
+- **Optional Pro**: $5/month for 100,000 characters, 100 MB files, longer expiry, multi-reads, passwords, custom codes, a My Shares dashboard, plus API and MCP access
 
 ## Technology Stack
 
@@ -142,6 +142,7 @@ The same short-code flow also handles files: upload a photo, screenshot, or shor
 - `GET /api/share/[code]/meta` — Check expiry, reads, and password status without consuming a read
 - `DELETE /api/share/[code]` — Delete a share created with the same Pro license key
 - `GET /api/pro/status` — Validate a license key; returns `{ pro, via }`
+- `GET /api/pro/shares` — List active text shares for the license (no content returned)
 - `POST /api/file-share` — Record a completed file share (file uploads go to the external files service)
 
 ## API & MCP for AI Agents
@@ -186,6 +187,9 @@ A: 10,000 characters on the free plan; 100,000 characters with Pro.
 
 **Q: Is there an API or MCP server?**
 A: Yes. Pro includes a Bearer-token HTTP API and the `textsharenow-mcp` server for AI agents. See /developers.
+
+**Q: Can I manage my active shares?**
+A: Yes. Pro includes a My Shares dashboard at /my-shares. It lists active text shares tied to your license, with remaining reads, expiry, copy-link, and delete controls. No account is needed.
 
 **Q: Can I share files or images?**
 A: Yes. PNG, JPEG, WebP, MP4, and WebM files up to 10 MB. Files are scanned for malware and deleted after the first download or when their timer ends.

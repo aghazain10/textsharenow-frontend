@@ -42,6 +42,7 @@ const COLS = [
         links: [
             { label: "Pricing", to: "/pricing" },
             { label: "TextShareNow Pro", to: "/pricing" },
+            { label: "My Shares", to: "/my-shares" },
             { label: "FAQ", to: "/faq" },
             { label: "API & MCP", to: "/developers" },
             { label: "Blog", to: "/blog" },

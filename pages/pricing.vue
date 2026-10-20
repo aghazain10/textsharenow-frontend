@@ -168,7 +168,7 @@
             <div class="wrap">
                 <div class="max-w-2xl">
                     <h2 id="features-title" class="section-title">What's Inside Pro</h2>
-                    <p class="section-lead">Seven power features, each solving a limit people actually run into on the free plan.</p>
+                    <p class="section-lead">Eight power features, from bigger limits to a dashboard for managing every link you create.</p>
                 </div>
 
                 <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -182,6 +182,7 @@
                 </div>
                 <p class="mt-8 text-[15px] text-muted">
                     Building with AI agents? <NuxtLink to="/developers" class="text-link">Read the API &amp; MCP guide</NuxtLink>.
+                    Already Pro? <NuxtLink to="/my-shares" class="text-link">Manage your active shares</NuxtLink>.
                 </p>
             </div>
         </section>
@@ -319,6 +320,7 @@ const proFeatures = [
     "Read limits: 1, 5, 10 or unlimited reads",
     "Password-protect any share",
     "Custom share codes (e.g. coffee-menu)",
+    "My Shares dashboard for active text links",
     "Developer API and MCP server for AI agents",
 ];
 
@@ -334,6 +336,7 @@ const compareRows = [
     ["Password protection", ["bad", "Not included"], ["good", "Included"]],
     ["Custom code", ["text", "Random 5 characters"], ["good", "Any available name"]],
     ["API & MCP", ["text", "Free-plan limits only"], ["good", "Full Pro limits + MCP server"]],
+    ["My Shares dashboard", ["bad", "Not included"], ["good", "List, copy and delete active links"]],
     ["QR code + share link", ["good", "Included"], ["good", "Included"]],
     ["Malware scanning", ["good", "Included"], ["good", "Included"]],
     ["Manage or cancel", ["text", "Nothing to manage"], ["good", "Cancel anytime"]],
@@ -382,6 +385,11 @@ const proDetails = [
         title: "API & MCP for AI agents",
         desc: "Use your license key as a Bearer token to create and receive shares from scripts, or install the textsharenow-mcp server so Claude, opencode, or Cursor can share text as links directly. Same Pro limits, same auto-deletion.",
     },
+    {
+        icon: "dashboard",
+        title: "My Shares dashboard",
+        desc: "See every active text share tied to your license, how many reads are left, and when each link expires. Copy a link or delete a share without hunting through old tabs. No account needed — the license key is the login.",
+    },
 ];
 
 const activationSteps = [
@@ -405,7 +413,7 @@ const faqs = [
     },
     {
         q: "What exactly do I get with Pro?",
-        a: "100,000 characters per share (10× the free limit), file uploads up to 100 MB for any non-executable file type, expiry choices of 1 day, 7 days, 30 days or never, read limits of 1, 5, 10 or unlimited, password protection for any share, and custom share codes.",
+        a: "100,000 characters per share (10× the free limit), file uploads up to 100 MB for any non-executable file type, expiry choices of 1 day, 7 days, 30 days or never, read limits of 1, 5, 10 or unlimited, password protection for any share, custom share codes, a My Shares dashboard, and a developer API plus MCP server.",
     },
     {
         q: "How do I activate my license key?",
@@ -426,6 +434,10 @@ const faqs = [
     {
         q: "Is there an API or MCP server?",
         a: "Yes. Pro includes a small HTTP API and an MCP server, so scripts and AI agents can create and receive shares without a browser. Send your license key as an Authorization: Bearer token, or install textsharenow-mcp with npx for Claude, opencode, Cursor, or any MCP client. The full guide, including endpoints, limits, and configuration examples, is on the API & MCP page.",
+    },
+    {
+        q: "Can I manage shares after creating them?",
+        a: "Yes. Pro includes a My Shares dashboard — linked from the header and footer — that lists every active text share tied to your license, shows remaining reads and expiry, and lets you copy the link or delete the share. No account or extra password is needed beyond your license key. File shares are not listed yet.",
     },
 ];
 

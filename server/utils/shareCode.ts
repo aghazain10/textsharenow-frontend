@@ -23,6 +23,24 @@ export async function upstash(config: UpstashConfig, command: unknown[]): Promis
   return res.json()
 }
 
+/** Run several Redis commands in one round trip (Upstash /pipeline). */
+export async function upstashPipeline(
+  config: UpstashConfig,
+  commands: unknown[][],
+): Promise<any[]> {
+  const url = config.UPSTASH_REDIS_REST_URL.replace(/\/$/, '') + '/pipeline'
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${config.UPSTASH_REDIS_REST_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(commands),
+  })
+  if (!res.ok) throw new Error(`Upstash error: ${res.status}`)
+  return res.json()
+}
+
 /** Candidate storage forms, most likely first (keeps random codes a single GET). */
 export function shareStorageForms(rawInput: string): string[] {
   const raw = (rawInput || '').trim()

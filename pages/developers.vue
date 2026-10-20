@@ -265,6 +265,11 @@ const passwordHash = `p2$210000$${salt}$${derived}`;</code></pre>
                                 can remove it early.
                             </p>
                             <p>
+                                <strong class="text-ink">Dashboard.</strong> Prefer a UI? Open
+                                <NuxtLink to="/my-shares" class="text-link">My Shares</NuxtLink> with the same license key
+                                to list, copy, and delete active text shares.
+                            </p>
+                            <p>
                                 <strong class="text-ink">Key handling.</strong> The raw key is never logged; the server
                                 caches a SHA-256 hash for 24 hours and re-verifies with Gumroad daily. Invalid Bearer keys
                                 fail closed if Gumroad is unreachable.

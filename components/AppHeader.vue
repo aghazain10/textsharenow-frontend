@@ -11,14 +11,18 @@
             </nav>
 
             <div class="flex items-center gap-1">
-                <span class="mr-1 hidden items-center gap-2 rounded-full border border-line px-2.5 py-0.5 text-[12px] font-medium text-muted lg:inline-flex" role="status">
-                    <i class="live-dot" :class="{ off: !online }" aria-hidden="true" />{{ online ? "Online" : "Offline" }}
-                </span>
+                <NuxtLink
+                    v-if="isPro"
+                    to="/my-shares"
+                    class="nav-link"
+                    exact-active-class="!text-ink"
+                    title="Manage your Pro shares"
+                >Dashboard</NuxtLink>
                 <button
+                    v-else
                     type="button"
-                    class="inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] font-semibold transition-colors"
-                    :class="isPro ? 'border-brand bg-brand-soft text-ink' : 'border-brand/40 bg-brand/10 text-brand hover:bg-brand/20'"
-                    :title="isPro ? 'TextShareNow Pro is active' : 'Unlock TextShareNow Pro'"
+                    class="inline-flex h-9 items-center gap-1.5 rounded-full border border-brand/40 bg-brand/10 px-3 text-[13px] font-semibold text-brand transition-colors hover:bg-brand/20"
+                    title="Unlock TextShareNow Pro"
                     @click="openProModal('general')"
                 >
                     <span aria-hidden="true">⭐</span> Pro
@@ -47,6 +51,12 @@
                 :to="l.to"
                 class="nav-link block !py-2.5 !text-[15px] hover:!bg-surface-2"
             >{{ l.label }}</NuxtLink>
+            <NuxtLink
+                v-if="isPro"
+                to="/my-shares"
+                class="nav-link block !py-2.5 !text-[15px] hover:!bg-surface-2"
+                exact-active-class="!text-ink"
+            >Dashboard</NuxtLink>
         </nav>
     </header>
 </template>
@@ -67,7 +77,6 @@ const { isPro } = usePremium();
 const { open: openProModal } = useProModal();
 
 const open = ref(false);
-const online = ref(true);
 const dark = ref(false);
 
 const route = useRoute();
@@ -86,10 +95,6 @@ function toggleTheme() {
 
 onMounted(() => {
     readTheme();
-    const net = () => (online.value = navigator.onLine);
-    net();
-    window.addEventListener("online", net);
-    window.addEventListener("offline", net);
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     mq.addEventListener("change", readTheme);
     const onKey = (e) => e.key === "Escape" && (open.value = false);
@@ -97,8 +102,6 @@ onMounted(() => {
     onBeforeUnmount(() => {
         mq.removeEventListener("change", readTheme);
         window.removeEventListener("keydown", onKey);
-        window.removeEventListener("online", net);
-        window.removeEventListener("offline", net);
     });
 });
 </script>

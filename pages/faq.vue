@@ -88,7 +88,7 @@ useHead({
             name: 'Is TextShareNow free?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Yes. The core tool is free with no sign-up required — no credits, no hidden fees. An optional Pro plan adds power features like longer expiry, 100 MB files, multi-reads, password protection, custom codes, and API/MCP access for developers and AI agents.',
+              text: 'Yes. The core tool is free with no sign-up required — no credits, no hidden fees. An optional Pro plan adds power features like longer expiry, 100 MB files, multi-reads, password protection, custom codes, a My Shares dashboard, and API/MCP access for developers and AI agents.',
             },
           },
           {
@@ -104,7 +104,7 @@ useHead({
             name: 'What do I get with Pro?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Pro raises text shares to 100,000 characters and files to 100 MB, extends expiry to 1, 7, or 30 days or never, and adds 5/10/unlimited reads, password protection, custom codes, and a developer API plus MCP server for scripts and AI agents.',
+              text: 'Pro raises text shares to 100,000 characters and files to 100 MB, extends expiry to 1, 7, or 30 days or never, and adds 5/10/unlimited reads, password protection, custom codes, a My Shares dashboard, and a developer API plus MCP server for scripts and AI agents.',
             },
           },
           {
@@ -113,6 +113,14 @@ useHead({
             acceptedAnswer: {
               '@type': 'Answer',
               text: 'Yes. Pro includes a Bearer-token HTTP API and the textsharenow-mcp server for Claude, opencode, Cursor, and other MCP clients. Your Gumroad license key is the API key, with the same Pro limits and auto-deletion as the website.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'Can I manage my active shares?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Yes. Pro includes a My Shares dashboard that lists active text shares tied to your license, with remaining reads, expiry, copy-link, and delete controls. No account is needed — your license key is the login.',
             },
           },
         ],
@@ -238,7 +246,7 @@ const categories = [
       {
         question: 'Is TextShareNow free?',
         answer:
-          'Yes. The core tool is free with no sign-up required — no credits, no hidden fees, and no account. An optional $5/month Pro plan adds larger limits, longer expiry, 100 MB files, multi-reads, passwords, custom codes, and API/MCP access for developers and AI agents.',
+          'Yes. The core tool is free with no sign-up required — no credits, no hidden fees, and no account. An optional $5/month Pro plan adds larger limits, longer expiry, 100 MB files, multi-reads, passwords, custom codes, a My Shares dashboard, and API/MCP access for developers and AI agents.',
         link: {
           to: '/pricing',
           text: 'Compare free and Pro',
@@ -247,7 +255,7 @@ const categories = [
       {
         question: 'What do I get with Pro?',
         answer:
-          'Pro raises text shares to 100,000 characters, files to 100 MB (any non-executable type), and expiry to 1, 7, or 30 days — or never. It also adds 5, 10, or unlimited reads, password protection, custom codes like coffee-menu, and a developer API plus MCP server for scripts and AI agents.',
+          'Pro raises text shares to 100,000 characters, files to 100 MB (any non-executable type), and expiry to 1, 7, or 30 days — or never. It also adds 5, 10, or unlimited reads, password protection, custom codes like coffee-menu, a My Shares dashboard, and a developer API plus MCP server for scripts and AI agents.',
         link: {
           to: '/pricing',
           text: 'See all Pro features',
@@ -260,6 +268,15 @@ const categories = [
         link: {
           to: '/developers',
           text: 'Read the API & MCP guide',
+        },
+      },
+      {
+        question: 'Can I manage my active shares?',
+        answer:
+          'Yes. Pro includes a My Shares dashboard that lists active text shares tied to your license, with remaining reads, expiry, copy-link, and delete controls. No account is needed — your license key is the login.',
+        link: {
+          to: '/my-shares',
+          text: 'Open My Shares',
         },
       },
     ],
