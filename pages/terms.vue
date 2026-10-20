@@ -63,6 +63,10 @@ const sections = [
             },
             {
                 type: "p",
+                text: "Pro also includes a developer API and MCP server for programmatic text sharing. API and MCP requests authenticate with the Pro license key instead of a browser cookie, and the same content, expiry, read-limit, and password rules apply.",
+            },
+            {
+                type: "p",
                 text: "Free shares are automatically deleted after first retrieval or when their timer ends (10 minutes, 30 minutes or 1 hour), whichever occurs first. Pro shares can be configured with a longer expiry (1 day, 7 days, 30 days or never), multiple reads (5, 10 or unlimited), or both, and are deleted when their read limit is reached, when their timer ends, or after retrieval on single-read shares. A Pro share configured never to expire remains stored until its read limit is reached (if one applies) or until it is removed under these Terms. Files are automatically deleted after first download or when their timer ends, and file shares are available for up to 30 days on Pro. This is described in more detail in our Privacy Policy.",
             },
             {
@@ -104,7 +108,7 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "Because TextShareNow has no accounts or user authentication, we cannot verify the identity of anyone sending or retrieving a code. Codes are short-lived and single-use by default; Pro shares may allow multiple reads or longer lifetimes, but you are responsible for who you share a code with.",
+                text: "TextShareNow does not use traditional accounts. Free use requires no authentication, while Pro features — including the API and MCP server — authenticate with a Gumroad license key. We cannot verify the identity of anyone sending or retrieving a code. Codes are short-lived and single-use by default; Pro shares may allow multiple reads or longer lifetimes, but you are responsible for who you share a code with.",
             },
             {
                 type: "p",
@@ -151,7 +155,7 @@ const sections = [
             },
             {
                 type: "p",
-                text: "Your license key is proof of purchase. Treat it like a password: anyone with your key can activate Pro, so keep it private. We may deactivate a key if a payment is refunded, reversed, or charged back.",
+                text: "Your license key is proof of purchase. Treat it like a password: anyone with your key can activate Pro, and the same key authenticates API and MCP requests, so keep it private. We may deactivate a key if a payment is refunded, reversed, or charged back.",
             },
             {
                 type: "p",

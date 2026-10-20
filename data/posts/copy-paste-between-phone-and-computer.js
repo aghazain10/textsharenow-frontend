@@ -81,7 +81,7 @@ export default {
         },
         {
             "type": "p",
-            "text": "It is not a live clipboard sync. It is a deliberate transfer, which is often what you actually wanted: the text leaves the phone, arrives on the laptop, and does not stay sitting in a synced clipboard. Free shares hold up to 10,000 characters and expire in 10 minutes to 1 hour. Pro raises the limit to 100,000 characters, extends expiry to 30 days or never, and adds password protection and multi-read codes."
+            "text": "It is not a live clipboard sync. It is a deliberate transfer, which is often what you actually wanted: the text leaves the phone, arrives on the laptop, and does not stay sitting in a synced clipboard. Free shares hold up to 10,000 characters and expire in 10 minutes to 1 hour. Pro raises the limit to 100,000 characters, extends expiry to 30 days or never, and adds password protection, multi-read codes, and API/MCP access for scripts and AI agents."
         },
         {
             "type": "p",

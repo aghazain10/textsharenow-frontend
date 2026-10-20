@@ -65,7 +65,7 @@ const sections = [
                 items: [
                     "Text content you submit is temporarily stored only to fulfil the transfer request.",
                     "Files you upload are temporarily stored only to fulfil the transfer request and are scanned for malware before becoming available. The free plan accepts PNG, JPEG, WebP, MP4 and WebM files up to 10 MB. Pro accepts any non-executable file type up to 100 MB per file, within a per-license storage allowance.",
-                    "If you activate Pro, the license key you enter is stored in a signed, http-only cookie on your device for up to 30 days, and a SHA-256 hash of the key is cached on our servers for up to 24 hours so we do not have to contact Gumroad on every request. We send the key to Gumroad to verify the subscription.",
+                    "If you activate Pro, the license key you enter is stored in a signed, http-only cookie on your device for up to 30 days, and a SHA-256 hash of the key is cached on our servers for up to 24 hours so we do not have to contact Gumroad on every request. We send the key to Gumroad to verify the subscription. When you use the API or MCP server, the key is sent with each request and verified the same way.",
                     "We do not collect your name, email address, phone number, or any personally identifying information to use the tool.",
                     "We may collect anonymised server metrics such as request counts and response times for performance monitoring.",
                     "Standard web server logs (IP addresses, timestamps) may be retained for up to 7 days for security purposes.",

@@ -88,7 +88,7 @@ useHead({
             name: 'Is TextShareNow free?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Yes. The core tool is free with no sign-up required — no credits, no hidden fees. An optional Pro plan adds power features like longer expiry, 100 MB files, multi-reads, and password protection.',
+              text: 'Yes. The core tool is free with no sign-up required — no credits, no hidden fees. An optional Pro plan adds power features like longer expiry, 100 MB files, multi-reads, password protection, custom codes, and API/MCP access for developers and AI agents.',
             },
           },
           {
@@ -97,6 +97,22 @@ useHead({
             acceptedAnswer: {
               '@type': 'Answer',
               text: 'Yes. TextShareNow supports file sharing for PNG, JPEG, WebP, MP4, and WebM files up to 10 MB. Upload a file, get a short code, and the recipient downloads it with that code. Files auto-delete after the first download or when their timer ends — 10 minutes, 30 minutes or 1 hour.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'What do I get with Pro?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Pro raises text shares to 100,000 characters and files to 100 MB, extends expiry to 1, 7, or 30 days or never, and adds 5/10/unlimited reads, password protection, custom codes, and a developer API plus MCP server for scripts and AI agents.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'Is there an API or MCP server?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Yes. Pro includes a Bearer-token HTTP API and the textsharenow-mcp server for Claude, opencode, Cursor, and other MCP clients. Your Gumroad license key is the API key, with the same Pro limits and auto-deletion as the website.',
             },
           },
         ],
@@ -213,6 +229,38 @@ const categories = [
         question: 'Can I download the same file more than once?',
         answer:
           'No. File codes are single-use. After the first successful download, the file and its code are immediately deleted. Ask the sender to generate a new code if you need the file again.',
+      },
+    ],
+  },
+  {
+    title: 'Plans & Pro',
+    items: [
+      {
+        question: 'Is TextShareNow free?',
+        answer:
+          'Yes. The core tool is free with no sign-up required — no credits, no hidden fees, and no account. An optional $5/month Pro plan adds larger limits, longer expiry, 100 MB files, multi-reads, passwords, custom codes, and API/MCP access for developers and AI agents.',
+        link: {
+          to: '/pricing',
+          text: 'Compare free and Pro',
+        },
+      },
+      {
+        question: 'What do I get with Pro?',
+        answer:
+          'Pro raises text shares to 100,000 characters, files to 100 MB (any non-executable type), and expiry to 1, 7, or 30 days — or never. It also adds 5, 10, or unlimited reads, password protection, custom codes like coffee-menu, and a developer API plus MCP server for scripts and AI agents.',
+        link: {
+          to: '/pricing',
+          text: 'See all Pro features',
+        },
+      },
+      {
+        question: 'Is there an API or MCP server?',
+        answer:
+          'Yes. Pro includes a Bearer-token HTTP API and the textsharenow-mcp server for Claude, opencode, Cursor, and other MCP clients. Your Gumroad license key is the API key; scripts and agents can create, peek, receive, and delete shares with the same Pro limits and auto-deletion as the website.',
+        link: {
+          to: '/developers',
+          text: 'Read the API & MCP guide',
+        },
       },
     ],
   },

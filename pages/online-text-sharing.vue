@@ -215,7 +215,7 @@ const faqs = [
   },
   {
     question: 'Is TextShareNow free for online text sharing?',
-          answer: 'Yes. TextShareNow is free for everyday use with no sign-up — up to 10,000 characters, files up to 10 MB, and expiry up to 1 hour. An optional Pro plan adds longer expiry, bigger files, multi-reads, and password protection.',
+          answer: 'Yes. TextShareNow is free for everyday use with no sign-up — up to 10,000 characters, files up to 10 MB, and expiry up to 1 hour. An optional Pro plan adds longer expiry, bigger files, multi-reads, password protection, custom codes, and API/MCP access for developers and AI agents.',
   },
   {
     question: 'Can I share text online between iPhone and Windows?',
