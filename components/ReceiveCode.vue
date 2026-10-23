@@ -77,7 +77,33 @@
                 <!-- Text -->
                 <ReceivedText v-if="result.type === 'text'" :text="result.text" :code="result.code" />
 
-                <!-- File -->
+                <!-- Multi-file transfer -->
+                <template v-else-if="result.type === 'transfer'">
+                    <div class="flex flex-wrap items-end justify-between gap-2">
+                        <div>
+                            <p class="text-[17px] font-semibold tracking-[-0.01em]">Your files are ready</p>
+                            <p class="mt-1 text-[13px] text-muted">{{ result.count }} file{{ result.count === 1 ? "" : "s" }} · {{ formatBytes(result.bytes) }}</p>
+                        </div>
+                        <a :href="transferZipUrl" class="btn-primary !h-9 !px-3 !text-[13px]">
+                            <TsnIcon name="download" class="h-4 w-4" stroke="1.9" />Download all
+                        </a>
+                    </div>
+                    <ul class="mt-4 grid gap-2">
+                        <li v-for="file in result.files" :key="file.id" class="flex items-center gap-3 rounded-lg border border-line px-3 py-2.5">
+                            <span class="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-surface-2 text-ink"><TsnIcon name="file" class="h-5 w-5" stroke="1.9" /></span>
+                            <span class="min-w-0 flex-1">
+                                <span class="block truncate text-[15px] font-medium">{{ file.name }}</span>
+                                <span class="block truncate text-[13px] text-muted">{{ file.path !== file.name ? `${file.path} · ` : "" }}{{ formatBytes(file.size) }}</span>
+                            </span>
+                            <a :href="transferFileUrl(file)" class="btn-ghost !h-8 shrink-0 !px-2.5 !text-[12px]">
+                                <TsnIcon name="download" class="h-3.5 w-3.5" stroke="2" />Download
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="mt-3 text-[13px] text-muted">Each file is deleted after its first download. Download all as a ZIP, or take only the files you need.</p>
+                </template>
+
+                <!-- Single file -->
                 <template v-else>
                     <p class="text-[17px] font-semibold tracking-[-0.01em]">Your file is downloading</p>
                     <ul class="mt-4 grid gap-2">
@@ -97,6 +123,7 @@
                     <TsnIcon name="trash" class="mt-px h-3.5 w-3.5 shrink-0" stroke="1.8" />
                     <span v-if="result.type === 'text' && result.readsLeft === null">Available until the sender's expiry time.</span>
                     <span v-else-if="result.type === 'text' && result.readsLeft > 0">Read {{ result.readsLeft }} more time{{ result.readsLeft === 1 ? "" : "s" }} before it's deleted.</span>
+                    <span v-else-if="result.type === 'transfer'">The code stops working when every file is downloaded or the timer ends.</span>
                     <span v-else>Deleted from our server. Code {{ result.code }} won't work again.</span>
                 </p>
 
@@ -107,16 +134,15 @@
 
 <script setup>
 /*
- * One Receive box for both text and file codes.
- * Text is tried first (it's cheap and single-use); if that code isn't a text
- * share, we check the files service with a HEAD request, which doesn't use up
- * the download, then hand the browser the real download link.
+ * One Receive box for text, single-file, and multi-file codes.
+ * Text is tried first (it's cheap and single-use); then the transfer manifest;
+ * then a HEAD on the single-file download, which doesn't use up the download.
  */
 import { hashPassword, hashLegacyPassword } from "~/utils/hash.js";
 
 const props = defineProps({
     initialCode: { type: String, default: "" },
-    initialKind: { type: String, default: "" }, // "text" | "file" from a scanned QR link
+    initialKind: { type: String, default: "" }, // "text" | "file" | "transfer" from a scanned QR link
 });
 
 const config = useRuntimeConfig();
@@ -149,14 +175,15 @@ async function pasteCode() {
     pasteHint.value = "";
     try {
         const clip = (await navigator.clipboard.readText()) || "";
-        const fromLink = clip.match(/[?&]f?code=([A-Za-z0-9_-]{3,32})/);
-        const code = clean(fromLink ? fromLink[1] : clip);
+        const fromLink = clip.match(/[?&](?:([ft])code|code)=([A-Za-z0-9_-]{3,32})/i);
+        const code = clean(fromLink ? fromLink[2] : clip);
         if (code.length < 3) {
             pasteHint.value = "There's no code on your clipboard.";
             return;
         }
         value.value = code;
-        receive(fromLink && /fcode=/.test(fromLink[0]) ? "file" : "");
+        const prefix = fromLink?.[1]?.toLowerCase();
+        receive(prefix === "f" ? "file" : prefix === "t" ? "transfer" : "");
     } catch {
         pasteHint.value = "Your browser blocked the clipboard. Tap the boxes and paste instead.";
         inputEl.value?.focus();
@@ -222,6 +249,48 @@ async function getText(code, pwHash) {
         throw new Error("Couldn't reach TextShareNow. Check your internet connection and try again.");
     }
 }
+async function getTransfer(code, strict = false) {
+    let res;
+    try {
+        res = await fetch(`${FILES_API}/transfer/${encodeURIComponent(code)}`, {
+            headers: { Accept: "application/json" },
+            cache: "no-store",
+        });
+    } catch {
+        if (strict) throw new Error("Couldn't reach TextShareNow. Check your internet connection and try again.");
+        return null;
+    }
+
+    if (res.status === 404) return null;
+    if (res.status === 429) throw new Error("Too many tries. Wait a minute and try again.");
+    if (!res.ok) throw new Error("Couldn't load that transfer. Please try again.");
+
+    let data;
+    try {
+        data = await res.json();
+    } catch {
+        throw new Error("Couldn't load that transfer. Please try again.");
+    }
+
+    const files = (Array.isArray(data?.files) ? data.files : [])
+        .filter((file) => file && file.id && file.name)
+        .map((file) => ({
+            id: String(file.id),
+            name: String(file.name),
+            path: String(file.path || file.name),
+            size: Number(file.size) || 0,
+        }));
+    if (!files.length) return null;
+
+    return {
+        type: "transfer",
+        code: String(data.code || code),
+        files,
+        count: files.length,
+        bytes: Number(data.bytes) || files.reduce((sum, file) => sum + file.size, 0),
+    };
+}
+
 async function getFile(code) {
     const head = await fetch(`${FILES_API}/download/${code}`, { method: "HEAD" }).catch(() => null);
     if (!head) throw new Error("Couldn't reach TextShareNow. Check your internet connection and try again.");
@@ -238,8 +307,9 @@ async function receive(kind, pwHash) {
     error.value = null;
     try {
         let res = null;
-        if (kind !== "file") res = await getText(code, pwHash);
-        if (!res && kind !== "text") res = await getFile(code);
+        if (kind !== "file" && kind !== "transfer") res = await getText(code, pwHash);
+        if (!res && kind !== "text" && kind !== "file") res = await getTransfer(code, kind === "transfer");
+        if (!res && kind !== "text" && kind !== "transfer") res = await getFile(code);
         if (!res) return fail(...NOT_FOUND);
         passwordNeeded.value = false;
         passwordError.value = "";
@@ -274,6 +344,23 @@ async function unlock() {
             ? await hashPassword(password.value, params.salt, params.iterations)
             : await hashLegacyPassword(password.value);
     receive("", hash);
+}
+
+function formatBytes(bytes) {
+    if (!bytes) return "0 B";
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / 1048576).toFixed(1)} MB`;
+}
+
+const transferZipUrl = computed(() => {
+    if (result.value?.type !== "transfer") return "";
+    return `${FILES_API}/transfer/${encodeURIComponent(result.value.code)}/zip`;
+});
+
+function transferFileUrl(file) {
+    if (result.value?.type !== "transfer") return "";
+    return `${FILES_API}/transfer/${encodeURIComponent(result.value.code)}/file/${encodeURIComponent(file.id)}`;
 }
 
 function reset() {

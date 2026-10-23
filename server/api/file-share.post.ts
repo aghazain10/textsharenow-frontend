@@ -1,11 +1,11 @@
 /**
  * POST /api/file-share
+ * Body: { count?: number } (1–20, default 1)
  * Response: { ok: true }
  *
- * Increments the aggregate, anonymous all-time file-share counter.
- * File uploads go directly to the external files service, so the client
- * calls this endpoint after a successful upload to record it.
- * (Redis INCR creates the key at 0 if it doesn't exist).
+ * Increments the aggregate, anonymous all-time file-share counter. A
+ * multi-file transfer increments it once per file. File uploads go directly
+ * to the external files service, so the client calls this after success.
  */
 
 const COUNT_KEY = 'stats:file_shares'
@@ -30,6 +30,8 @@ async function upstashRequest(url: string, token: string, command: unknown[]) {
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   const { UPSTASH_REDIS_REST_URL: redisUrl, UPSTASH_REDIS_REST_TOKEN: redisToken } = config
+  const body = await readBody(event).catch(() => ({}))
+  const count = Math.min(20, Math.max(1, Number(body?.count) || 1))
 
   // Rate limiting — 20 increments per minute per IP
   const ip      = getRequestHeader(event, 'x-forwarded-for') || 'unknown'
@@ -45,7 +47,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 429, message: 'Too many requests. Please wait a moment.' })
   }
 
-  await upstashRequest(redisUrl, redisToken, ['INCR', COUNT_KEY])
+  await upstashRequest(redisUrl, redisToken, ['INCRBY', COUNT_KEY, count])
 
   return { ok: true }
 })

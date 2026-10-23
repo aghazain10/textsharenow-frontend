@@ -1,3 +1,9 @@
+> **Multi-file update:** the new `/transfer` routes are specified in
+> `docs/multi-file-transfer-server-plan.md`. This document remains the
+> single-file `/upload` plan. For current type blocking, use the shared policy
+> in `utils/filePolicy.js`: executables/installers/SVG/scripts are blocked, not
+> SVG alone. Pro single files remain capped at 100 MB.
+
 # Phase 3 — Files Service: Pro Upload Support (Server Plan)
 
 > For the agent working **on the VPS** against the files service (`files.textsharenow.com`,

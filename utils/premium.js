@@ -5,6 +5,8 @@ export const PRO_MAX_CHARS = 100000;
 
 export const FREE_MAX_FILE = 10 * 1024 * 1024;
 export const PRO_MAX_FILE = 100 * 1024 * 1024;
+export const PRO_MAX_FILES = 20;
+export const PRO_MAX_TRANSFER = 100 * 1024 * 1024;
 
 export const FREE_FILE_ACCEPT = "image/png,image/jpeg,image/webp,video/mp4,video/webm";
 export const FREE_FILE_LABEL = "PNG, JPEG, WebP, MP4, WebM";

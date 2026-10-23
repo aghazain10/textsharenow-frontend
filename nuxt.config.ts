@@ -42,6 +42,8 @@ export default defineNuxtConfig({
         // derived from the Upstash token so no secret lives in the repo;
         // set explicitly in production if you prefer (PRO_SECRET=...).
         PRO_SECRET: process.env.PRO_SECRET || "",
+        // Shared with the files service so dashboard deletes are authenticated.
+        FILES_DELETE_SECRET: process.env.FILES_DELETE_SECRET || "",
         // Public (exposed to browser)
         public: {
             FILES_API_URL: process.env.NUXT_PUBLIC_FILES_API_URL || "https://files.textsharenow.com",

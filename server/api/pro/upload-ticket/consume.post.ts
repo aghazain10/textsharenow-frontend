@@ -41,7 +41,15 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 403, message: 'Upload ticket is invalid or has expired. Ask the user to retry the upload.' })
   }
 
-  let minted: { mb?: number; ttl?: number }
+  let minted: {
+    mb?: number
+    ttl?: number
+    kind?: string
+    total?: number
+    maxFiles?: number
+    owner?: string
+    tid?: string
+  }
   try {
     minted = JSON.parse(res.result)
   } catch {
@@ -50,9 +58,38 @@ export default defineEventHandler(async (event) => {
 
   const maxBytes = Number(minted.mb)
   const ttl = Number(minted.ttl)
-  if (!Number.isInteger(size) || size <= 0 || !Number.isFinite(maxBytes) || size > maxBytes || !Number.isFinite(ttl)) {
+  const isTransfer = minted.kind === 'transfer'
+  const total = Number(minted.total)
+  const maxFiles = Number(minted.maxFiles)
+  const authorized = isTransfer ? total : maxBytes
+
+  if (
+    !Number.isInteger(size) ||
+    size <= 0 ||
+    !Number.isFinite(maxBytes) ||
+    !Number.isFinite(ttl) ||
+    !Number.isFinite(authorized) ||
+    size > authorized
+  ) {
     throw createError({ statusCode: 422, message: 'Upload exceeds what this ticket authorizes.' })
   }
 
-  return { ok: true, maxBytes, ttl }
+  if (isTransfer && (!Number.isInteger(maxFiles) || maxFiles <= 0 || typeof minted.owner !== 'string' || typeof minted.tid !== 'string')) {
+    throw createError({ statusCode: 403, message: 'Upload ticket is invalid or has expired. Ask the user to retry the upload.' })
+  }
+
+  return {
+    ok: true,
+    maxBytes,
+    ttl,
+    ...(isTransfer
+      ? {
+          kind: 'transfer',
+          maxFiles,
+          maxTotal: total,
+          ownerHash: minted.owner,
+          transferId: minted.tid,
+        }
+      : {}),
+  }
 })

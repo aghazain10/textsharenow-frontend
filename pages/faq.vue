@@ -246,7 +246,7 @@ const categories = [
       {
         question: 'Is TextShareNow free?',
         answer:
-          'Yes. The core tool is free with no sign-up required — no credits, no hidden fees, and no account. An optional $5/month Pro plan adds larger limits, longer expiry, 100 MB files, multi-reads, passwords, custom codes, a My Shares dashboard, and API/MCP access for developers and AI agents.',
+          'Yes. The core tool is free with no sign-up required — no credits, no hidden fees, and no account. An optional $5/month Pro plan adds larger limits, longer expiry, up to 20 files and 100 MB total, multi-reads, passwords, custom codes, a My Shares dashboard, and API/MCP access for developers and AI agents.',
         link: {
           to: '/pricing',
           text: 'Compare free and Pro',
@@ -255,7 +255,7 @@ const categories = [
       {
         question: 'What do I get with Pro?',
         answer:
-          'Pro raises text shares to 100,000 characters, files to 100 MB (any non-executable type), and expiry to 1, 7, or 30 days — or never. It also adds 5, 10, or unlimited reads, password protection, custom codes like coffee-menu, a My Shares dashboard, and a developer API plus MCP server for scripts and AI agents.',
+          'Pro raises text shares to 100,000 characters, file transfers to up to 20 files / 100 MB total (any non-executable type), and expiry to 1, 7, or 30 days — or never. It also adds 5, 10, or unlimited reads, password protection, custom codes like coffee-menu, a My Shares dashboard, and a developer API plus MCP server for scripts and AI agents.',
         link: {
           to: '/pricing',
           text: 'See all Pro features',

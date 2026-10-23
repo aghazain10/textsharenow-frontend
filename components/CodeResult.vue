@@ -99,6 +99,8 @@ const props = defineProps({
     qrUrl: { type: String, default: "" },
     maxReads: { type: Number, default: 1 }, // 1, 5, 10 or 0 = unlimited
     passwordSet: { type: Boolean, default: false },
+    kind: { type: String, default: "text" }, // "text" | "file" | "transfer"
+    fileCount: { type: Number, default: 0 },
 });
 defineEmits(["reset"]);
 
@@ -110,12 +112,14 @@ const copied = ref(false);
 const linkCopied = ref(false);
 const left = ref(props.ttl);
 const expired = computed(() => !never.value && left.value <= 0);
-const readLabel = computed(() =>
-    props.maxReads === 0 ? "unlimited reads" : props.maxReads > 1 ? `${props.maxReads} reads` : "works once"
-);
-const bigReadLabel = computed(() =>
-    props.maxReads === 0 ? "Unlimited reads." : props.maxReads > 1 ? `Works up to ${props.maxReads} times.` : "Works once."
-);
+const readLabel = computed(() => {
+    if (props.kind === "transfer") return `${props.fileCount || 1} ${props.fileCount === 1 ? "file" : "files"}`;
+    return props.maxReads === 0 ? "unlimited reads" : props.maxReads > 1 ? `${props.maxReads} reads` : "works once";
+});
+const bigReadLabel = computed(() => {
+    if (props.kind === "transfer") return "Each file works once.";
+    return props.maxReads === 0 ? "Unlimited reads." : props.maxReads > 1 ? `Works up to ${props.maxReads} times.` : "Works once.";
+});
 const clock = computed(() => {
     const h = Math.floor(left.value / 3600);
     const m = Math.floor((left.value % 3600) / 60);

@@ -4,7 +4,7 @@
         <div class="hero-grid absolute inset-0 -z-10" aria-hidden="true" />
         <div class="mx-auto max-w-xl text-center">
             <h1 class="text-[clamp(2.2rem,6vw,3.4rem)] font-bold leading-[1.05] tracking-[-0.045em]">Receive Text or Files</h1>
-            <p class="mx-auto mt-4 max-w-[44ch] text-[17px] leading-relaxed text-muted">Type the 5-character code from your other device. Text is copied to your clipboard, files download straight away.</p>
+            <p class="mx-auto mt-4 max-w-[44ch] text-[17px] leading-relaxed text-muted">Type the 5-character code from your other device. Text is copied to your clipboard, single files download straight away, and multi-file transfers let you pick what you need.</p>
         </div>
         <div class="tool-glow mx-auto mt-10 max-w-xl rounded-xl border border-line bg-surface p-3 sm:p-4">
             <ReceiveCode :initial-code="code" :initial-kind="kind" />
@@ -33,9 +33,10 @@ const clean = (v) => (v || "").toString().trim().replace(/[^A-Za-z0-9_-]/g, "").
 onMounted(() => {
     const c = clean(route.query.code);
     const f = clean(route.query.fcode);
-    if (c.length >= 3 || f.length >= 3) {
-        kind.value = c.length >= 3 ? "text" : "file";
-        code.value = c.length >= 3 ? c : f;
+    const t = clean(route.query.tcode);
+    if (c.length >= 3 || f.length >= 3 || t.length >= 3) {
+        kind.value = c.length >= 3 ? "text" : f.length >= 3 ? "file" : "transfer";
+        code.value = c.length >= 3 ? c : f.length >= 3 ? f : t;
         router.replace({ query: {} });
     }
 });

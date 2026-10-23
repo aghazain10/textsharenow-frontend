@@ -7,7 +7,7 @@
                 <div>
                     <p class="text-[13px] font-medium text-muted">Pricing</p>
                     <h1 class="mt-3 max-w-[20ch] text-[clamp(2.4rem,6vw,4.2rem)] font-bold leading-[1.05] tracking-[-0.045em]">TextShareNow Pricing: Free Plan, Pro at $5/Month</h1>
-                    <p class="mt-5 max-w-[58ch] text-[18px] leading-relaxed text-muted">Share text and files for free with no sign-up — forever. Go Pro for 100,000 characters, 100 MB files, expiry up to never, multi-reads, and password protection.</p>
+                    <p class="mt-5 max-w-[58ch] text-[18px] leading-relaxed text-muted">Share text and files for free with no sign-up — forever. Go Pro for 100,000 characters, up to 20 files / 100 MB total, expiry up to never, multi-reads, and password protection.</p>
                     <div class="mt-7 flex flex-wrap gap-3">
                         <a :href="checkoutHref('hero')" class="btn-primary" @click="onCtaClick('hero')">Get Pro — $5/month</a>
                         <NuxtLink to="/#tool" class="btn-ghost">Start with the free plan</NuxtLink>
@@ -315,7 +315,7 @@ const freeFeatures = [
 const proFeatures = [
     "Everything in Free, plus:",
     "Up to 100,000 characters per share (10×)",
-    "Files up to 100 MB — any non-executable type",
+    "Up to 20 files, 100 MB total — any non-executable type",
     "Expiry: 1 day, 7 days, 30 days — or never",
     "Read limits: 1, 5, 10 or unlimited reads",
     "Password-protect any share",
@@ -329,7 +329,7 @@ const compareRows = [
     ["Price", ["text", "$0 — no billing"], ["text", "$5 per month, billed via Gumroad"]],
     ["Account required", ["good", "None"], ["good", "None — just a license key"]],
     ["Text per share", ["text", "10,000 characters"], ["text", "100,000 characters"]],
-    ["File size", ["text", "10 MB"], ["text", "100 MB"]],
+    ["File size", ["text", "10 MB"], ["text", "100 MB total, up to 20 files"]],
     ["File types", ["text", "PNG, JPEG, WebP, MP4, WebM"], ["good", "Any non-executable type"]],
     ["Share expiry", ["text", "10 min, 30 min, 1 h"], ["text", "10 min – 30 days, or never"]],
     ["Reads per share", ["text", "1 (single-use)"], ["text", "1, 5, 10 or unlimited"]],
@@ -344,7 +344,7 @@ const compareRows = [
 
 const charts = [
     { label: "Text per share", free: "10,000 characters", freeWidth: 10, pro: "100,000 characters", proWidth: 100 },
-    { label: "File upload size", free: "10 MB", freeWidth: 10, pro: "100 MB", proWidth: 100 },
+    { label: "File upload size", free: "10 MB", freeWidth: 10, pro: "100 MB total", proWidth: 100 },
     { label: "Share expiry", free: "Up to 1 hour", freeWidth: 5, pro: "Up to 30 days — or never", proWidth: 100 },
     { label: "Reads before deletion", free: "1 read", freeWidth: 4, pro: "Unlimited reads", proWidth: 100 },
 ];
@@ -357,8 +357,8 @@ const proDetails = [
     },
     {
         icon: "upload",
-        title: "100 MB files, any non-executable type",
-        desc: "Send HD screen recordings, ZIP archives, PDFs, PSDs — anything up to 100 MB. The free plan stays at 10 MB and five formats; Pro lifts both limits. Executables and installers stay blocked for everyone.",
+        title: "Up to 20 files, 100 MB total",
+        desc: "Send up to 20 files per transfer, 100 MB total — HD screen recordings, ZIP archives, PDFs, PSDs. The free plan stays at one file, 10 MB, and five formats; Pro lifts all three limits. Executables and installers stay blocked for everyone.",
     },
     {
         icon: "clock",
@@ -413,7 +413,7 @@ const faqs = [
     },
     {
         q: "What exactly do I get with Pro?",
-        a: "100,000 characters per share (10× the free limit), file uploads up to 100 MB for any non-executable file type, expiry choices of 1 day, 7 days, 30 days or never, read limits of 1, 5, 10 or unlimited, password protection for any share, custom share codes, a My Shares dashboard, and a developer API plus MCP server.",
+        a: "100,000 characters per share (10× the free limit), up to 20 files and 100 MB total per transfer for any non-executable file type, expiry choices of 1 day, 7 days, 30 days or never, read limits of 1, 5, 10 or unlimited, password protection for any share, custom share codes, a My Shares dashboard, and a developer API plus MCP server.",
     },
     {
         q: "How do I activate my license key?",
@@ -437,7 +437,7 @@ const faqs = [
     },
     {
         q: "Can I manage shares after creating them?",
-        a: "Yes. Pro includes a My Shares dashboard — linked from the header and footer — that lists every active text share tied to your license, shows remaining reads and expiry, and lets you copy the link or delete the share. No account or extra password is needed beyond your license key. File shares are not listed yet.",
+        a: "Yes. Pro includes a My Shares dashboard — linked from the header and footer — that lists every active text share and multi-file transfer tied to your license, shows remaining reads and expiry, and lets you copy the link or delete it. No account or extra password is needed beyond your license key. Single-file links are not listed yet.",
     },
 ];
 

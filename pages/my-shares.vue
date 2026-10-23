@@ -3,7 +3,7 @@
         <PageHero
             meta="Pro dashboard"
             title="My shares"
-            lead="Manage the text shares created with your Pro license. See what is still live, copy a link, or delete a share. No account needed — your license key is the credential."
+            lead="Manage the text shares and multi-file transfers created with your Pro license. See what is still live, copy a link, or delete it. No account needed — your license key is the credential."
         />
 
         <section class="section">
@@ -31,9 +31,9 @@
                 <template v-else>
                     <div class="flex flex-wrap items-end justify-between gap-4">
                         <div>
-                            <h2 class="text-[26px] font-semibold tracking-[-0.03em] text-ink">Active text shares</h2>
+                            <h2 class="text-[26px] font-semibold tracking-[-0.03em] text-ink">Active shares</h2>
                             <p class="mt-1 text-[14px] text-muted">
-                                {{ shares.length }} active · links disappear automatically when they expire or are read
+                                {{ shares.length }} active · links disappear automatically when they expire, are read, or are downloaded
                             </p>
                         </div>
                         <div class="flex flex-wrap gap-2">
@@ -60,9 +60,9 @@
                         <span class="grid h-12 w-12 place-items-center rounded-lg border border-line bg-bg text-ink">
                             <TsnIcon name="link" class="h-6 w-6" stroke="1.8" />
                         </span>
-                        <h3 class="mt-4 text-[19px] font-semibold tracking-[-0.02em] text-ink">No active text shares</h3>
+                        <h3 class="mt-4 text-[19px] font-semibold tracking-[-0.02em] text-ink">No active shares</h3>
                         <p class="mt-2 max-w-[42ch] text-[14px] leading-6 text-muted">
-                            Shares you create while Pro is active will appear here until they expire or are deleted.
+                            Text shares and multi-file transfers you create while Pro is active will appear here until they expire or are deleted.
                         </p>
                         <NuxtLink to="/" class="btn-primary mt-5">Create a share</NuxtLink>
                     </div>
@@ -73,6 +73,7 @@
                                 <div class="min-w-0">
                                     <div class="flex flex-wrap items-center gap-2">
                                         <code class="font-mono text-[17px] font-semibold tracking-wide text-ink">{{ s.code }}</code>
+                                        <span v-if="s.kind === 'transfer'" class="rounded-full border border-line bg-surface-2 px-2 py-0.5 text-[11px] font-medium text-muted">Files</span>
                                         <span v-if="s.custom" class="rounded-full border border-line bg-surface-2 px-2 py-0.5 text-[11px] font-medium text-muted">Custom</span>
                                         <span v-if="s.passwordRequired" class="inline-flex items-center gap-1 rounded-full border border-line bg-surface-2 px-2 py-0.5 text-[11px] font-medium text-muted">
                                             <TsnIcon name="lock" class="h-3 w-3" stroke="2" />Password
@@ -83,7 +84,7 @@
                                             <TsnIcon name="clock" class="h-3.5 w-3.5" stroke="1.8" />{{ expiryText(s) }}
                                         </span>
                                         <span class="inline-flex items-center gap-1.5">
-                                            <TsnIcon name="eye" class="h-3.5 w-3.5" stroke="1.8" />{{ readsText(s) }}
+                                            <TsnIcon :name="s.kind === 'transfer' ? 'file' : 'eye'" class="h-3.5 w-3.5" stroke="1.8" />{{ readsText(s) }}
                                         </span>
                                     </div>
                                 </div>
@@ -95,7 +96,7 @@
                                     <button
                                         type="button"
                                         class="btn-icon text-muted hover:!text-bad"
-                                        :aria-label="`Delete share ${s.code}`"
+                                        :aria-label="`Delete ${s.kind === 'transfer' ? 'transfer' : 'share'} ${s.code}`"
                                         @click="confirming = s.code"
                                     >
                                         <TsnIcon name="trash" class="h-4 w-4" stroke="1.8" />
@@ -104,10 +105,10 @@
                             </div>
 
                             <div v-if="confirming === s.code" class="flex flex-wrap items-center justify-between gap-3 border-t border-line bg-surface-2 px-5 py-3">
-                                <p class="text-[13px] text-ink">Delete this share? The link stops working immediately.</p>
+                                <p class="text-[13px] text-ink">{{ s.kind === "transfer" ? "Delete this transfer? The link stops working and all remaining files are removed." : "Delete this share? The link stops working immediately." }}</p>
                                 <div class="flex gap-2">
                                     <button type="button" class="btn-ghost !h-8 !px-3 !text-[13px]" @click="confirming = ''">Cancel</button>
-                                    <button type="button" class="btn-primary !h-8 !bg-bad !px-3 !text-[13px] hover:!bg-bad/90" @click="remove(s.code)">Delete</button>
+                                    <button type="button" class="btn-primary !h-8 !bg-bad !px-3 !text-[13px] hover:!bg-bad/90" @click="remove(s)">Delete</button>
                                 </div>
                             </div>
                         </li>
@@ -118,7 +119,7 @@
                     </p>
 
                     <div class="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5 text-[13px] text-muted">
-                        <p>Only text shares created with this license appear here. File shares are not listed yet.</p>
+                        <p>Text shares and multi-file transfers created with this license appear here. Single-file links are not listed yet.</p>
                         <button type="button" class="font-medium text-muted underline decoration-line underline-offset-4 hover:text-ink" @click="deactivatePro">
                             Deactivate Pro on this device
                         </button>
@@ -132,7 +133,7 @@
 <script setup>
 useSeo({
     title: "My Shares",
-    description: "Manage the text shares created with your TextShareNow Pro license.",
+    description: "Manage the text shares and multi-file transfers created with your TextShareNow Pro license.",
     pagePath: "/my-shares",
 });
 useHead({ meta: [{ name: "robots", content: "noindex, nofollow" }] });
@@ -175,13 +176,14 @@ async function load() {
     }
 }
 
-function shareUrl(code) {
-    return `${window.location.origin}/r?code=${encodeURIComponent(code)}`;
+function shareUrl(s) {
+    const param = s.kind === "transfer" ? "tcode" : "code";
+    return `${window.location.origin}/r?${param}=${encodeURIComponent(s.code)}`;
 }
 
 async function copyLink(s) {
     try {
-        await navigator.clipboard.writeText(shareUrl(s.code));
+        await navigator.clipboard.writeText(shareUrl(s));
         copied.value = s.code;
         setTimeout(() => {
             if (copied.value === s.code) copied.value = "";
@@ -189,6 +191,12 @@ async function copyLink(s) {
     } catch {
         error.value = "Could not copy the link. Open the share page and copy it from the address bar.";
     }
+}
+
+function formatBytes(bytes) {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / 1048576).toFixed(1)} MB`;
 }
 
 function expiryText(s) {
@@ -203,18 +211,21 @@ function expiryText(s) {
 }
 
 function readsText(s) {
+    if (s.kind === "transfer") return `${s.fileCount} file${s.fileCount === 1 ? "" : "s"} · ${formatBytes(Number(s.bytes) || 0)}`;
     if (s.maxReads === 0 || s.readsLeft === null) return "Unlimited reads";
     if (s.readsLeft === 0) return "No reads left";
     return s.readsLeft === 1 ? "1 read left" : `${s.readsLeft} reads left`;
 }
 
-async function remove(code) {
+async function remove(share) {
     confirming.value = "";
+    const code = share.code;
     const before = shares.value;
     shares.value = shares.value.filter((s) => s.code !== code);
     try {
-        await $fetch(`/api/share/${encodeURIComponent(code)}`, { method: "DELETE" });
-        notice.value = `Share ${code} deleted.`;
+        const endpoint = share.kind === "transfer" ? "/api/pro/transfers" : "/api/share";
+        await $fetch(`${endpoint}/${encodeURIComponent(code)}`, { method: "DELETE" });
+        notice.value = `${share.kind === "transfer" ? "Transfer" : "Share"} ${code} deleted.`;
         clearTimeout(noticeTimer);
         noticeTimer = setTimeout(() => (notice.value = ""), 4000);
     } catch (e) {

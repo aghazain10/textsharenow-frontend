@@ -94,13 +94,14 @@ const clean = (v) => (v || "").toString().trim().replace(/[^A-Za-z0-9_-]/g, "").
 
 onMounted(() => {
     // A scanned QR opens the Receive tab and fetches straight away:
-    // /?code=XXXXX for text, /?fcode=XXXXX for files
+    // /?code=XXXXX for text, /?fcode=XXXXX for files, /?tcode=XXXXX for transfers
     const code = clean(route.query.code);
     const fcode = clean(route.query.fcode);
-    if (code.length >= 3 || fcode.length >= 3) {
+    const tcode = clean(route.query.tcode);
+    if (code.length >= 3 || fcode.length >= 3 || tcode.length >= 3) {
         tab.value = "receive";
-        scannedKind.value = code.length >= 3 ? "text" : "file";
-        scannedCode.value = code.length >= 3 ? code : fcode;
+        scannedKind.value = code.length >= 3 ? "text" : fcode.length >= 3 ? "file" : "transfer";
+        scannedCode.value = code.length >= 3 ? code : fcode.length >= 3 ? fcode : tcode;
         router.replace({ query: {} });
     } else if (route.hash === "#receive") {
         tab.value = "receive";
