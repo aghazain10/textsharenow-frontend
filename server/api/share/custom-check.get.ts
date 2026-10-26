@@ -35,9 +35,7 @@ export default defineEventHandler(async (event) => {
   const rateKey = `rate:custom-check:${ip}`
   const rateRes = await upstashRequest(redisUrl, redisToken, ['INCR', rateKey])
 
-  if (rateRes.result === 1) {
-    await upstashRequest(redisUrl, redisToken, ['EXPIRE', rateKey, 60])
-  }
+  await upstashRequest(redisUrl, redisToken, ['EXPIRE', rateKey, 60])
 
   if (rateRes.result > 30) {
     throw createError({ statusCode: 429, message: 'Too many checks. Please wait a minute.' })

@@ -38,16 +38,27 @@
                     <p class="mt-4">
                         When you submit text, it is stored in an encrypted
                         temporary key-value store with a time-to-live (TTL) of
-                        your choice — 10 minutes, 30 minutes or 1 hour. A unique
+                        your choice — 10 minutes, 30 minutes or 1 hour on the
+                        free plan, up to 30 days or never with Pro. A unique
                         5-character alphanumeric code is
                         generated and tied to your content as the key. The code
                         space gives over 33 million combinations, and our
                         rate-limiting prevents brute-force enumeration.
                     </p>
                     <p class="mt-4">
+                        Private mode (“Encrypt Now”) goes further: the text is
+                        encrypted in your browser with AES-256-GCM before it is
+                        uploaded, and the decryption key travels only in the
+                        link after the <code class="rounded bg-surface-2 px-1 py-0.5 font-mono text-[13px]">#</code> —
+                        a part browsers never send to servers. We store
+                        ciphertext we cannot read, so a Private share must be
+                        opened with the full link rather than the code alone.
+                    </p>
+                    <p class="mt-4">
                         When the receiving device submits the code, the content
                         is retrieved and the entry is immediately deleted — a
-                        single-read guarantee. The entire round trip takes under
+                        single-read guarantee by default (Pro can allow 5, 10,
+                        or unlimited reads). The entire round trip takes under
                         500ms on a typical connection.
                     </p>
 
@@ -69,7 +80,8 @@
                         sitting around. Files are scanned for malware before
                         becoming available, and automatically deleted after the
                         first download or when the sender's timer ends — 10
-                        minutes, 30 minutes or 1 hour — whichever comes first.
+                        minutes, 30 minutes or 1 hour on the free plan, up to 30
+                        days with Pro — whichever comes first.
                     </p>
                     <p class="mt-4">
                         Supported formats include PNG, JPEG, WebP, MP4, and

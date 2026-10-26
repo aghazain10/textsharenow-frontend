@@ -73,7 +73,7 @@ export default {
             "items": [
                 "Anyone who has the code during its active window can read the text. A short code is a bearer credential: whoever holds it gets the content. Do not post codes publicly if the text is sensitive.",
                 "The code is short by design, which means guessing is not theoretically impossible — it is made impractical by the ten-minute window and by rate limiting, not by an enormous keyspace. That is a deliberate trade for typability.",
-                "There is no password, no second factor, and no encryption you hold the key to. The server must be able to read the text to hand it back, so this is not end-to-end encryption.",
+                "There is no password, no second factor, and no encryption you hold the key to. The server must be able to read the text to hand it back, so this is not end-to-end encryption. (TextShareNow's optional Private mode adds browser-side encryption with a key the server never receives, at the cost of requiring the full link rather than just the code.)",
                 "The text is in transit over HTTPS and at rest in the temporary store under the provider's standard encryption, but it exists in readable form for up to ten minutes while it waits."
             ]
         },

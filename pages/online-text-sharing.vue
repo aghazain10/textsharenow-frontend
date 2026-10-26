@@ -223,7 +223,7 @@ const faqs = [
   },
   {
     question: 'Does the text get stored on your servers?',
-    answer: 'Only temporarily — you choose 10 minutes, 30 minutes or 1 hour when sharing, and it is deleted immediately after the first successful retrieval. We do not log, sell, or retain any content after deletion.',
+    answer: 'Only temporarily and encrypted at rest — you choose 10 minutes, 30 minutes or 1 hour on the free plan (Pro adds up to 30 days or never), and it is deleted when the read limit or timer is reached. Private-mode shares are encrypted in your browser, so we store ciphertext we cannot read. We do not log, sell, or retain any content after deletion.',
   },
   {
     question: 'Is there a limit on how much text I can share online?',

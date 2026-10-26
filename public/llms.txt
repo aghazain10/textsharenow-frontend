@@ -21,7 +21,7 @@ The same short-code flow also handles files: upload a photo, screenshot, or shor
 
 1. **Send**: Paste text on your sending device → Get a 5-character code
 2. **Receive**: Enter the code on your receiving device → Text appears instantly
-3. **Auto-Delete**: Content is permanently deleted after first read or 10 minutes
+3. **Auto-Delete**: Content is permanently deleted after first read or when its timer ends
 
 ## Key Features
 
@@ -32,9 +32,10 @@ The same short-code flow also handles files: upload a photo, screenshot, or shor
 - **Fast**: Average transfer time under 8 seconds
 - **Universal**: Works on any device with a modern browser
 - **Character Limit**: Up to 10,000 characters per transfer
-- **Encrypted**: HTTPS/TLS in transit, encrypted at rest
-- **Secure**: Rate limiting prevents brute-force code enumeration
-- **Code Space**: Over 60 million possible 5-character combinations
+- **Encrypted**: HTTPS/TLS in transit, AES-256-GCM at rest
+- **Zero-Knowledge Option**: "Encrypt Now" encrypts text in the browser (AES-256-GCM); the key stays in the link fragment (`#k=`) and never reaches the server. Private shares must be opened with the full link, not just the code.
+- **Secure**: Rate limiting prevents brute-force code enumeration; 10 wrong passwords deletes a protected share
+- **Code Space**: Over 33 million possible 5-character combinations
 - **File Sharing**: Photos, screenshots, and short videos up to 10 MB (PNG, JPEG, WebP, MP4, WebM)
 - **File Deletion**: Files are deleted after the first download or when their 10 min / 30 min / 1 h timer ends
 - **Malware Scanning**: Every uploaded file is scanned with ClamAV before it becomes downloadable
@@ -118,13 +119,14 @@ The same short-code flow also handles files: upload a photo, screenshot, or shor
 
 ## Privacy & Security
 
-- Text is stored temporarily (10 minutes to 30 days, or never if the sender chooses on Pro) and deleted after the read limit
+- Text is stored encrypted at rest (10 minutes to 30 days, or never if the sender chooses on Pro) and deleted after the read limit
+- Private mode encrypts text in the browser; the server stores ciphertext it cannot decrypt and never receives the key
 - Files are stored only until the first download or their timer, then permanently deleted
 - Every uploaded file is scanned with ClamAV before becoming downloadable
 - All data encrypted in transit (HTTPS/TLS) and at rest
-- No personal data collected (no name, email, phone number)
-- No user accounts; an optional Pro license key unlocks paid features
+- No account or email required; an optional Pro license key unlocks paid features (Gumroad returns the license email, cached with the license check for up to 24 hours, never used for marketing)
 - Rate limiting prevents brute-force code attempts
+- Security events (failed passwords, burned shares) are logged for up to 7 days without content or IP addresses
 - GDPR and CCPA compliant
 - Content never sold or shared with third parties
 
@@ -148,7 +150,9 @@ The same short-code flow also handles files: upload a photo, screenshot, or shor
 ## API & MCP for AI Agents
 
 - **Guide**: https://www.textsharenow.com/developers
+- **Security details**: https://www.textsharenow.com/security
 - **Auth**: `Authorization: Bearer <license-key>` (Pro) or the browser session cookie
+- **Password reads**: send the derived verifier in the `x-share-password` header (not the URL)
 - **MCP package**: `textsharenow-mcp` on npm (Node 18+), configured with `TEXTSHARENOW_LICENSE_KEY`
 - **MCP tools**: `share_text`, `peek_share`, `receive_text`, `delete_share`
 - **Install**: `npx -y textsharenow-mcp@latest`
@@ -156,8 +160,7 @@ The same short-code flow also handles files: upload a photo, screenshot, or shor
 
 ## Monetization
 
-- Google AdSense advertisements (minimal, non-intrusive)
-- Optional TextShareNow Pro subscription: $5/month via Gumroad
+- Optional TextShareNow Pro subscription: $5/month via Gumroad (the free tier remains free)
 - The free plan remains free for unlimited everyday use
 
 ## Target Audience

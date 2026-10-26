@@ -25,6 +25,7 @@ import { timingSafeEqual } from 'node:crypto'
 import { P2_RE, P3_RE } from '~~/utils/hash'
 import { closeReceipt, recordReceiptRead } from '../../utils/receipts'
 import { decryptAtRest } from '../../utils/cipher'
+import { logSecurityEvent } from '../../utils/securityLog'
 
 const KEY_PREFIX  = 'share:'
 const READS_PREFIX = 'reads:'
@@ -105,9 +106,9 @@ export default defineEventHandler(async (event) => {
   const rateKey = `rate:receive:${ip}`
   const rateRes = await upstashRequest(redisUrl, redisToken, ['INCR', rateKey])
 
-  if (rateRes.result === 1) {
-    await upstashRequest(redisUrl, redisToken, ['EXPIRE', rateKey, 60])
-  }
+  // Always refresh the TTL so a failed EXPIRE can never leave this key
+  // without an expiry (which used to lock an IP out indefinitely).
+  await upstashRequest(redisUrl, redisToken, ['EXPIRE', rateKey, 60])
 
   if (rateRes.result > 20) {
     throw createError({ statusCode: 429, message: 'Too many requests. Please wait a moment.' })
@@ -182,15 +183,17 @@ export default defineEventHandler(async (event) => {
     if (!safeEqual(provided, payload.pw)) {
       const attemptsKey = ATTEMPTS_PREFIX + code
       const attempts = await upstashRequest(redisUrl, redisToken, ['INCR', attemptsKey])
-      if (attempts.result === 1) {
-        await upstashRequest(redisUrl, redisToken, ['EXPIRE', attemptsKey, PW_ATTEMPT_WINDOW])
-      }
+      // Always refresh the window: a TTL-less attempts key would otherwise
+      // burn the share after ten failures spread across any timeframe.
+      await upstashRequest(redisUrl, redisToken, ['EXPIRE', attemptsKey, PW_ATTEMPT_WINDOW])
+      await logSecurityEvent(config, 'password_fail', code)
       if (attempts.result >= MAX_PW_ATTEMPTS) {
         // Burn the share: repeated guessing destroys the content so it
         // cannot be brute-forced slowly over many IPs.
         await upstashRequest(redisUrl, redisToken, ['DEL', key])
         await upstashRequest(redisUrl, redisToken, ['DEL', READS_PREFIX + code])
         await upstashRequest(redisUrl, redisToken, ['DEL', attemptsKey])
+        await logSecurityEvent(config, 'share_burned', code, 'password_attempts')
         try { await closeReceipt(config, code, 'deleted', 'password') } catch {}
         throw createError({
           statusCode: 403,

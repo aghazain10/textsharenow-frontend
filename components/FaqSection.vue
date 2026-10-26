@@ -38,7 +38,7 @@ const faqs = [
     },
     {
         question: "Is the shared text stored on your servers?",
-        answer: "Only temporarily. Your text is deleted immediately after it is retrieved, or when its timer ends — you choose 10 minutes, 30 minutes or 1 hour when sharing. We do not log, sell, or retain any of your content after deletion.",
+        answer: "Only temporarily and encrypted at rest. Your text is deleted when its read limit or timer is reached — 10 minutes to 30 days, or never if the sender chooses on Pro. Private-mode text is encrypted in the browser, so we store ciphertext we cannot read. We do not log, sell, or retain content after deletion.",
     },
     {
         question: "Do I need to create an account to use TextShareNow?",
@@ -50,7 +50,11 @@ const faqs = [
     },
     {
         question: "Can the same code be used multiple times?",
-        answer: "No. Each code is single-use. Once the text is retrieved on the receiving device, the code and its content are permanently deleted. This is by design to protect your privacy.",
+        answer: "By default, no — each code is single-use and the content is permanently deleted after the first read. Pro can allow 5 or 10 reads, or unlimited reads until the timer ends.",
+    },
+    {
+        question: "Is my text encrypted?",
+        answer: "Yes. Every share is encrypted in transit and at rest. Toggle “Encrypt Now” for zero-knowledge mode: your browser encrypts the text with AES-256-GCM and the key stays in the link — our server cannot read it. Private shares must be opened with the full link, not just the code.",
     },
     {
         question: "What is the maximum text size I can share?",

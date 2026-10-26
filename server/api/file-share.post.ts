@@ -38,10 +38,7 @@ export default defineEventHandler(async (event) => {
   const rateKey = `rate:file-share:${ip}`
   const rateRes = await upstashRequest(redisUrl, redisToken, ['INCR', rateKey])
 
-  if (rateRes.result === 1) {
-    // First request — set expiry of 60 seconds
-    await upstashRequest(redisUrl, redisToken, ['EXPIRE', rateKey, 60])
-  }
+  await upstashRequest(redisUrl, redisToken, ['EXPIRE', rateKey, 60])
 
   if (rateRes.result > 20) {
     throw createError({ statusCode: 429, message: 'Too many requests. Please wait a moment.' })

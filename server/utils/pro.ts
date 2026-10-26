@@ -215,7 +215,7 @@ async function allowGumroadVerify(config: any, event: any): Promise<boolean> {
     const ip = getRequestHeader(event, 'x-forwarded-for') || 'unknown'
     const key = `rate:gumroad:${ip}`
     const res = await upstash<{ result: number }>(config, ['INCR', key])
-    if (res.result === 1) await upstash(config, ['EXPIRE', key, 60])
+    await upstash(config, ['EXPIRE', key, 60])
     return res.result <= 30
   } catch {
     return true

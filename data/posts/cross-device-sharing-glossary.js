@@ -77,7 +77,7 @@ export default {
         },
         {
             "type": "p",
-            "text": "Deleting content on first retrieval limits how long it can be re-fetched, and it is a genuine privacy property. It is not the same as end-to-end encryption, where the server never holds readable content at all. With single-read storage the server must read the content in order to return it, so it is trusted for the duration of the transfer. Both designs are legitimate; they protect against different threats, and marketing copy tends to blur them together."
+            "text": "Deleting content on first retrieval limits how long it can be re-fetched, and it is a genuine privacy property. It is not the same as end-to-end encryption, where the server never holds readable content at all. With single-read storage the server must read the content in order to return it, so it is trusted for the duration of the transfer. Both designs are legitimate; they protect against different threats, and marketing copy tends to blur them together. A few services — TextShareNow among them — offer both modes side by side: standard single-read sharing and an optional browser-encrypted Private mode."
         },
         {
             "type": "h3",

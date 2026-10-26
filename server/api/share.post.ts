@@ -164,10 +164,9 @@ export default defineEventHandler(async (event) => {
   const rateKey = `rate:send:${ip}`
   const rateRes = await upstashRequest(redisUrl, redisToken, ['INCR', rateKey])
 
-  if (rateRes.result === 1) {
-    // First request — set expiry of 60 seconds
-    await upstashRequest(redisUrl, redisToken, ['EXPIRE', rateKey, 60])
-  }
+  // Refresh the window on every request: if a single EXPIRE ever fails,
+  // the key still gets a TTL instead of locking this IP out permanently.
+  await upstashRequest(redisUrl, redisToken, ['EXPIRE', rateKey, 60])
 
   if (rateRes.result > 10) {
     throw createError({ statusCode: 429, message: 'Too many requests. Please wait a moment.' })
@@ -178,9 +177,7 @@ export default defineEventHandler(async (event) => {
   if (licenseKey) {
     const licKey = `rate:send:lic:${createHash('sha256').update(licenseKey.trim()).digest('hex')}`
     const licRes = await upstashRequest(redisUrl, redisToken, ['INCR', licKey])
-    if (licRes.result === 1) {
-      await upstashRequest(redisUrl, redisToken, ['EXPIRE', licKey, 60])
-    }
+    await upstashRequest(redisUrl, redisToken, ['EXPIRE', licKey, 60])
     if (licRes.result > 20) {
       throw createError({ statusCode: 429, message: 'Too many requests for this license. Please wait a moment.' })
     }

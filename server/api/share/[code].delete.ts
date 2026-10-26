@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
   const ip = getRequestHeader(event, 'x-forwarded-for') || 'unknown'
   const rateKey = `rate:delete:${ip}`
   const rate = await upstash(config, ['INCR', rateKey])
-  if (rate.result === 1) await upstash(config, ['EXPIRE', rateKey, 60])
+  await upstash(config, ['EXPIRE', rateKey, 60])
   if (rate.result > 20) {
     throw createError({ statusCode: 429, message: 'Too many requests. Please wait a moment.' })
   }

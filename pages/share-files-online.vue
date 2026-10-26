@@ -84,7 +84,7 @@
                             <strong class="font-semibold text-ink">same Wi-Fi network</strong>. Nothing has to discover anything.
                         </p>
                         <p>
-                            Each code is single-use and expires after 10 minutes, 30 minutes, or 1 hour, so nothing lingers on either
+                            Each code is single-use and expires after 10 minutes, 30 minutes, 1 hour — or up to 30 days with Pro — so nothing lingers on either
                             device afterwards. Prefer to move text, links, or notes instead?
                             <NuxtLink to="/online-text-sharing" class="text-link">Online text sharing</NuxtLink>
                             works exactly the same way.
@@ -241,7 +241,7 @@ const steps = [
     {
         num: '02',
         title: 'Get a short code',
-        desc: 'A unique 5-character code and shareable link are generated instantly. You choose the expiry: 10 min, 30 min or 1 h.',
+        desc: 'A unique 5-character code and shareable link are generated instantly. You choose the expiry: 10 min, 30 min, 1 h — or up to 30 days with Pro.',
     },
     {
         num: '03',
@@ -259,7 +259,7 @@ const advantages = [
     {
         icon: 'clock',
         title: 'Auto-Delete After Download',
-        desc: 'Each file is single-use. After the first download or when its timer ends — 10 min, 30 min or 1 h — it\'s permanently deleted. No archives, no backups.',
+        desc: 'Each file is single-use. After the first download or when its timer ends — 10 min, 30 min, 1 h, or up to 30 days with Pro — it\'s permanently deleted. No archives, no backups.',
     },
     {
         icon: 'lock',
@@ -296,7 +296,7 @@ const faqs = [
     },
     {
         q: 'How long does a file stay on the server?',
-        a: 'Files are available until the first download or until their timer ends — whichever comes first. The sender chooses 10 minutes, 30 minutes or 1 hour. After that, the file and its metadata are permanently deleted.',
+        a: 'Files are available until the first download or until their timer ends — whichever comes first. The sender chooses 10 minutes, 30 minutes or 1 hour on the free plan (up to 30 days with Pro). After that, the file and its metadata are permanently deleted.',
     },
     {
         q: 'Are files scanned for malware?',

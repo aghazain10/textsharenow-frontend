@@ -67,9 +67,9 @@ const sections = [
                     "Files you upload are temporarily stored only to fulfil the transfer request and are scanned for malware before becoming available. The free plan accepts PNG, JPEG, WebP, MP4 and WebM files up to 10 MB. Pro accepts up to 20 files and 100 MB total per transfer (any non-executable file type, up to 100 MB per file), within a per-license storage allowance. Multi-file transfers also store the original file names and folder paths so the recipient can download them correctly.",
                     "If you activate Pro, the license key you enter is stored in a signed, http-only cookie on your device for up to 30 days, and a SHA-256 hash of the key is cached on our servers for up to 24 hours so we do not have to contact Gumroad on every request. We send the key to Gumroad to verify the subscription. When you use the API or MCP server, the key is sent with each request and verified the same way.",
                     "For Pro text shares, we keep a private receipt of event times (created, opened, read, and closed) so you can see how a share was accessed. Receipts do not include IP addresses, device data, or the shared text, are deleted 90 days after the share closes, and never-expiring shares keep a one-year receipt window.",
-                    "We do not collect your name, email address, phone number, or any personally identifying information to use the tool.",
+                    "We do not ask for your name, phone number, or an account to use the tool. If you activate Pro, Gumroad returns the email address associated with the license; we cache it with the license check for up to 24 hours and never use it for marketing or share it.",
                     "We may collect anonymised server metrics such as request counts and response times for performance monitoring.",
-                    "Standard web server logs (IP addresses, timestamps) may be retained for up to 7 days for security purposes.",
+                    "Standard web server logs (IP addresses, timestamps) may be retained for up to 7 days for security purposes. Security events such as repeated wrong-password attempts are logged for up to 7 days; those entries contain an event type, the share code, and a timestamp — never the content or IP addresses.",
                 ],
             },
         ],
@@ -79,7 +79,7 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "When you submit text through our Send feature, it is stored in an encrypted temporary data store with a time-to-live (TTL) you choose when sharing: 10 minutes, 30 minutes or 1 hour on the free plan. Pro shares can be set to 1 day, 7 days, 30 days, or never expire.",
+                text: "When you submit text through our Send feature, it is encrypted at rest with AES-256-GCM and stored with a time-to-live (TTL) you choose: 10 minutes, 30 minutes or 1 hour on the free plan; Pro shares can be set to 1 day, 7 days, 30 days, or never expire. If you enable Private mode (the “Encrypt Now” toggle), the text is encrypted in your browser with a key that never reaches our servers — we store only ciphertext we cannot decrypt. Standard shares are decrypted on our server only long enough to deliver them, then deleted according to the rules below.",
             },
             {
                 type: "p",
@@ -165,7 +165,11 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "All data in transit is encrypted using HTTPS/TLS. Stored text is encrypted at rest in our temporary data store. Uploaded files are stored on a dedicated server with strict access controls and are never served as static files.",
+                text: "All data in transit is encrypted using HTTPS/TLS, with HSTS enabled. Stored text is encrypted at rest with AES-256-GCM. In Private mode the text is also encrypted in your browser with a key we never receive. Uploaded files are stored on a dedicated server with strict access controls and are never served as static files.",
+            },
+            {
+                type: "p",
+                text: "Passwords are never sent to us in plaintext: your browser derives them with PBKDF2-HMAC-SHA256 (210,000 iterations), and we store only the derived verifier. For Private-mode shares we store a SHA-256 hash of the passphrase mix, never the mix itself.",
             },
             {
                 type: "p",

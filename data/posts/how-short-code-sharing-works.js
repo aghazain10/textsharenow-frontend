@@ -120,7 +120,7 @@ export default {
         },
         {
             "type": "p",
-            "text": "Between the browser and the server, TLS encrypts the request, so the content is protected from anyone watching the network. Inside the server, though, the application has to read the content in order to return it: it can be stored encrypted at rest, but it is not end-to-end encrypted, because end-to-end means exactly the server can never read it. Both designs are legitimate. They answer different questions — a single-read store answers 'how long does this exist and who can fetch it', while end-to-end answers 'can anyone in the middle read it' — and a transfer tool should be clear about which one it provides."
+            "text": "Between the browser and the server, TLS encrypts the request, so the content is protected from anyone watching the network. Inside the server, though, the application has to read the content in order to return it: it can be stored encrypted at rest, but it is not end-to-end encrypted, because end-to-end means exactly the server can never read it. Both designs are legitimate. They answer different questions — a single-read store answers 'how long does this exist and who can fetch it', while end-to-end answers 'can anyone in the middle read it' — and a transfer tool should be clear about which one it provides. Some short-code tools, including TextShareNow's Private mode, now offer both: a normal code-based share and an optional browser-encrypted share whose key travels in the link fragment rather than the code."
         },
         {
             "type": "h2",

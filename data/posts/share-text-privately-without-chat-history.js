@@ -103,7 +103,7 @@ export default {
         {
             "type": "ul",
             "items": [
-                "It does not encrypt content under a key only you hold. The server has to be able to read the text in order to return it, so this is not end-to-end encryption.",
+                "It does not encrypt content under a key only you hold. The server has to be able to read the text in order to return it, so this is not end-to-end encryption. (TextShareNow's optional Private mode is the exception: your browser encrypts the text and the key stays in the link, never on the server.)",
                 "It does not help if the receiving device keeps its own copy — a screenshot, a browser autofill, a clipboard manager with history, or a synced notes app will outlive any expiry timer.",
                 "It does not protect a code you share publicly. Anyone who holds the code during its active window can read the text; the code is the credential.",
                 "It does not replace secure handling of credentials. A password belongs in a password manager, which encrypts it under a secret you hold rather than under five characters anyone can type."

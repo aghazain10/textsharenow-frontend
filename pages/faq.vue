@@ -172,12 +172,12 @@ const categories = [
       {
         question: 'How long does a code last?',
         answer:
-          'A code lasts exactly as long as the sender chose when sharing — 10 minutes, 30 minutes or 1 hour from the time it was generated. If no one retrieves the text before the timer ends, the code and its content are permanently deleted from our servers.',
+          'A code lasts as long as the sender chose — 10 minutes, 30 minutes or 1 hour on the free plan. Pro adds 1 day, 7 days, 30 days, or never. If no one retrieves the text before the timer ends, the code and its content are permanently deleted from our servers.',
       },
       {
         question: 'Can the same code be used more than once?',
         answer:
-          'No. Each code is single-use. Once the content is retrieved, the code is immediately invalidated and the text is deleted. This is by design to protect your privacy.',
+          'By default, no — every code is single-use and the content is deleted after the first read. Pro can raise the limit to 5 or 10 reads, or unlimited. With unlimited reads the share lasts until its timer ends or the sender deletes it.',
       },
       {
         question: 'What happens if I type the wrong code?',
@@ -192,17 +192,39 @@ const categories = [
       {
         question: 'Is my text stored on your servers?',
         answer:
-          'Only briefly and temporarily. Your text is stored only long enough to be retrieved — for the 10 minutes to 1 hour the sender chose, or until the first retrieval, whichever comes first. We do not log, analyse, or retain the content of your messages.',
+          'Only temporarily and encrypted at rest. Standard shares are stored until the read limit or timer ends — 10 minutes to 30 days, or never on Pro. Private-mode shares are stored as ciphertext we cannot decrypt. Either way, the content is deleted when the share closes, and we do not log or retain it afterwards.',
       },
       {
         question: 'Can someone else guess my code and read my text?',
         answer:
-          'The odds are extremely low. Our 5-character alphanumeric codes have over 33 million possible combinations, and we apply rate limiting to prevent brute-force attempts. For sensitive content, we still recommend using end-to-end encrypted alternatives.',
+          'Guessing is not practical: 5-character codes have over 33 million combinations and every endpoint is rate-limited. Password-protected shares also delete themselves after ten wrong attempts. For sensitive content, use Private mode (“Encrypt Now”) — the text is encrypted in your browser and only the full link can open it.',
+        link: {
+          to: '/security',
+          text: 'How our encryption works',
+        },
       },
       {
         question: 'Do you collect personal data?',
         answer:
-          'We do not collect any personally identifiable information. No name, email, phone number, or account details are required or stored. We may log basic anonymised server metrics (like request counts) for performance purposes only.',
+          'We do not require a name, phone number, or account. If you activate Pro, Gumroad returns the email address associated with the license; we cache it with the license check for up to 24 hours and never use it for marketing. Otherwise we keep only anonymised counters (such as the number of shares) and standard server logs for up to 7 days.',
+      },
+      {
+        question: 'Is my text end-to-end encrypted?',
+        answer:
+          'You choose. Standard shares are encrypted in transit and at rest, but our server can decrypt them to deliver the text. Private mode (the “Encrypt Now” toggle) encrypts in your browser with AES-256-GCM before upload; the key stays in the # part of the link and never reaches us, so we cannot read it. A Private share must be opened with the full link — the 5-character code alone will not work.',
+        link: {
+          to: '/security',
+          text: 'See what we can and cannot see',
+        },
+      },
+      {
+        question: 'Can TextShareNow read my text?',
+        answer:
+          'For Private-mode shares, no — we only ever hold ciphertext and never receive the key. For standard shares, yes: our server decrypts briefly to deliver the text, then deletes it. Use Private mode for passwords, API keys, and anything sensitive.',
+        link: {
+          to: '/security',
+          text: 'Read the security details',
+        },
       },
     ],
   },

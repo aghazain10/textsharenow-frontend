@@ -23,12 +23,12 @@
 
             <ul class="mx-auto mt-6 flex max-w-5xl flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-muted">
                 <li class="inline-flex items-center gap-1.5"><TsnIcon name="user-x" class="h-4 w-4" stroke="1.8" />No sign-up</li>
-                <li class="inline-flex items-center gap-1.5"><TsnIcon name="lock" class="h-4 w-4" stroke="1.8" />Each code works once</li>
-                <li class="inline-flex items-center gap-1.5"><TsnIcon name="clock" class="h-4 w-4" stroke="1.8" />Expires in 10 min, 30 min or 1 h</li>
+                <li class="inline-flex items-center gap-1.5"><TsnIcon name="lock" class="h-4 w-4" stroke="1.8" />Single-use by default</li>
+                <li class="inline-flex items-center gap-1.5"><TsnIcon name="clock" class="h-4 w-4" stroke="1.8" />Expires from 10 min to 30 days</li>
                 <li class="inline-flex items-center gap-1.5"><TsnIcon name="globe" class="h-4 w-4" stroke="1.8" />Any browser, any network</li>
             </ul>
             <p class="mx-auto mt-3 max-w-5xl text-center text-[12px] text-muted/80">
-                Text auto-deletes after first read · Files after first download · Pick 10 min, 30 min or 1 h
+                Text auto-deletes after first read · Files after first download · Expiry from 10 min to 30 days
             </p>
 
             <dl class="mx-auto mt-10 grid max-w-5xl grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line shadow-card sm:grid-cols-4">

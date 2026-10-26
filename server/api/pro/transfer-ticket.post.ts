@@ -55,7 +55,7 @@ export default defineEventHandler(async (event) => {
   const ip = getRequestHeader(event, 'x-forwarded-for') || 'unknown'
   const rateKey = `rate:fticket:${ip}`
   const rate = await redisCommand(config, ['INCR', rateKey])
-  if (rate.result === 1) await redisCommand(config, ['EXPIRE', rateKey, 60])
+  await redisCommand(config, ['EXPIRE', rateKey, 60])
   if (rate.result > 10) {
     throw createError({ statusCode: 429, message: 'Too many upload attempts. Please wait a minute and try again.' })
   }

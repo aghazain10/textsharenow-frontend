@@ -31,16 +31,14 @@ export default defineEventHandler(async (event) => {
     body: JSON.stringify(['INCR', rateKey]),
   })
   const rate = await rateRes.json()
-  if (rate.result === 1) {
-    await fetch(config.UPSTASH_REDIS_REST_URL, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${config.UPSTASH_REDIS_REST_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(['EXPIRE', rateKey, 60]),
-    })
-  }
+  await fetch(config.UPSTASH_REDIS_REST_URL, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${config.UPSTASH_REDIS_REST_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(['EXPIRE', rateKey, 60]),
+  })
   if (rate.result > 5) {
     throw createError({ statusCode: 429, message: 'Too many attempts. Please wait a minute and try again.' })
   }
