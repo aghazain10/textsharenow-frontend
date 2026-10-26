@@ -116,10 +116,30 @@
             </p>
             <div class="flex flex-wrap items-center gap-3 px-3 pb-3 pl-5 pt-3">
                 <ExpirySelect v-model="ttl" />
+                <button
+                    type="button"
+                    role="switch"
+                    :aria-checked="encryptNow"
+                    title="Encrypt in your browser — the recipient must open the full link; the 5-character code won't work."
+                    class="inline-flex items-center gap-2 rounded-md border border-line px-2.5 py-1.5 text-[13px] font-medium text-muted transition-colors hover:text-ink"
+                    @click="encryptNow = !encryptNow"
+                >
+                    <span
+                        class="relative inline-block h-4 w-7 shrink-0 rounded-full transition-colors"
+                        :class="encryptNow ? 'bg-ink' : 'bg-line'"
+                        aria-hidden="true"
+                    >
+                        <span
+                            class="absolute left-[2px] top-[2px] h-3 w-3 rounded-full transition-transform"
+                            :class="encryptNow ? 'translate-x-[14px] bg-bg' : 'translate-x-0 bg-muted'"
+                        />
+                    </span>
+                    <span :class="encryptNow ? 'text-ink' : ''">Encrypt Now</span>
+                </button>
                 <div class="ml-auto flex items-center gap-3">
                     <kbd class="hidden rounded-md border border-line px-1.5 py-0.5 font-sans text-[12px] text-muted sm:inline">{{ shortcut }}</kbd>
                     <button type="button" class="btn-primary" :disabled="!text.trim() || loading" @click="send">
-                        {{ loading ? "Generating…" : "Generate code" }}
+                        {{ loading ? (encryptNow ? "Encrypting…" : "Generating…") : (encryptNow ? "Encrypt & share" : "Generate code") }}
                     </button>
                 </div>
             </div>
@@ -132,6 +152,7 @@
             :qr-url="qrUrl"
             :max-reads="resultReads"
             :password-set="resultPassword"
+            :encrypted="resultEncrypted"
             @reset="reset"
         />
     </div>
@@ -142,6 +163,7 @@ import { DEFAULT_EXPIRY } from "~/utils/expiry.js";
 import { READ_OPTIONS, DEFAULT_READS } from "~/utils/reads.js";
 import { FREE_MAX_CHARS, PRO_MAX_CHARS } from "~/utils/premium.js";
 import { hashPassword } from "~/utils/hash.js";
+import { generateShareKey, encryptText, mixFromVerifier } from "~/utils/e2e.js";
 import { normalizeCustomCode, isValidCustomCode } from "~/utils/customCode.js";
 
 const API_BASE = useRuntimeConfig().public.API_BASE;
@@ -155,6 +177,7 @@ const maxReads = ref(DEFAULT_READS); // 1, 5, 10 or 0 = unlimited
 const password = ref("");
 const customCode = ref("");
 const customStatus = ref(""); // "" | "checking" | "available" | "taken" | "invalid"
+const encryptNow = ref(false); // opt-in zero-knowledge mode (link only)
 let customTimer = null;
 const loading = ref(false);
 const error = ref("");
@@ -168,6 +191,7 @@ const limitModalShown = ref(false); // open the "Go Pro" modal only once per vis
 // What was actually sent — shown in the result card
 const resultReads = ref(1);
 const resultPassword = ref(false);
+const resultEncrypted = ref(false);
 
 const maxChars = computed(() => (isPro.value ? PRO_MAX_CHARS : FREE_MAX_CHARS));
 
@@ -283,18 +307,45 @@ async function send() {
     loading.value = true;
     error.value = "";
     try {
-        const body = { text: text.value, ttl: ttl.value, pro: isPro.value };
+        const body = { ttl: ttl.value, pro: isPro.value };
+        let shareKey = "";
+        let mix = null;
         if (isPro.value) {
             body.maxReads = maxReads.value;
-            if (password.value) body.passwordHash = await hashPassword(password.value);
+            if (password.value) {
+                body.passwordHash = await hashPassword(password.value);
+                // Encrypted + password: the AES key is also salted with the
+                // password mix, so both the link and the password are needed.
+                if (encryptNow.value) {
+                    mix = await mixFromVerifier(password.value, body.passwordHash);
+                }
+            }
             if (customCode.value) body.customCode = customCode.value;
+        }
+        if (encryptNow.value) {
+            // Zero-knowledge: encrypt in the browser before anything leaves
+            // the device. The random key goes only into the link's #k=
+            // fragment — the server receives ciphertext it cannot read, and
+            // the 5-character code alone will not open this share.
+            shareKey = generateShareKey();
+            try {
+                body.ct = await encryptText(text.value, shareKey, mix);
+            } catch {
+                error.value = "Couldn't encrypt in this browser. Try a private window or update your browser.";
+                return;
+            }
+        } else {
+            body.text = text.value;
         }
         const res = await $fetch(`${API_BASE}/api/share`, { method: "POST", body });
         code.value = res.code;
         if (res.ttl !== undefined) ttl.value = res.ttl;
-        qrUrl.value = `${window.location.origin}/r?code=${res.code}`;
+        qrUrl.value = shareKey
+            ? `${window.location.origin}/r?code=${res.code}#k=${shareKey}`
+            : `${window.location.origin}/r?code=${res.code}`;
         resultReads.value = isPro.value ? maxReads.value : 1;
         resultPassword.value = !!(isPro.value && password.value);
+        resultEncrypted.value = !!shareKey;
         text.value = "";
     } catch (e) {
         error.value = e?.data?.message || "Couldn't create a code. Check your connection and try again.";
@@ -309,6 +360,8 @@ function reset() {
     error.value = "";
     resultReads.value = 1;
     resultPassword.value = false;
+    resultEncrypted.value = false;
+    encryptNow.value = false;
 }
 </script>
 

@@ -69,11 +69,21 @@ export async function findShare(
   return null
 }
 
-export function parseSharePayload(raw: string): { text: string; pw?: string; mr?: number } | null {
+export type SharePayload = {
+  text?: string   // plain shares (__tsn 1)
+  ct?: string     // client-encrypted shares (__tsn 2) — ciphertext only
+  enc?: number
+  pw?: string
+  mr?: number
+}
+
+export function parseSharePayload(raw: string): SharePayload | null {
   if (!raw.startsWith('{')) return null
   try {
     const parsed = JSON.parse(raw)
-    if (parsed && parsed.__tsn === 1 && typeof parsed.text === 'string') return parsed
+    if (!parsed) return null
+    if (parsed.__tsn === 1 && typeof parsed.text === 'string') return parsed
+    if (parsed.__tsn === 2 && parsed.enc === 1 && typeof parsed.ct === 'string') return parsed
   } catch {
     // Not our JSON — legacy plain text
   }

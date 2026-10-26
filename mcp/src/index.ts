@@ -211,6 +211,11 @@ server.registerTool(
         result = await api(`/api/share/${encodeURIComponent(normalized)}?pw=${encodeURIComponent(derived)}`, { auth: false })
       }
 
+      if (result.status === 200 && (result.data?.enc === 1 || typeof result.data?.ct === 'string')) {
+        throw new Error(
+          'This share is end-to-end encrypted: its decryption key lives only in the link fragment (#k=) and never reaches the server, so it cannot be read through the API. Ask the sender for the full /r?code=...#k=... link and open it in a browser.'
+        )
+      }
       if (result.status !== 200 || typeof result.data?.text !== 'string') throw apiError(result.status, result.data)
       return reply({
         text: result.data.text,

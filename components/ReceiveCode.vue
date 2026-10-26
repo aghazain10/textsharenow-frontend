@@ -139,6 +139,7 @@
  * then a HEAD on the single-file download, which doesn't use up the download.
  */
 import { hashPassword, hashLegacyPassword } from "~/utils/hash.js";
+import { decryptText, derivePasswordMix, shareKeyFor, rememberShareKey, forgetShareKey, keyFromLink } from "~/utils/e2e.js";
 
 const props = defineProps({
     initialCode: { type: String, default: "" },
@@ -163,6 +164,7 @@ const password = ref("");
 const passwordError = ref("");
 const pwInput = ref(null);
 const kdfParams = ref(null); // { kdf, salt, iterations } from the 401 response
+const keyMix = ref(null); // PBKDF2(password) mix for E2E passphrase shares
 
 const canPaste = ref(false);
 const pasteHint = ref("");
@@ -182,6 +184,11 @@ async function pasteCode() {
             return;
         }
         value.value = code;
+        // A pasted encrypted link carries its key after the #; a bare code
+        // has none — forget any earlier key so we never try the wrong one.
+        const linkKey = keyFromLink(clip);
+        if (linkKey && fromLink) rememberShareKey(code, linkKey);
+        else forgetShareKey();
         const prefix = fromLink?.[1]?.toLowerCase();
         receive(prefix === "f" ? "file" : prefix === "t" ? "transfer" : "");
     } catch {
@@ -229,11 +236,43 @@ async function markOpened(code) {
     }
 }
 
+/**
+ * Peek without consuming a read: is this an end-to-end encrypted share we
+ * hold no key for? A keyless fetch would burn the read and then fail to
+ * decrypt — so check first. Any doubt (404, network) → false → normal flow.
+ */
+async function isEncryptedWithoutKey(code) {
+    if (shareKeyFor(code)) return false; // key present → fetch can proceed
+    try {
+        const res = await $fetch(`${config.public.API_BASE}/api/share/${encodeURIComponent(code)}/meta`);
+        return !!res?.encrypted;
+    } catch {
+        return false;
+    }
+}
+
 async function getText(code, pwHash) {
     try {
         const res = await $fetch(`${config.public.API_BASE}/api/share/${code}`, {
             query: pwHash ? { pw: pwHash } : undefined,
         });
+        if (res?.enc === 1 && typeof res.ct === "string") {
+            const key = shareKeyFor(code);
+            if (!key) {
+                const err = new Error("no key");
+                err.code = "NOKEY";
+                throw err;
+            }
+            let text;
+            try {
+                text = await decryptText(res.ct, key, keyMix.value);
+            } catch {
+                const err = new Error("wrong key");
+                err.code = "BADKEY";
+                throw err;
+            }
+            return { type: "text", text, code, readsLeft: res.readsLeft };
+        }
         return { type: "text", text: res.text, code, readsLeft: res.readsLeft };
     } catch (e) {
         const status = e?.status ?? e?.response?.status;
@@ -318,6 +357,14 @@ async function receive(kind, pwHash) {
     try {
         let res = null;
         if (kind !== "file" && kind !== "transfer") {
+            // End-to-end encrypted share + no key in this URL → stop before
+            // the fetch, which would consume (and destroy) a read.
+            if (!pwHash && (await isEncryptedWithoutKey(code))) {
+                return fail(
+                    "Encrypted link incomplete",
+                    "This share is end-to-end encrypted, so the code alone can't open it. Ask the sender to copy and send the full link — it includes the key after the # — or paste that whole link here."
+                );
+            }
             if (!pwHash) await markOpened(code);
             res = await getText(code, pwHash);
         }
@@ -340,7 +387,18 @@ async function receive(kind, pwHash) {
             passwordNeeded.value = false;
             password.value = "";
             kdfParams.value = null;
+            keyMix.value = null;
             fail("Share deleted", e.message);
+        } else if (e?.code === "NOKEY") {
+            fail(
+                "Encrypted link incomplete",
+                "This share is end-to-end encrypted, so the code alone can't open it. Ask the sender to copy and send the full link — it includes the key after the # — or paste that whole link here."
+            );
+        } else if (e?.code === "BADKEY") {
+            fail(
+                "Can't decrypt this share",
+                "The key in this link doesn't match this code. Ask the sender to copy the full link again — the part after the # is the key."
+            );
         } else {
             fail("Something went wrong", e.message);
         }
@@ -352,11 +410,16 @@ async function receive(kind, pwHash) {
 async function unlock() {
     if (!password.value || loading.value) return;
     const params = kdfParams.value;
-    const hash =
-        params?.kdf === "pbkdf2" && params.salt && params.iterations
-            ? await hashPassword(password.value, params.salt, params.iterations)
-            : await hashLegacyPassword(password.value);
-    receive("", hash);
+    if (params?.kdf === "pbkdf2" && params.salt && params.iterations) {
+        const hash = await hashPassword(password.value, params.salt, params.iterations);
+        // Same salt/iterations as the stored verifier → the exact mix the
+        // sender used, so the fragment key + password decrypt the payload.
+        keyMix.value = await derivePasswordMix(password.value, params.salt, params.iterations);
+        receive("", hash);
+    } else {
+        keyMix.value = null;
+        receive("", await hashLegacyPassword(password.value));
+    }
 }
 
 function formatBytes(bytes) {
@@ -383,6 +446,7 @@ function reset() {
     password.value = "";
     passwordError.value = "";
     kdfParams.value = null;
+    keyMix.value = null;
     nextTick(() => inputEl.value?.focus());
 }
 

@@ -5,7 +5,7 @@
             <div class="grid gap-x-6 gap-y-5 sm:grid-cols-[1fr_auto]" :class="{ 'is-dead': expired }">
                 <div class="min-w-0">
                     <div class="flex flex-wrap items-center justify-between gap-2">
-                        <p class="text-[14px] font-medium text-muted">Your code</p>
+                        <p class="text-[14px] font-medium text-muted">{{ encrypted ? "Your private link" : "Your code" }}</p>
                         <!-- Small timer chip instead of a big timer row -->
                         <span
                             class="inline-flex items-center gap-1.5 rounded-full border border-line px-2.5 py-0.5 text-[12px] font-medium tabular-nums"
@@ -21,7 +21,7 @@
                             <template v-else>Expired</template>
                         </span>
                     </div>
-                    <div ref="flapsEl" class="mt-3 flex flex-wrap gap-1.5 sm:gap-2" role="img" :aria-label="`Code ${code.split('').join(' ')}`">
+                    <div v-if="!encrypted" ref="flapsEl" class="mt-3 flex flex-wrap gap-1.5 sm:gap-2" role="img" :aria-label="`Code ${code.split('').join(' ')}`">
                         <span v-for="(c, i) in code" :key="i" class="flap flap-lg">·</span>
                     </div>
                     <!-- Share link: same destination as the QR code, copyable in one tap -->
@@ -38,16 +38,40 @@
                             {{ linkCopied ? "Copied" : "Copy link" }}
                         </span>
                     </button>
-                    <p v-if="!expired" class="mt-3 text-[13px] text-muted">On the other device, go to textsharenow.com/r and enter this code — or just open the link.</p>
-                    <p v-else class="mt-3 text-[13px] text-muted">Nobody opened it in time, so it was deleted. Share again to get a new code.</p>
+                    <p v-if="!expired" class="mt-3 text-[13px] text-muted">
+                        <template v-if="encrypted">Send this whole link to the recipient. The 5-character code won't work for this share — opening the link is the only way in.</template>
+                        <template v-else>On the other device, go to textsharenow.com/r and enter this code — or just open the link.</template>
+                    </p>
+                    <p v-else class="mt-3 text-[13px] text-muted">Nobody opened it in time, so it was deleted. Share again to get a new {{ encrypted ? "link" : "code" }}.</p>
                     <div v-if="!expired" class="mt-4 flex flex-wrap gap-2">
-                        <button ref="copyBtn" type="button" class="btn-primary" :disabled="copied" @click="doCopy">
+                        <button
+                            v-if="encrypted"
+                            ref="copyBtn"
+                            type="button"
+                            class="btn-primary"
+                            :disabled="linkCopied"
+                            @click="copyLink"
+                        >
+                            <TsnIcon :name="linkCopied ? 'check' : 'link'" class="h-[18px] w-[18px]" />{{ linkCopied ? "Copied" : "Copy link" }}
+                        </button>
+                        <button
+                            v-else
+                            ref="copyBtn"
+                            type="button"
+                            class="btn-primary"
+                            :disabled="copied"
+                            @click="doCopy"
+                        >
                             <TsnIcon :name="copied ? 'check' : 'copy'" class="h-[18px] w-[18px]" />{{ copied ? "Copied" : "Copy code" }}
                         </button>
-                        <button type="button" class="btn-ghost" @click="openBig">
-                            <TsnIcon name="expand" class="h-[18px] w-[18px]" />Show big
+                        <button v-if="!encrypted" type="button" class="btn-ghost" @click="openBig">
+                            <TsnIcon name="expand" class="h-[18px] w-[18px]" stroke="1.9" />Show big
                         </button>
                     </div>
+                    <p v-if="encrypted && !expired" class="mt-3 flex items-start gap-1.5 text-[13px] text-muted">
+                        <TsnIcon name="lock" class="mt-0.5 h-3.5 w-3.5 shrink-0" stroke="1.9" />
+                        <span>Encrypted in your browser before sending — we can't read it. The 5-character code won't work: share the full link, including the part after the #.</span>
+                    </p>
                 </div>
 
                 <!-- QR: beside the code on bigger screens, last on phones -->
@@ -55,7 +79,10 @@
                     <div class="w-24 shrink-0 overflow-hidden rounded-lg border border-line bg-white p-1.5 sm:w-32 [&_canvas]:!h-auto [&_canvas]:!w-full">
                         <QrCode :text="qrUrl" :size="120" />
                     </div>
-                    <figcaption class="text-[13px] text-muted sm:text-center">Or scan with your<br class="hidden sm:inline" /> phone camera</figcaption>
+                    <figcaption class="text-[13px] text-muted sm:text-center">
+                        <template v-if="encrypted">Scan to open<br class="hidden sm:inline" /> the private link</template>
+                        <template v-else>Or scan with your<br class="hidden sm:inline" /> phone camera</template>
+                    </figcaption>
                 </figure>
             </div>
 
@@ -101,6 +128,7 @@ const props = defineProps({
     passwordSet: { type: Boolean, default: false },
     kind: { type: String, default: "text" }, // "text" | "file" | "transfer"
     fileCount: { type: Number, default: 0 },
+    encrypted: { type: Boolean, default: false }, // E2E text: full link required
 });
 defineEmits(["reset"]);
 
@@ -141,7 +169,7 @@ onMounted(async () => {
             if (!left.value) clearInterval(timer);
         }, 1000);
     }
-    await flipTo(Array.from(flapsEl.value.children), props.code);
+    await flipTo(Array.from(flapsEl.value?.children || []), props.code);
     copyBtn.value?.focus({ preventScroll: true });
 });
 onBeforeUnmount(() => clearInterval(timer));

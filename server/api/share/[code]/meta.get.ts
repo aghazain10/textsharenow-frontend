@@ -1,11 +1,13 @@
 /**
  * GET /api/share/:code/meta
  * Response: { exists, code, ttl, expiresAt, maxReads, readsLeft,
- *             passwordRequired }
+ *             passwordRequired, encrypted }
  *
  * Peeks at a share without consuming a read — useful for MCP clients that
- * want to check whether a code is still valid before retrieving it.
- * Never returns the text or the password hash.
+ * want to check whether a code is still valid before retrieving it, and for
+ * browsers that hold no #k= key (so they can detect an end-to-end encrypted
+ * share BEFORE a keyless fetch would burn it).
+ * Never returns the text, ciphertext, or the password hash.
  *
  * 404 — code not found or expired
  * 429 — more than 60 peeks per minute per IP
@@ -61,5 +63,6 @@ export default defineEventHandler(async (event) => {
     maxReads,
     readsLeft,
     passwordRequired: !!payload?.pw,
+    encrypted: payload?.enc === 1,
   }
 })

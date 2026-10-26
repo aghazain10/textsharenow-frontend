@@ -1,9 +1,16 @@
 /**
  * POST /api/share
- * Body: { text: string, ttl?: number, pro?: boolean,
- *         passwordHash?: string, maxReads?: number }
+ * Body: { text: string }                        — API / MCP (server-side)
+ *   or: { ct: "v2$iv$ct" }                      — browser (client-encrypted)
+ *       + { ttl?, pro?, passwordHash?, maxReads? }
  * Response: { code: string, ttl: number }
  *
+ * End-to-end encrypted shares (ct): the browser encrypts with a random
+ * AES-256-GCM key that travels only in the URL fragment (#k=) and never
+ * reaches this server — we store ciphertext we cannot decrypt. v2 payloads
+ * are always JSON: { __tsn: 2, enc: 1, ct, mr, pw? }.
+ *
+ * Plain-text shares (API/MCP) keep the legacy behavior:
  * Stores text in Upstash Redis with the requested TTL (seconds).
  * ttl 0 means "never" (stored without an expiry).
  * Allowed TTLs: 600 (10 min), 1800 (30 min), 3600 (1 h) on free;
@@ -42,6 +49,8 @@ const COUNT_KEY   = 'stats:shares'
 const SHA256_HEX  = /^[a-f0-9]{64}$/
 const READ_COUNTS = [1, 5, 10, 0]
 const CUSTOM_CODE_CAP = 20 // active custom codes per license
+// v2$<12-byte IV base64url>$<AES-GCM ciphertext base64url>
+const CT_RE = /^v2\$[A-Za-z0-9_-]{16}\$[A-Za-z0-9_-]{16,}$/
 
 function dailyCountKey(date = new Date()): string {
   return `stats:shares:daily:${date.toISOString().slice(0, 10)}`
@@ -80,11 +89,16 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   const { UPSTASH_REDIS_REST_URL: redisUrl, UPSTASH_REDIS_REST_TOKEN: redisToken } = config
 
-  // Parse and validate body
+  // Parse and validate body — either client-encrypted (ct, browser) or
+  // plain text (API/MCP). Never both.
   const body = await readBody(event)
-  const text  = (body?.text || '').trim()
+  const text = typeof body?.text === 'string' ? body.text.trim() : ''
+  const ct   = typeof body?.ct === 'string' ? body.ct.trim() : ''
 
-  if (!text) {
+  if (ct && text) {
+    throw createError({ statusCode: 422, message: 'Send either plain text or an encrypted payload, not both.' })
+  }
+  if (!ct && !text) {
     throw createError({ statusCode: 422, message: 'Please provide text to share.' })
   }
 
@@ -97,7 +111,19 @@ export default defineEventHandler(async (event) => {
   }
 
   const maxChars = pro ? PRO_MAX_CHARS : FREE_MAX_CHARS
-  if (text.length > maxChars) {
+  if (ct) {
+    // End-to-end encrypted payload: the server can't count characters it
+    // can't read, so bound the decoded plaintext size instead (~3 bytes of
+    // UTF-8 per UTF-16 unit is the worst case).
+    if (!CT_RE.test(ct)) {
+      throw createError({ statusCode: 422, message: 'Invalid encrypted payload.' })
+    }
+    const dataB64 = ct.slice(ct.lastIndexOf('$') + 1)
+    const plainBytes = Math.max(0, Math.floor((dataB64.length * 3) / 4) - 16) // minus GCM tag
+    if (plainBytes > maxChars * 3) {
+      throw createError({ statusCode: 422, message: `Text cannot exceed ${maxChars.toLocaleString('en-US')} characters.` })
+    }
+  } else if (text.length > maxChars) {
     throw createError({ statusCode: 422, message: `Text cannot exceed ${maxChars.toLocaleString('en-US')} characters.` })
   }
 
@@ -190,10 +216,16 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Plain text when there is no metadata (keeps the legacy format), JSON
-  // tagged with __tsn when password or multi-read is in play.
+  // Client-encrypted shares are always JSON (v2) — the ciphertext rides in
+  // `ct` and the decryption key never reached us. Plain shares keep the
+  // legacy format: JSON tagged with __tsn when password or multi-read is in
+  // play, otherwise bare text.
   let stored = text
-  if (passwordHash || maxReads !== 1) {
+  if (ct) {
+    const payload: Record<string, unknown> = { __tsn: 2, enc: 1, ct, mr: maxReads }
+    if (passwordHash) payload.pw = passwordHash
+    stored = JSON.stringify(payload)
+  } else if (passwordHash || maxReads !== 1) {
     const payload: Record<string, unknown> = { __tsn: 1, text, mr: maxReads }
     if (passwordHash) payload.pw = passwordHash
     stored = JSON.stringify(payload)

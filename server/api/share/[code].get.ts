@@ -1,9 +1,13 @@
 /**
  * GET /api/share/:code?pw=<derived-hash>
- * Response: { text: string, readsLeft?: number | null }
+ * Response: { text: string, readsLeft?: number | null }            — plain shares
+ *   or:     { ct: string, enc: 1, readsLeft?: number | null }      — E2E shares
  *
- * Retrieves text from Upstash Redis by code.
+ * Retrieves the share from Upstash Redis by code.
  *  - Plain-text (legacy / no-metadata) shares are deleted after one read.
+ *  - End-to-end encrypted shares (__tsn 2) return only the stored
+ *    ciphertext; the decryption key lives in the link's #k= fragment and
+ *    never reached the server, so we hand back what we cannot read.
  *  - Password-protected shares require ?pw= matching the stored hash.
  *    Missing password → 401 with the KDF params the browser needs to derive
  *    the value (salt + iterations). Wrong password → 403, and ten wrong
@@ -47,15 +51,25 @@ async function upstashRequest(url: string, token: string, command: unknown[]) {
   return response.json()
 }
 
-function parsePayload(raw: string): { text: string, pw?: string, mr?: number } | null {
+type Payload = { text?: string; ct?: string; enc?: number; pw?: string; mr?: number }
+
+function parsePayload(raw: string): Payload | null {
   if (!raw.startsWith('{')) return null
   try {
     const parsed = JSON.parse(raw)
-    if (parsed && parsed.__tsn === 1 && typeof parsed.text === 'string') return parsed
+    if (!parsed) return null
+    if (parsed.__tsn === 1 && typeof parsed.text === 'string') return parsed
+    if (parsed.__tsn === 2 && parsed.enc === 1 && typeof parsed.ct === 'string') return parsed
   } catch {
     // Not our JSON — fall through to legacy handling
   }
   return null
+}
+
+/** The content half of a GET response: plaintext, or ciphertext for v2. */
+function contentOf(payload: Payload): { text: string } | { ct: string; enc: 1 } {
+  if (payload.enc === 1 && typeof payload.ct === 'string') return { ct: payload.ct, enc: 1 }
+  return { text: payload.text ?? '' }
 }
 
 export default defineEventHandler(async (event) => {
@@ -169,10 +183,10 @@ export default defineEventHandler(async (event) => {
 
   const maxReads = typeof payload.mr === 'number' ? payload.mr : 1
 
-  // Unlimited reads — never delete, just hand the text over
+  // Unlimited reads — never delete, just hand the content over
   if (maxReads === 0) {
     try { await recordReceiptRead(config, code, null, 0) } catch {}
-    return { text: payload.text, readsLeft: null }
+    return { ...contentOf(payload), readsLeft: null }
   }
 
   // Multi-read — track reads in a sibling key so the payload stays intact
@@ -200,11 +214,11 @@ export default defineEventHandler(async (event) => {
         const tracked = await recordReceiptRead(config, code, 0, maxReads)
         if (tracked) await closeReceipt(config, code, 'exhausted')
       } catch {}
-      return { text: payload.text, readsLeft: 0 }
+      return { ...contentOf(payload), readsLeft: 0 }
     }
 
     try { await recordReceiptRead(config, code, maxReads - reads, maxReads) } catch {}
-    return { text: payload.text, readsLeft: maxReads - reads }
+    return { ...contentOf(payload), readsLeft: maxReads - reads }
   }
 
   // Single-use — delete immediately after retrieval
@@ -213,5 +227,5 @@ export default defineEventHandler(async (event) => {
     const tracked = await recordReceiptRead(config, code, 0, 1)
     if (tracked) await closeReceipt(config, code, 'exhausted')
   } catch {}
-  return { text: payload.text }
+  return contentOf(payload)
 })
