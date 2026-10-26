@@ -219,6 +219,16 @@ function fail(title, body) {
 
 const NOT_FOUND = ["Code not found or expired", "Check each character and try again. Codes last as long as the sender chose — from 10 minutes up to never."];
 
+async function markOpened(code) {
+    try {
+        await $fetch(`${config.public.API_BASE}/api/share/${encodeURIComponent(code)}/open`, {
+            method: "POST",
+        });
+    } catch {
+        // Opening a receipt is best-effort — never block the actual receive.
+    }
+}
+
 async function getText(code, pwHash) {
     try {
         const res = await $fetch(`${config.public.API_BASE}/api/share/${code}`, {
@@ -307,7 +317,10 @@ async function receive(kind, pwHash) {
     error.value = null;
     try {
         let res = null;
-        if (kind !== "file" && kind !== "transfer") res = await getText(code, pwHash);
+        if (kind !== "file" && kind !== "transfer") {
+            if (!pwHash) await markOpened(code);
+            res = await getText(code, pwHash);
+        }
         if (!res && kind !== "text" && kind !== "file") res = await getTransfer(code, kind === "transfer");
         if (!res && kind !== "text" && kind !== "transfer") res = await getFile(code);
         if (!res) return fail(...NOT_FOUND);

@@ -20,6 +20,7 @@ import {
   READS_PREFIX,
   ATTEMPTS_PREFIX,
 } from '../../utils/shareCode'
+import { closeReceipt } from '../../utils/receipts'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
@@ -56,6 +57,7 @@ export default defineEventHandler(async (event) => {
   await upstash(config, ['DEL', READS_PREFIX + found.code])
   await upstash(config, ['DEL', ATTEMPTS_PREFIX + found.code])
   await upstash(config, ['SREM', ownerKey, found.code])
+  try { await closeReceipt(config, found.code, 'deleted') } catch {}
 
   // Free the custom-code cap slot if this was a custom code.
   try {

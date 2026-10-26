@@ -18,6 +18,8 @@
  *
  * Shares that need metadata are stored as JSON tagged with __tsn; plain
  * shares keep the original plain-text format so existing links stay valid.
+ * Pro shares also get a private receipt for opens/reads, kept for 90 days
+ * after the share closes.
  * Returns a unique 5-character alphanumeric code.
  */
 
@@ -25,6 +27,8 @@ import { createHash } from 'node:crypto'
 import { resolvePro } from '../utils/pro'
 import { CUSTOM_CODE_RE, RESERVED_CODES, normalizeCustomCode } from '~~/utils/customCode'
 import { P2_RE, PBKDF2_ITERATIONS } from '~~/utils/hash'
+import { createReceipt } from '../utils/receipts'
+import { licenseHash } from '../utils/proStorage'
 
 const CHARSET     = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 const CODE_LENGTH = 5
@@ -237,8 +241,17 @@ export default defineEventHandler(async (event) => {
   // verify ownership later. Best-effort: never block the share.
   if (licenseKey) {
     try {
-      const shareOwnerKey = `share:owner:${createHash('sha256').update(licenseKey.trim()).digest('hex')}`
+      const licHash = licenseHash(licenseKey)
+      const shareOwnerKey = `share:owner:${licHash}`
       await upstashRequest(redisUrl, redisToken, ['SADD', shareOwnerKey, code])
+      await createReceipt(config, {
+        code,
+        owner: licHash,
+        ttl,
+        maxReads,
+        passwordRequired: !!passwordHash,
+        custom: !!customCode,
+      })
     } catch {}
   }
 

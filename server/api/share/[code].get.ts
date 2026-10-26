@@ -10,11 +10,13 @@
  *    attempts within 15 minutes permanently delete the share.
  *  - Multi-read shares (mr > 1) keep a per-share read counter and delete
  *    only once the limit is reached. mr === 0 means unlimited reads.
+ *  - Pro text shares also record a private receipt event for each read.
  * Returns 404 if code not found or expired.
  */
 
 import { timingSafeEqual } from 'node:crypto'
 import { P2_RE } from '~~/utils/hash'
+import { closeReceipt, recordReceiptRead } from '../../utils/receipts'
 
 const KEY_PREFIX  = 'share:'
 const READS_PREFIX = 'reads:'
@@ -116,6 +118,10 @@ export default defineEventHandler(async (event) => {
   // Legacy / no-metadata share — single-use plain text
   if (!payload) {
     await upstashRequest(redisUrl, redisToken, ['DEL', key])
+    try {
+      const tracked = await recordReceiptRead(config, code, 0, 1)
+      if (tracked) await closeReceipt(config, code, 'exhausted')
+    } catch {}
     return { text: raw }
   }
 
@@ -149,6 +155,7 @@ export default defineEventHandler(async (event) => {
         await upstashRequest(redisUrl, redisToken, ['DEL', key])
         await upstashRequest(redisUrl, redisToken, ['DEL', READS_PREFIX + code])
         await upstashRequest(redisUrl, redisToken, ['DEL', attemptsKey])
+        try { await closeReceipt(config, code, 'deleted', 'password') } catch {}
         throw createError({
           statusCode: 403,
           message: 'Too many incorrect attempts. This share has been permanently deleted.',
@@ -164,6 +171,7 @@ export default defineEventHandler(async (event) => {
 
   // Unlimited reads — never delete, just hand the text over
   if (maxReads === 0) {
+    try { await recordReceiptRead(config, code, null, 0) } catch {}
     return { text: payload.text, readsLeft: null }
   }
 
@@ -188,13 +196,22 @@ export default defineEventHandler(async (event) => {
     if (reads >= maxReads) {
       await upstashRequest(redisUrl, redisToken, ['DEL', key])
       await upstashRequest(redisUrl, redisToken, ['DEL', readsKey])
+      try {
+        const tracked = await recordReceiptRead(config, code, 0, maxReads)
+        if (tracked) await closeReceipt(config, code, 'exhausted')
+      } catch {}
       return { text: payload.text, readsLeft: 0 }
     }
 
+    try { await recordReceiptRead(config, code, maxReads - reads, maxReads) } catch {}
     return { text: payload.text, readsLeft: maxReads - reads }
   }
 
   // Single-use — delete immediately after retrieval
   await upstashRequest(redisUrl, redisToken, ['DEL', key])
+  try {
+    const tracked = await recordReceiptRead(config, code, 0, 1)
+    if (tracked) await closeReceipt(config, code, 'exhausted')
+  } catch {}
   return { text: payload.text }
 })

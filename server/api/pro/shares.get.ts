@@ -9,8 +9,10 @@
  * Each item: {
  *   kind: 'text' | 'transfer',
  *   code, custom, ttl, expiresAt, maxReads, readsLeft, passwordRequired,
- *   fileCount?, bytes?
+ *   receipt, opens, reads, fileCount?, bytes?
  * }
+ *  - receipt: true when a private receipt exists for this text share
+ *  - opens/reads: receipt counters, or null when no receipt is available
  *  - ttl: seconds left, or null for a never-expiring text share
  *  - readsLeft: null when reads are unlimited
  *
@@ -30,6 +32,11 @@ import {
   transferOwnerKey,
   transferSummaryKey,
 } from '../../utils/proTransfers'
+import {
+  RECEIPT_OPENS_PREFIX,
+  RECEIPT_PREFIX,
+  RECEIPT_READS_PREFIX,
+} from '../../utils/receipts'
 
 const MAX_SHARES = 100
 
@@ -78,6 +85,9 @@ export default defineEventHandler(async (event) => {
             ['GET', KEY_PREFIX + code],
             ['TTL', KEY_PREFIX + code],
             ['GET', READS_PREFIX + code],
+            ['EXISTS', RECEIPT_PREFIX + code],
+            ['GET', RECEIPT_OPENS_PREFIX + code],
+            ['GET', RECEIPT_READS_PREFIX + code],
           ]),
         )
       : Promise.resolve([]),
@@ -97,9 +107,13 @@ export default defineEventHandler(async (event) => {
   const staleTransfers: string[] = []
 
   codes.forEach((code, i) => {
-    const raw = results[i * 3]?.result
-    const ttl = results[i * 3 + 1]?.result
-    const reads = results[i * 3 + 2]?.result
+    const offset = i * 6
+    const raw = results[offset]?.result
+    const ttl = results[offset + 1]?.result
+    const reads = results[offset + 2]?.result
+    const receipt = results[offset + 3]?.result === 1
+    const opens = Number.parseInt(String(results[offset + 4]?.result ?? '0'), 10) || 0
+    const receiptReads = Number.parseInt(String(results[offset + 5]?.result ?? '0'), 10) || 0
 
     if (typeof raw !== 'string' || !raw || ttl === -2) {
       stale.push(code)
@@ -130,6 +144,9 @@ export default defineEventHandler(async (event) => {
       maxReads,
       readsLeft,
       passwordRequired: !!payload?.pw,
+      receipt,
+      opens: receipt ? opens : null,
+      reads: receipt ? receiptReads : null,
     })
   })
 
@@ -163,6 +180,9 @@ export default defineEventHandler(async (event) => {
       passwordRequired: false,
       fileCount: count,
       bytes,
+      receipt: false,
+      opens: null,
+      reads: null,
     })
   })
 

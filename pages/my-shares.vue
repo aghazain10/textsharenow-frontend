@@ -3,7 +3,7 @@
         <PageHero
             meta="Pro dashboard"
             title="My shares"
-            lead="Manage the text shares and multi-file transfers created with your Pro license. See what is still live, copy a link, or delete it. No account needed — your license key is the credential."
+            lead="Manage the text shares and multi-file transfers created with your Pro license. See what is still live, open a private receipt for opens and reads, copy a link, or delete it. No account needed — your license key is the credential."
         />
 
         <section class="section">
@@ -86,9 +86,16 @@
                                         <span class="inline-flex items-center gap-1.5">
                                             <TsnIcon :name="s.kind === 'transfer' ? 'file' : 'eye'" class="h-3.5 w-3.5" stroke="1.8" />{{ readsText(s) }}
                                         </span>
+                                        <span v-if="s.receipt" class="inline-flex items-center gap-1.5">
+                                            <TsnIcon name="receipt" class="h-3.5 w-3.5" stroke="1.8" />{{ activityText(s) }}
+                                        </span>
                                     </div>
                                 </div>
-                                <div class="flex shrink-0 items-center gap-2">
+                                <div class="flex shrink-0 flex-wrap items-center gap-2">
+                                    <NuxtLink v-if="s.receipt" :to="`/receipts/${encodeURIComponent(s.code)}`" class="btn-ghost !h-9 !px-3">
+                                        <TsnIcon name="receipt" class="h-4 w-4" stroke="1.8" />
+                                        Receipt
+                                    </NuxtLink>
                                     <button type="button" class="btn-ghost !h-9 !px-3" @click="copyLink(s)">
                                         <TsnIcon :name="copied === s.code ? 'check' : 'copy'" class="h-4 w-4" stroke="2" />
                                         {{ copied === s.code ? "Copied" : "Copy link" }}
@@ -118,8 +125,37 @@
                         Showing the first 100 shares on this license.
                     </p>
 
+                    <section v-if="history.length" class="mt-10">
+                        <div class="flex flex-wrap items-end justify-between gap-3">
+                            <div>
+                                <h2 class="text-[22px] font-semibold tracking-[-0.03em] text-ink">Receipt history</h2>
+                                <p class="mt-1 text-[14px] text-muted">Expired, used-up, and deleted text shares from the last 90 days.</p>
+                            </div>
+                        </div>
+                        <ul class="mt-4 grid gap-2">
+                            <li v-for="r in history" :key="r.code" class="flex flex-col gap-3 rounded-lg border border-line bg-surface px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                                <div class="min-w-0">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <code class="font-mono text-[15px] font-semibold tracking-wide text-ink">{{ r.code }}</code>
+                                        <span class="rounded-full border px-2 py-0.5 text-[11px] font-medium" :class="statusClass(r.status)">{{ statusLabel(r.status) }}</span>
+                                        <span v-if="r.passwordRequired" class="inline-flex items-center gap-1 rounded-full border border-line bg-surface-2 px-2 py-0.5 text-[11px] font-medium text-muted">
+                                            <TsnIcon name="lock" class="h-3 w-3" stroke="2" />Password
+                                        </span>
+                                    </div>
+                                    <p class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted">
+                                        <span>{{ activityText(r) }}</span>
+                                        <span>{{ formatDate(r.createdAt) }}</span>
+                                    </p>
+                                </div>
+                                <NuxtLink :to="`/receipts/${encodeURIComponent(r.code)}`" class="btn-ghost !h-9 shrink-0 !px-3">
+                                    <TsnIcon name="receipt" class="h-4 w-4" stroke="1.8" />View receipt
+                                </NuxtLink>
+                            </li>
+                        </ul>
+                    </section>
+
                     <div class="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5 text-[13px] text-muted">
-                        <p>Text shares and multi-file transfers created with this license appear here. Single-file links are not listed yet.</p>
+                        <p>Text shares and multi-file transfers created with this license appear here. Single-file links are not listed yet. Receipts store event times only and are kept for 90 days after a share closes.</p>
                         <button type="button" class="font-medium text-muted underline decoration-line underline-offset-4 hover:text-ink" @click="deactivatePro">
                             Deactivate Pro on this device
                         </button>
@@ -133,7 +169,7 @@
 <script setup>
 useSeo({
     title: "My Shares",
-    description: "Manage the text shares and multi-file transfers created with your TextShareNow Pro license.",
+    description: "Manage text shares and multi-file transfers, and view private open and read receipts for your TextShareNow Pro license.",
     pagePath: "/my-shares",
 });
 useHead({ meta: [{ name: "robots", content: "noindex, nofollow" }] });
@@ -142,6 +178,7 @@ const { isPro, checked, checkStatus, deactivate } = usePremium();
 const { open: openProModal } = useProModal();
 
 const shares = ref([]);
+const receipts = ref([]);
 const loading = ref(false);
 const error = ref("");
 const notice = ref("");
@@ -149,6 +186,11 @@ const truncated = ref(false);
 const copied = ref("");
 const confirming = ref("");
 let noticeTimer;
+
+const history = computed(() => {
+    const active = new Set(shares.value.map((s) => s.code));
+    return receipts.value.filter((r) => r.status !== "active" && !active.has(r.code));
+});
 
 onMounted(async () => {
     await checkStatus();
@@ -165,14 +207,26 @@ async function load() {
     if (loading.value) return;
     loading.value = true;
     error.value = "";
+    const [sharesResult, receiptsResult] = await Promise.allSettled([
+        $fetch("/api/pro/shares"),
+        $fetch("/api/pro/receipts"),
+    ]);
+    if (sharesResult.status === "fulfilled") {
+        shares.value = sharesResult.value?.shares || [];
+        truncated.value = !!sharesResult.value?.truncated;
+    } else {
+        error.value = sharesResult.reason?.data?.message || "Could not load your shares. Please try again.";
+    }
+    receipts.value = receiptsResult.status === "fulfilled" ? receiptsResult.value?.receipts || [] : [];
+    loading.value = false;
+}
+
+async function loadReceipts() {
     try {
-        const res = await $fetch("/api/pro/shares");
-        shares.value = res?.shares || [];
-        truncated.value = !!res?.truncated;
-    } catch (e) {
-        error.value = e?.data?.message || "Could not load your shares. Please try again.";
-    } finally {
-        loading.value = false;
+        const res = await $fetch("/api/pro/receipts");
+        receipts.value = res?.receipts || [];
+    } catch {
+        // The live-share list still works if the receipt index is unavailable.
     }
 }
 
@@ -217,6 +271,32 @@ function readsText(s) {
     return s.readsLeft === 1 ? "1 read left" : `${s.readsLeft} reads left`;
 }
 
+function activityText(item) {
+    const opens = Number(item.opens) || 0;
+    const reads = Number(item.reads) || 0;
+    return `${opens} open${opens === 1 ? "" : "s"} · ${reads} read${reads === 1 ? "" : "s"}`;
+}
+
+function statusLabel(status) {
+    if (status === "exhausted") return "Read limit reached";
+    if (status === "deleted") return "Deleted";
+    if (status === "expired") return "Expired";
+    return "Active";
+}
+
+function statusClass(status) {
+    if (status === "deleted") return "border-bad/30 bg-bad/5 text-bad";
+    if (status === "exhausted") return "border-line bg-surface-2 text-ink";
+    return "border-line bg-surface-2 text-muted";
+}
+
+function formatDate(value) {
+    if (!value) return "";
+    const date = new Date(Number(value) * 1000);
+    if (Number.isNaN(date.getTime())) return "";
+    return date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+}
+
 async function remove(share) {
     confirming.value = "";
     const code = share.code;
@@ -228,6 +308,7 @@ async function remove(share) {
         notice.value = `${share.kind === "transfer" ? "Transfer" : "Share"} ${code} deleted.`;
         clearTimeout(noticeTimer);
         noticeTimer = setTimeout(() => (notice.value = ""), 4000);
+        if (share.kind === "text") await loadReceipts();
     } catch (e) {
         shares.value = before;
         error.value = e?.data?.message || "Could not delete that share. Please try again.";
@@ -237,5 +318,6 @@ async function remove(share) {
 async function deactivatePro() {
     await deactivate();
     shares.value = [];
+    receipts.value = [];
 }
 </script>
