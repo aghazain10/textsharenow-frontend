@@ -44,9 +44,9 @@ function apiError(status: number, data: Json | null): Error {
 
 async function api(
   path: string,
-  options: { method?: string; body?: unknown; auth?: boolean } = {},
+  options: { method?: string; body?: unknown; auth?: boolean; headers?: Record<string, string> } = {},
 ): Promise<{ status: number; data: Json | null }> {
-  const headers: Record<string, string> = { Accept: 'application/json' }
+  const headers: Record<string, string> = { Accept: 'application/json', ...(options.headers || {}) }
   if (options.body !== undefined) headers['Content-Type'] = 'application/json'
   if (options.auth !== false) headers.Authorization = `Bearer ${LICENSE_KEY}`
 
@@ -204,11 +204,21 @@ server.registerTool(
           if (!/^[a-f0-9]{32}$/i.test(salt) || !Number.isFinite(iterations) || iterations < 1000 || iterations > 1000000) {
             throw new Error('The server returned unsupported password parameters.')
           }
-          derived = derivePassword(password, salt, iterations)
+          if (info?.format === 'p3') {
+            // E2E verifier: send sha256(mix), never the mix itself.
+            const mix = pbkdf2Sync(password, Buffer.from(salt, 'hex'), iterations, 32, 'sha256')
+            derived = `p3$${iterations}$${salt}$${createHash('sha256').update(mix).digest('hex')}`
+          } else {
+            derived = derivePassword(password, salt, iterations)
+          }
         } else {
           derived = sha256hex(password)
         }
-        result = await api(`/api/share/${encodeURIComponent(normalized)}?pw=${encodeURIComponent(derived)}`, { auth: false })
+        // Header, not query — passwords must not land in access logs.
+        result = await api(`/api/share/${encodeURIComponent(normalized)}`, {
+          auth: false,
+          headers: { 'x-share-password': derived },
+        })
       }
 
       if (result.status === 200 && (result.data?.enc === 1 || typeof result.data?.ct === 'string')) {

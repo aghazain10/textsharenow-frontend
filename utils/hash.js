@@ -7,6 +7,9 @@
 // hashLegacyPassword() exists only so those shares can still be unlocked.
 export const PBKDF2_ITERATIONS = 210000;
 export const P2_RE = /^p2\$(\d{4,7})\$([a-f0-9]{32})\$([a-f0-9]{64})$/;
+// p3: the verifier is SHA-256 of the PBKDF2 output, so the database never
+// stores the value that doubles as the E2E passphrase mix (see utils/e2e.js).
+export const P3_RE = /^p3\$(\d{4,7})\$([a-f0-9]{32})\$([a-f0-9]{64})$/;
 
 const enc = new TextEncoder();
 

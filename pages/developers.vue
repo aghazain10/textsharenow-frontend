@@ -192,7 +192,7 @@ curl -X POST https://www.textsharenow.com/api/share \
                             <li><code class="font-mono text-[13px] text-ink">ttl</code> — seconds: 600, 1800, 3600 on free; Pro adds 86400, 604800, 2592000, or 0 (never). Default 600.</li>
                             <li><code class="font-mono text-[13px] text-ink">maxReads</code> — 1, 5, 10, or 0 (unlimited). Pro only. Default 1.</li>
                             <li><code class="font-mono text-[13px] text-ink">customCode</code> — 3–30 characters (letters, numbers, - and _). Pro only.</li>
-                            <li><code class="font-mono text-[13px] text-ink">passwordHash</code> — Pro only; a PBKDF2 string in the form <code class="font-mono text-[12.5px]">p2$210000$&lt;salt-hex&gt;$&lt;derived-hex&gt;</code>.</li>
+                            <li><code class="font-mono text-[13px] text-ink">passwordHash</code> — Pro only; a PBKDF2 verifier in the form <code class="font-mono text-[12.5px]">p2$210000$&lt;salt-hex&gt;$&lt;derived-hex&gt;</code>. (The browser's private mode uses a p3 verifier for zero-knowledge shares — p3 is not needed for API shares.)</li>
                         </ul>
 
                         <h3 class="mt-8 text-[20px] font-semibold text-ink">Read, peek, delete</h3>
@@ -222,9 +222,13 @@ const derived = pbkdf2Sync(password, Buffer.from(salt, "hex"), 210000, 32, "sha2
 const passwordHash = `p2$210000$${salt}$${derived}`;</code></pre>
                         <p class="mt-3 text-[15px] leading-7 text-muted">
                             A read without a password returns <code class="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[13px]">401</code>
-                            with the salt and iteration count. Derive the same value and retry with
-                            <code class="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[13px]">?pw=&lt;derived&gt;</code>. The MCP server does this for you.
+                            with the salt and iteration count. Derive the same value and retry with the
+                            <code class="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[13px]">x-share-password</code> header —
+                            not the URL, so the verifier never lands in access logs:
                         </p>
+                        <pre class="mt-3 overflow-x-auto rounded-lg border border-line bg-surface-2/60 p-4 text-[12.5px] leading-6"><code>curl https://www.textsharenow.com/api/share/K7Q2P \
+  -H "x-share-password: $PASSWORD_HASH"</code></pre>
+                        <p class="mt-3 text-[15px] leading-7 text-muted">The MCP server does this for you.</p>
                     </section>
 
                     <!-- 4. Limits -->

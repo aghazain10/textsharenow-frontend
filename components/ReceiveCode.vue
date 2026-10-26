@@ -139,7 +139,7 @@
  * then a HEAD on the single-file download, which doesn't use up the download.
  */
 import { hashPassword, hashLegacyPassword } from "~/utils/hash.js";
-import { decryptText, derivePasswordMix, shareKeyFor, rememberShareKey, forgetShareKey, keyFromLink } from "~/utils/e2e.js";
+import { decryptText, derivePasswordMix, createPassphrase, shareKeyFor, rememberShareKey, forgetShareKey, keyFromLink } from "~/utils/e2e.js";
 
 const props = defineProps({
     initialCode: { type: String, default: "" },
@@ -253,8 +253,10 @@ async function isEncryptedWithoutKey(code) {
 
 async function getText(code, pwHash) {
     try {
+        // The verifier goes in a header, never the URL — query strings end
+        // up in access logs.
         const res = await $fetch(`${config.public.API_BASE}/api/share/${code}`, {
-            query: pwHash ? { pw: pwHash } : undefined,
+            headers: pwHash ? { "x-share-password": pwHash } : undefined,
         });
         if (res?.enc === 1 && typeof res.ct === "string") {
             const key = shareKeyFor(code);
@@ -281,6 +283,8 @@ async function getText(code, pwHash) {
             const params = e?.data?.data || e?.data || {};
             kdfParams.value = {
                 kdf: params.kdf || "sha256",
+                format: params.format || (params.kdf === "pbkdf2" ? "p2" : "sha256"),
+                encrypted: !!params.encrypted,
                 salt: params.salt || "",
                 iterations: params.iterations || 0,
             };
@@ -410,11 +414,19 @@ async function receive(kind, pwHash) {
 async function unlock() {
     if (!password.value || loading.value) return;
     const params = kdfParams.value;
-    if (params?.kdf === "pbkdf2" && params.salt && params.iterations) {
+    if (params?.format === "p3" && params.salt && params.iterations) {
+        // E2E passphrase: derive the mix locally and send only its hash to
+        // the server, then decrypt with fragment key + mix.
+        const pass = await createPassphrase(password.value, params.salt, params.iterations);
+        keyMix.value = pass.mix;
+        receive("", pass.verifier);
+    } else if (params?.kdf === "pbkdf2" && params.salt && params.iterations) {
         const hash = await hashPassword(password.value, params.salt, params.iterations);
-        // Same salt/iterations as the stored verifier → the exact mix the
-        // sender used, so the fragment key + password decrypt the payload.
-        keyMix.value = await derivePasswordMix(password.value, params.salt, params.iterations);
+        // Pre-M2 encrypted shares (p2) used the PBKDF2 output itself as the
+        // key mix; standard p2 shares don't need a mix at all.
+        keyMix.value = params.encrypted
+            ? await derivePasswordMix(password.value, params.salt, params.iterations)
+            : null;
         receive("", hash);
     } else {
         keyMix.value = null;

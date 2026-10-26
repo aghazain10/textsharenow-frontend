@@ -18,13 +18,15 @@
  * Anything invalid falls back to the 10 minute default.
  *
  * Premium extras:
- *  - passwordHash: PBKDF2-derived password string
- *    (p2$iterations$salt$hash); legacy bare SHA-256 hex is still accepted
- *    for compatibility, but the browser client always sends PBKDF2 now
+ *  - passwordHash: PBKDF2-derived password verifier
+ *    (p2$iterations$salt$hash for standard shares, or
+ *     p3$iterations$salt$sha256(mix) for end-to-end shares — p3 keeps the
+ *     value used as the HKDF salt out of the database)
  *  - maxReads: 1 (burn after read), 5, 10, or 0 (unlimited)
  *
- * Shares that need metadata are stored as JSON tagged with __tsn; plain
- * shares keep the original plain-text format so existing links stay valid.
+ * Everything stored in Redis is envelope-encrypted at rest (see
+ * server/utils/cipher.ts). Shares that need metadata are stored as JSON
+ * tagged with __tsn and encrypted again before the SET.
  * Pro shares also get a private receipt for opens/reads, kept for 90 days
  * after the share closes.
  * Returns a unique 5-character alphanumeric code.
@@ -33,9 +35,10 @@
 import { createHash } from 'node:crypto'
 import { resolvePro } from '../utils/pro'
 import { CUSTOM_CODE_RE, RESERVED_CODES, normalizeCustomCode } from '~~/utils/customCode'
-import { P2_RE, PBKDF2_ITERATIONS } from '~~/utils/hash'
+import { P2_RE, P3_RE, PBKDF2_ITERATIONS } from '~~/utils/hash'
 import { createReceipt } from '../utils/receipts'
 import { licenseHash } from '../utils/proStorage'
+import { encryptAtRest } from '../utils/cipher'
 
 const CHARSET     = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 const CODE_LENGTH = 5
@@ -46,7 +49,6 @@ const FREE_MAX_CHARS = 10000
 const PRO_MAX_CHARS  = 100000
 const KEY_PREFIX  = 'share:'
 const COUNT_KEY   = 'stats:shares'
-const SHA256_HEX  = /^[a-f0-9]{64}$/
 const READ_COUNTS = [1, 5, 10, 0]
 const CUSTOM_CODE_CAP = 20 // active custom codes per license
 // v2$<12-byte IV base64url>$<AES-GCM ciphertext base64url>
@@ -132,16 +134,19 @@ export default defineEventHandler(async (event) => {
   const requestedTtl = Number(body?.ttl)
   const ttl = allowedTtls.includes(requestedTtl) ? requestedTtl : TTL_SECONDS
 
-  // Password (premium only) — client sends a PBKDF2-derived string. A bare
-  // SHA-256 digest is still accepted so cached legacy clients keep working.
+  // Password (premium only) — client sends a PBKDF2-derived verifier.
+  // p2 = standard shares; p3 = E2E shares (server only gets sha256(mix)).
+  // Bare SHA-256 digests from pre-PBKDF2 clients are no longer accepted.
   let passwordHash: string | null = null
   const rawHash = typeof body?.passwordHash === 'string' ? body.passwordHash.trim() : ''
   if (rawHash) {
     const p2 = P2_RE.exec(rawHash)
-    if (p2 && p2[1] !== String(PBKDF2_ITERATIONS)) {
+    const p3 = P3_RE.exec(rawHash)
+    const matched = p2 || p3
+    if (matched && matched[1] !== String(PBKDF2_ITERATIONS)) {
       throw createError({ statusCode: 422, message: 'Invalid password.' })
     }
-    if (!pro || (!p2 && !SHA256_HEX.test(rawHash))) {
+    if (!pro || !matched) {
       throw createError({ statusCode: 422, message: 'Invalid password.' })
     }
     passwordHash = rawHash
@@ -231,6 +236,11 @@ export default defineEventHandler(async (event) => {
     stored = JSON.stringify(payload)
   }
 
+  // Envelope-encrypt at rest. E2E payloads are already ciphertext; wrapping
+  // them again is harmless. The prefix keeps legacy plaintext values
+  // readable until they expire.
+  stored = encryptAtRest(stored)
+
   let code = ''
   if (customCode) {
     // Atomic claim: NX guarantees a single winner even under concurrency.
@@ -293,6 +303,8 @@ export default defineEventHandler(async (event) => {
   try {
     await upstashRequest(redisUrl, redisToken, ['INCR', COUNT_KEY])
     await upstashRequest(redisUrl, redisToken, ['INCR', dailyCountKey()])
+    // Keep the daily bucket bounded (also repairs pre-M2 keys with no TTL).
+    await upstashRequest(redisUrl, redisToken, ['EXPIRE', dailyCountKey(), 400 * 86400])
   } catch {
     // Counters are non-critical — a failure here must not block the share.
   }

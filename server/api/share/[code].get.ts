@@ -1,17 +1,20 @@
 /**
- * GET /api/share/:code?pw=<derived-hash>
+ * GET /api/share/:code
+ * Password (when required) is sent in the `x-share-password` header. The
+ * legacy `?pw=` query parameter is still accepted for older clients but is
+ * deprecated — query strings end up in access logs.
  * Response: { text: string, readsLeft?: number | null }            — plain shares
  *   or:     { ct: string, enc: 1, readsLeft?: number | null }      — E2E shares
  *
- * Retrieves the share from Upstash Redis by code.
- *  - Plain-text (legacy / no-metadata) shares are deleted after one read.
+ * Retrieves the share from Upstash Redis by code (decrypting it at rest).
+ *  - Plain-text shares are deleted after one read.
  *  - End-to-end encrypted shares (__tsn 2) return only the stored
  *    ciphertext; the decryption key lives in the link's #k= fragment and
  *    never reached the server, so we hand back what we cannot read.
- *  - Password-protected shares require ?pw= matching the stored hash.
+ *  - Password-protected shares require the PBKDF2 verifier in the header.
  *    Missing password → 401 with the KDF params the browser needs to derive
- *    the value (salt + iterations). Wrong password → 403, and ten wrong
- *    attempts within 15 minutes permanently delete the share.
+ *    the value (salt + iterations + verifier format). Wrong password → 403,
+ *    and ten wrong attempts within 15 minutes permanently delete the share.
  *  - Multi-read shares (mr > 1) keep a per-share read counter and delete
  *    only once the limit is reached. mr === 0 means unlimited reads.
  *  - Pro text shares also record a private receipt event for each read.
@@ -19,8 +22,9 @@
  */
 
 import { timingSafeEqual } from 'node:crypto'
-import { P2_RE } from '~~/utils/hash'
+import { P2_RE, P3_RE } from '~~/utils/hash'
 import { closeReceipt, recordReceiptRead } from '../../utils/receipts'
+import { decryptAtRest } from '../../utils/cipher'
 
 const KEY_PREFIX  = 'share:'
 const READS_PREFIX = 'reads:'
@@ -127,7 +131,10 @@ export default defineEventHandler(async (event) => {
 
   const key = KEY_PREFIX + code
 
-  const payload = parsePayload(raw)
+  // Values written since M2 are envelope-encrypted; legacy plaintext values
+  // pass through unchanged and expire naturally.
+  const decoded = decryptAtRest(raw)
+  const payload = parsePayload(decoded)
 
   // Legacy / no-metadata share — single-use plain text
   if (!payload) {
@@ -136,25 +143,40 @@ export default defineEventHandler(async (event) => {
       const tracked = await recordReceiptRead(config, code, 0, 1)
       if (tracked) await closeReceipt(config, code, 'exhausted')
     } catch {}
-    return { text: raw }
+    return { text: decoded }
   }
 
-  // Password check — must pass before the read is counted or consumed
+  // Password check — must pass before the read is counted or consumed.
+  // The verifier arrives in a header (query fallback kept for old clients).
   if (payload.pw) {
-    const provided = String(getQuery(event)?.pw || '')
+    const provided = String(
+      getRequestHeader(event, 'x-share-password') || getQuery(event)?.pw || ''
+    )
     if (!provided) {
+      const p3 = P3_RE.exec(payload.pw)
       const p2 = P2_RE.exec(payload.pw)
       throw createError({
         statusCode: 401,
         message: 'This share is password protected.',
-        data: p2
+        data: p3
           ? {
               passwordRequired: true,
+              encrypted: payload.enc === 1,
               kdf: 'pbkdf2',
-              iterations: Number(p2[1]),
-              salt: p2[2],
+              format: 'p3',
+              iterations: Number(p3[1]),
+              salt: p3[2],
             }
-          : { passwordRequired: true, kdf: 'sha256' },
+          : p2
+            ? {
+                passwordRequired: true,
+                encrypted: payload.enc === 1,
+                kdf: 'pbkdf2',
+                format: 'p2',
+                iterations: Number(p2[1]),
+                salt: p2[2],
+              }
+            : { passwordRequired: true, encrypted: payload.enc === 1, kdf: 'sha256', format: 'sha256' },
       })
     }
     if (!safeEqual(provided, payload.pw)) {

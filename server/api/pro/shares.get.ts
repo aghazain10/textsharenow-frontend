@@ -37,6 +37,7 @@ import {
   RECEIPT_PREFIX,
   RECEIPT_READS_PREFIX,
 } from '../../utils/receipts'
+import { decryptAtRest } from '../../utils/cipher'
 
 const MAX_SHARES = 100
 
@@ -120,7 +121,9 @@ export default defineEventHandler(async (event) => {
       return
     }
 
-    const payload = parseSharePayload(raw)
+    let decoded: string
+    try { decoded = decryptAtRest(raw) } catch { return } // unreadable — leave ownership intact
+    const payload = parseSharePayload(decoded)
     const maxReads = payload && typeof payload.mr === 'number' ? payload.mr : 1
 
     let readsLeft: number | null

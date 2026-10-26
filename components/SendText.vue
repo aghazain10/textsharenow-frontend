@@ -163,7 +163,7 @@ import { DEFAULT_EXPIRY } from "~/utils/expiry.js";
 import { READ_OPTIONS, DEFAULT_READS } from "~/utils/reads.js";
 import { FREE_MAX_CHARS, PRO_MAX_CHARS } from "~/utils/premium.js";
 import { hashPassword } from "~/utils/hash.js";
-import { generateShareKey, encryptText, mixFromVerifier } from "~/utils/e2e.js";
+import { generateShareKey, encryptText, createPassphrase } from "~/utils/e2e.js";
 import { normalizeCustomCode, isValidCustomCode } from "~/utils/customCode.js";
 
 const API_BASE = useRuntimeConfig().public.API_BASE;
@@ -313,11 +313,15 @@ async function send() {
         if (isPro.value) {
             body.maxReads = maxReads.value;
             if (password.value) {
-                body.passwordHash = await hashPassword(password.value);
-                // Encrypted + password: the AES key is also salted with the
-                // password mix, so both the link and the password are needed.
                 if (encryptNow.value) {
-                    mix = await mixFromVerifier(password.value, body.passwordHash);
+                    // p3 verifier: the server stores sha256(mix), never the
+                    // mix that salts the AES key. Both the link and the
+                    // password are needed to decrypt.
+                    const pass = await createPassphrase(password.value);
+                    body.passwordHash = pass.verifier;
+                    mix = pass.mix;
+                } else {
+                    body.passwordHash = await hashPassword(password.value);
                 }
             }
             if (customCode.value) body.customCode = customCode.value;

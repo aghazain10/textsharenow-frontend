@@ -13,7 +13,7 @@
 // PBKDF2 mix of the password — the recipient needs BOTH the link and the
 // password to decrypt. The server keeps only the usual PBKDF2 verifier as
 // the gate; it never sees the fragment key.
-import { P2_RE } from "./hash.js";
+import { P2_RE, PBKDF2_ITERATIONS } from "./hash.js";
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
@@ -41,6 +41,12 @@ function fromB64url(s) {
 
 function hexToBytes(hex) {
     return new Uint8Array(hex.match(/.{2}/g).map((h) => parseInt(h, 16)));
+}
+
+function toHex(bytes) {
+    return Array.from(new Uint8Array(bytes))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
 }
 
 // ── fragment key ─────────────────────────────────────────────────────────────
@@ -107,6 +113,25 @@ export async function derivePasswordMix(password, saltHex, iterations) {
         256
     );
     return new Uint8Array(bits);
+}
+
+/** SHA-256 of raw bytes, hex — used for the p3 verifier. */
+export async function sha256Hex(bytes) {
+    return toHex(await crypto.subtle.digest("SHA-256", bytes));
+}
+
+/**
+ * Create a passphrase verifier + encryption mix in one step.
+ *
+ * The mix (PBKDF2 output) is the HKDF salt for the AES key and never leaves
+ * the browser. The server stores only `p3$iters$salt$sha256(mix)`, so a
+ * database dump cannot be used to derive the key even if the link leaks.
+ */
+export async function createPassphrase(password, saltHex, iterations = PBKDF2_ITERATIONS) {
+    const salt = saltHex || toHex(crypto.getRandomValues(new Uint8Array(16)));
+    const mix = await derivePasswordMix(password, salt, iterations);
+    const verifier = `p3$${iterations}$${salt}$${await sha256Hex(mix)}`;
+    return { verifier, mix, salt, iterations };
 }
 
 /** Derive the mix from a stored p2$ verifier string (same salt, same params). */

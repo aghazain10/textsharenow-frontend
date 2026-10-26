@@ -158,7 +158,6 @@ export default defineNuxtConfig({
         "/author/zain-rizvee": { prerender: true },
         ...blogPrerender,
         "/sitemap.xml": { prerender: true },
-        "/api/**": { cors: true },
     },
 
     compatibilityDate: "2024-04-03",

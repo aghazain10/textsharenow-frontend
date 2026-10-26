@@ -19,6 +19,7 @@ import {
   KEY_PREFIX,
   READS_PREFIX,
 } from '../../../utils/shareCode'
+import { decryptAtRest } from '../../../utils/cipher'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
@@ -38,7 +39,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: 'Code not found or has expired.' })
   }
 
-  const payload = parseSharePayload(found.raw)
+  const payload = parseSharePayload(decryptAtRest(found.raw))
   const maxReads = payload && typeof payload.mr === 'number' ? payload.mr : 1
 
   let readsLeft: number | null = null
