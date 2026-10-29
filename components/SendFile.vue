@@ -371,25 +371,30 @@ async function upload() {
             for (const item of items.value) prepared.push({ item, blob: item.file, csize: item.file.size });
         }
 
-        const manifest = prepared.map(({ item, csize }) => ({
+        const ticketManifest = prepared.map(({ item, csize }) => ({
             name: item.file.name,
             type: item.file.type || "application/octet-stream",
             size: item.file.size,
             ...(encrypt ? { csize } : {}),
             path: item.path,
         }));
+        // The files service validates E2E manifest entries against ciphertext
+        // size, so the upload manifest omits the plaintext size.
+        const uploadManifest = encrypt
+            ? ticketManifest.map(({ size, ...entry }) => entry)
+            : ticketManifest;
 
         let result;
         if (transfer) {
             const ticket = await $fetch(`${config.public.API_BASE}/api/pro/transfer-ticket`, {
                 method: "POST",
-                body: { expires: expires.value, enc: encrypt, files: manifest },
+                body: { expires: expires.value, enc: encrypt, files: ticketManifest },
             });
 
             const form = new FormData();
             form.append("ticket", ticket.ticket);
             form.append("expires", String(expires.value));
-            form.append("manifest", JSON.stringify(manifest));
+            form.append("manifest", JSON.stringify(uploadManifest));
             if (encrypt) form.append("enc", "1");
             for (const file of prepared) form.append("files", file.blob, file.item.file.name);
             result = await sendForm(form, `${API_URL}/transfer`);
