@@ -134,7 +134,7 @@
                     </li>
                 </ul>
 
-                <p class="mt-6 max-w-[68ch] text-[15px] leading-7 text-muted">Maximum file size: 10 MB per file. Standard uploads are scanned for malware before becoming available. Private file contents are browser-encrypted and cannot be scanned.</p>
+                <p class="mt-6 max-w-[68ch] text-[15px] leading-7 text-muted">Maximum file size: 10 MB per file. Standard uploads are scanned for malware before becoming available. Private file contents are browser-encrypted and cannot be scanned. See how TextShareNow compares with <NuxtLink to="/compare" class="text-link">OneTimeSecret, Privnote, Password.link, Yopass, and Password Pusher</NuxtLink>.</p>
             </div>
         </section>
 

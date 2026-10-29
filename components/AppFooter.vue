@@ -35,6 +35,7 @@ const COLS = [
             { label: "How It Works", to: "/how-it-works" },
             { label: "Online Text Sharing", to: "/online-text-sharing" },
             { label: "Share Files Online", to: "/share-files-online" },
+            { label: "Compare Tools", to: "/compare" },
         ],
     },
     {

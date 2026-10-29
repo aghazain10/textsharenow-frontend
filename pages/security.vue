@@ -9,6 +9,7 @@
                 <NuxtLink to="/#tool" class="btn-primary">
                     <TsnIcon name="lock" class="h-4 w-4" stroke="2" />Try Private mode
                 </NuxtLink>
+                <NuxtLink to="/compare" class="btn-ghost">Compare tools</NuxtLink>
                 <NuxtLink to="/privacy" class="btn-ghost">Privacy policy</NuxtLink>
             </div>
         </PageHero>
