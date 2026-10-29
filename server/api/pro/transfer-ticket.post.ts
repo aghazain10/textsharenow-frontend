@@ -39,6 +39,7 @@ type TransferFile = {
   name: string
   type: string
   size: number
+  csize?: number
   path: string
 }
 
@@ -62,6 +63,7 @@ export default defineEventHandler(async (event) => {
 
   const body = await readBody(event)
   const expires = Number(body?.expires)
+  const enc = body?.enc === true
   const rawFiles = Array.isArray(body?.files) ? body.files : []
 
   if (!FILE_TTLS.includes(expires)) {
@@ -81,6 +83,7 @@ export default defineEventHandler(async (event) => {
     const name = typeof raw?.name === 'string' ? raw.name.trim().slice(0, 255) : ''
     const type = typeof raw?.type === 'string' ? raw.type.slice(0, 100) : ''
     const size = Number(raw?.size)
+    const csize = Number(raw?.csize)
     const path = normalizeTransferPath(raw?.path, name)
 
     if (!name || !path) {
@@ -91,6 +94,9 @@ export default defineEventHandler(async (event) => {
         statusCode: 422,
         message: `${name} must be between 1 B and ${Math.floor(PRO_MAX_FILE / 1048576)} MB.`,
       })
+    }
+    if (enc && (!Number.isInteger(csize) || csize <= 0 || csize > PRO_MAX_FILE + 65536)) {
+      throw createError({ statusCode: 422, message: `${name} has an invalid encrypted size.` })
     }
     if (isBlockedFile(name, type)) {
       throw createError({
@@ -104,11 +110,13 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 422, message: `Two selected files use the same path: ${path}.` })
     }
     seenPaths.add(pathKey)
-    files.push({ name, type, size, path })
+    files.push({ name, type, size, path, ...(enc ? { csize } : {}) })
   }
 
-  const total = files.reduce((sum, file) => sum + file.size, 0)
-  if (total > PRO_MAX_TRANSFER) {
+  const maxTotal = enc ? PRO_MAX_TRANSFER + 1048576 : PRO_MAX_TRANSFER
+  const maxBytes = enc ? PRO_MAX_FILE + 65536 : PRO_MAX_FILE
+  const total = files.reduce((sum, file) => sum + (enc ? Number(file.csize) : file.size), 0)
+  if (total > maxTotal) {
     throw createError({
       statusCode: 422,
       message: `The transfer is ${Math.ceil(total / 1048576)} MB. Pro transfers are limited to ${Math.floor(PRO_MAX_TRANSFER / 1048576)} MB total.`,
@@ -142,10 +150,11 @@ export default defineEventHandler(async (event) => {
     JSON.stringify({
       v: 2,
       kind: 'transfer',
-      mb: PRO_MAX_FILE,
+      mb: maxBytes,
       total,
       ttl: expires,
       maxFiles: files.length,
+      enc,
       owner,
       tid: transferId,
     }),
@@ -166,9 +175,10 @@ export default defineEventHandler(async (event) => {
 
   return {
     ticket,
-    maxBytes: PRO_MAX_FILE,
-    maxTotal: PRO_MAX_TRANSFER,
+    maxBytes,
+    maxTotal,
     maxFiles: files.length,
     ttl: expires,
+    enc,
   }
 })

@@ -81,10 +81,14 @@
                 <template v-else-if="result.type === 'transfer'">
                     <div class="flex flex-wrap items-end justify-between gap-2">
                         <div>
-                            <p class="text-[17px] font-semibold tracking-[-0.01em]">Your files are ready</p>
-                            <p class="mt-1 text-[13px] text-muted">{{ result.count }} file{{ result.count === 1 ? "" : "s" }} · {{ formatBytes(result.bytes) }}</p>
+                            <p class="text-[17px] font-semibold tracking-[-0.01em]">{{ result.encrypted && !result.files.length ? "All files downloaded" : "Your files are ready" }}</p>
+                            <p v-if="result.files.length" class="mt-1 text-[13px] text-muted">{{ result.count }} file{{ result.count === 1 ? "" : "s" }} · {{ formatBytes(result.bytes) }}</p>
+                            <p v-else class="mt-1 text-[13px] text-muted">Every file was decrypted and deleted.</p>
+                            <p v-if="result.encrypted && result.files.length" class="mt-1 flex items-center gap-1 text-[12px] text-muted">
+                                <TsnIcon name="lock" class="h-3 w-3" stroke="1.9" /> End-to-end encrypted · not virus-scanned
+                            </p>
                         </div>
-                        <a :href="transferZipUrl" class="btn-primary !h-9 !px-3 !text-[13px]">
+                        <a v-if="!result.encrypted" :href="transferZipUrl" class="btn-primary !h-9 !px-3 !text-[13px]">
                             <TsnIcon name="download" class="h-4 w-4" stroke="1.9" />Download all
                         </a>
                     </div>
@@ -95,31 +99,68 @@
                                 <span class="block truncate text-[15px] font-medium">{{ file.name }}</span>
                                 <span class="block truncate text-[13px] text-muted">{{ file.path !== file.name ? `${file.path} · ` : "" }}{{ formatBytes(file.size) }}</span>
                             </span>
-                            <a :href="transferFileUrl(file)" class="btn-ghost !h-8 shrink-0 !px-2.5 !text-[12px]">
+                            <a v-if="!result.encrypted" :href="transferFileUrl(file)" class="btn-ghost !h-8 shrink-0 !px-2.5 !text-[12px]">
                                 <TsnIcon name="download" class="h-3.5 w-3.5" stroke="2" />Download
                             </a>
+                            <button
+                                v-else
+                                type="button"
+                                class="btn-ghost !h-8 shrink-0 !px-2.5 !text-[12px]"
+                                :disabled="!!busyFile"
+                                @click="downloadTransferFile(file)"
+                            >
+                                <TsnIcon name="download" class="h-3.5 w-3.5" stroke="2" />{{ busyFile === file.id ? "Decrypting…" : "Download" }}
+                            </button>
                         </li>
                     </ul>
-                    <p class="mt-3 text-[13px] text-muted">Each file is deleted after its first download. Download all as a ZIP, or take only the files you need.</p>
+                    <p v-if="result.encrypted && result.files.length" class="mt-3 text-[13px] text-muted">
+                        Each file is deleted after you download and decrypt it. The key is in this link, so keep the whole link
+                        (including the part after the #). Folder paths are shown here, but encrypted files are saved one at a time.
+                    </p>
+                    <p v-else-if="result.encrypted" class="mt-3 text-[13px] text-muted">
+                        Every file was decrypted and deleted. This transfer code no longer works.
+                    </p>
+                    <p v-else class="mt-3 text-[13px] text-muted">Each file is deleted after its first download. Download all as a ZIP, or take only the files you need.</p>
                 </template>
 
                 <!-- Single file -->
                 <template v-else>
-                    <p class="text-[17px] font-semibold tracking-[-0.01em]">Your file is downloading</p>
-                    <ul class="mt-4 grid gap-2">
-                        <li class="flex items-center gap-3 rounded-lg border border-line px-3 py-2.5">
-                            <span class="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-surface-2 text-ink"><TsnIcon name="file" class="h-5 w-5" stroke="1.9" /></span>
-                            <span class="min-w-0 flex-1">
-                                <span class="block truncate text-[15px] font-medium">Code {{ result.code }}</span>
-                                <span class="text-[13px] text-muted">Check your downloads folder</span>
-                            </span>
-                            <TsnIcon name="check" class="h-5 w-5 text-ok" stroke="2.4" />
-                        </li>
-                    </ul>
-                    <p class="mt-3 text-[13px] text-muted">Original quality and file names are kept.</p>
+                    <template v-if="result.encrypted">
+                        <p class="text-[17px] font-semibold tracking-[-0.01em]">{{ result.downloaded ? "Your file is ready" : "Your encrypted file is ready" }}</p>
+                        <ul class="mt-4 grid gap-2">
+                            <li class="flex items-center gap-3 rounded-lg border border-line px-3 py-2.5">
+                                <span class="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-surface-2 text-ink"><TsnIcon name="file" class="h-5 w-5" stroke="1.9" /></span>
+                                <span class="min-w-0 flex-1">
+                                    <span class="block truncate text-[15px] font-medium">{{ result.name || "Encrypted file" }}</span>
+                                    <span class="text-[13px] text-muted">{{ result.downloaded ? "Decrypted and saved" : "Decrypts in your browser" }}</span>
+                                </span>
+                                <TsnIcon v-if="result.downloaded" name="check" class="h-5 w-5 text-ok" stroke="2.4" />
+                            </li>
+                        </ul>
+                        <button v-if="!result.downloaded" type="button" class="btn-primary mt-4" :disabled="downloadingSingle" @click="downloadSingleFile">
+                            <TsnIcon name="download" class="h-[18px] w-[18px]" stroke="1.9" />{{ downloadingSingle ? "Downloading & decrypting…" : "Download & decrypt" }}
+                        </button>
+                        <p class="mt-3 text-[13px] text-muted">
+                            {{ result.downloaded ? "Saved to your downloads folder. The server copy has been deleted." : "The file stays encrypted on our server until you download it. The key is in this link." }}
+                        </p>
+                    </template>
+                    <template v-else>
+                        <p class="text-[17px] font-semibold tracking-[-0.01em]">Your file is downloading</p>
+                        <ul class="mt-4 grid gap-2">
+                            <li class="flex items-center gap-3 rounded-lg border border-line px-3 py-2.5">
+                                <span class="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-surface-2 text-ink"><TsnIcon name="file" class="h-5 w-5" stroke="1.9" /></span>
+                                <span class="min-w-0 flex-1">
+                                    <span class="block truncate text-[15px] font-medium">Code {{ result.code }}</span>
+                                    <span class="text-[13px] text-muted">Check your downloads folder</span>
+                                </span>
+                                <TsnIcon name="check" class="h-5 w-5 text-ok" stroke="2.4" />
+                            </li>
+                        </ul>
+                        <p class="mt-3 text-[13px] text-muted">Original quality and file names are kept.</p>
+                    </template>
                 </template>
 
-                <p class="mt-3 flex items-start justify-center gap-1.5 text-center text-[13px] text-muted">
+                <p v-if="!(result.encrypted && (result.type === 'file' || result.type === 'transfer'))" class="mt-3 flex items-start justify-center gap-1.5 text-center text-[13px] text-muted">
                     <TsnIcon name="trash" class="mt-px h-3.5 w-3.5 shrink-0" stroke="1.8" />
                     <span v-if="result.type === 'text' && result.readsLeft === null">Available until the sender's expiry time.</span>
                     <span v-else-if="result.type === 'text' && result.readsLeft > 0">Read {{ result.readsLeft }} more time{{ result.readsLeft === 1 ? "" : "s" }} before it's deleted.</span>
@@ -127,7 +168,13 @@
                     <span v-else>Deleted from our server. Code {{ result.code }} won't work again.</span>
                 </p>
 
-                <button type="button" class="btn-ghost mt-4 w-full" @click="reset">Enter another code</button>            </div>
+                <button type="button" class="btn-ghost mt-4 w-full" @click="reset">Enter another code</button>
+
+                <div v-if="error" class="mx-auto mt-5 max-w-md rounded-lg border border-bad/30 bg-bad-soft px-4 py-3 text-left text-[14px]" role="alert">
+                    <p class="font-semibold text-bad">{{ error.title }}</p>
+                    <p class="mt-0.5 text-ink/75">{{ error.body }}</p>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -140,6 +187,7 @@
  */
 import { hashPassword, hashLegacyPassword } from "~/utils/hash.js";
 import { decryptText, derivePasswordMix, createPassphrase, shareKeyFor, rememberShareKey, forgetShareKey, keyFromLink } from "~/utils/e2e.js";
+import { decryptFile } from "~/utils/fileE2e.js";
 
 const props = defineProps({
     initialCode: { type: String, default: "" },
@@ -155,6 +203,8 @@ const loading = ref(false);
 const error = ref(null);
 const shake = ref(false);
 const result = ref(null);
+const busyFile = ref("");
+const downloadingSingle = ref(false);
 const inputEl = ref(null);
 const slots = ref([]);
 
@@ -325,6 +375,7 @@ async function getTransfer(code, strict = false) {
         throw new Error("Couldn't load that transfer. Please try again.");
     }
 
+    const encrypted = data?.enc === true || data?.enc === 1 || data?.enc === "1" || !!shareKeyFor(code);
     const files = (Array.isArray(data?.files) ? data.files : [])
         .filter((file) => file && file.id && file.name)
         .map((file) => ({
@@ -332,12 +383,19 @@ async function getTransfer(code, strict = false) {
             name: String(file.name),
             path: String(file.path || file.name),
             size: Number(file.size) || 0,
+            csize: Number(file.csize) || 0,
         }));
     if (!files.length) return null;
+    if (encrypted && !shareKeyFor(code)) {
+        const err = new Error("no key");
+        err.code = "NOKEY";
+        throw err;
+    }
 
     return {
         type: "transfer",
         code: String(data.code || code),
+        encrypted,
         files,
         count: files.length,
         bytes: Number(data.bytes) || files.reduce((sum, file) => sum + file.size, 0),
@@ -349,6 +407,20 @@ async function getFile(code) {
     if (!head) throw new Error("Couldn't reach TextShareNow. Check your internet connection and try again.");
     if (head.status === 404) return null;
     if (!head.ok) throw new Error("The download didn't start. Please try again.");
+
+    const marker = head.headers.get("x-tsn-encrypted");
+    const encrypted = marker ? marker === "1" || marker.toLowerCase() === "true" : !!shareKeyFor(code);
+    if (encrypted) {
+        if (!shareKeyFor(code)) {
+            const err = new Error("no key");
+            err.code = "NOKEY";
+            throw err;
+        }
+        // Never navigate straight to the ciphertext: decrypt and save in the
+        // browser, then acknowledge so the server can delete its copy.
+        return { type: "file", code, encrypted: true };
+    }
+
     window.location.href = `${FILES_API}/download/${code}`;
     return { type: "file", code };
 }
@@ -375,6 +447,11 @@ async function receive(kind, pwHash) {
         if (!res && kind !== "text" && kind !== "file") res = await getTransfer(code, kind === "transfer");
         if (!res && kind !== "text" && kind !== "transfer") res = await getFile(code);
         if (!res) return fail(...NOT_FOUND);
+        if (res.encrypted && res.type !== "text" && !shareKeyFor(res.code || code)) {
+            const err = new Error("no key");
+            err.code = "NOKEY";
+            throw err;
+        }
         passwordNeeded.value = false;
         passwordError.value = "";
         result.value = res;
@@ -434,6 +511,107 @@ async function unlock() {
     }
 }
 
+function saveBlob(blob, name, type) {
+    const download = new Blob([blob], { type: type || "application/octet-stream" });
+    const url = URL.createObjectURL(download);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name || "download.bin";
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
+async function ackFile(url) {
+    const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+    });
+    if (!res.ok) throw new Error("The file downloaded, but we couldn't confirm deletion. Try again before closing this page.");
+}
+
+async function downloadSingleFile() {
+    if (downloadingSingle.value || result.value?.type !== "file") return;
+    downloadingSingle.value = true;
+    error.value = null;
+    const code = result.value.code;
+    try {
+        const key = shareKeyFor(code);
+        if (!key) {
+            const err = new Error("no key");
+            err.code = "NOKEY";
+            throw err;
+        }
+        const res = await fetch(`${FILES_API}/download/${encodeURIComponent(code)}`, { cache: "no-store" });
+        if (!res.ok) throw new Error("The download didn't start. The link may have expired.");
+        let decrypted;
+        try {
+            decrypted = await decryptFile(await res.blob(), key);
+        } catch {
+            const err = new Error("bad key");
+            err.code = "BADKEY";
+            throw err;
+        }
+        saveBlob(decrypted.blob, decrypted.name, decrypted.type);
+        await ackFile(`${FILES_API}/download/${encodeURIComponent(code)}/ack`);
+        result.value = { ...result.value, downloaded: true, name: decrypted.name };
+    } catch (e) {
+        if (e?.code === "NOKEY") {
+            fail("Encrypted link incomplete", "This file is end-to-end encrypted. Ask the sender to send the full link, including the part after the #.");
+        } else if (e?.code === "BADKEY") {
+            fail("Can't decrypt this file", "The key in this link doesn't match this file. Ask the sender to copy the full link again.");
+        } else {
+            fail("Couldn't download that file", e.message);
+        }
+    } finally {
+        downloadingSingle.value = false;
+    }
+}
+
+async function downloadTransferFile(file) {
+    if (busyFile.value || result.value?.type !== "transfer") return;
+    busyFile.value = file.id;
+    error.value = null;
+    const code = result.value.code;
+    try {
+        const key = shareKeyFor(code);
+        if (!key) {
+            const err = new Error("no key");
+            err.code = "NOKEY";
+            throw err;
+        }
+        const res = await fetch(transferFileUrl(file), { cache: "no-store" });
+        if (!res.ok) throw new Error("That file is no longer available. It may have been downloaded already.");
+        let decrypted;
+        try {
+            decrypted = await decryptFile(await res.blob(), key);
+        } catch {
+            const err = new Error("bad key");
+            err.code = "BADKEY";
+            throw err;
+        }
+        saveBlob(decrypted.blob, decrypted.name || file.name, decrypted.type);
+        await ackFile(`${FILES_API}/transfer/${encodeURIComponent(code)}/file/${encodeURIComponent(file.id)}/ack`);
+
+        const files = result.value.files.filter((f) => f.id !== file.id);
+        const bytes = files.reduce((sum, f) => sum + f.size, 0);
+        result.value = { ...result.value, files, count: files.length, bytes };
+    } catch (e) {
+        if (e?.code === "NOKEY") {
+            fail("Encrypted link incomplete", "This transfer is end-to-end encrypted. Ask the sender to send the full link, including the part after the #.");
+        } else if (e?.code === "BADKEY") {
+            fail("Can't decrypt this file", "The key in this link doesn't match this file. Ask the sender to copy the full link again.");
+        } else {
+            fail("Couldn't download that file", e.message);
+        }
+    } finally {
+        busyFile.value = "";
+    }
+}
+
 function formatBytes(bytes) {
     if (!bytes) return "0 B";
     if (bytes < 1024) return `${bytes} B`;
@@ -442,7 +620,7 @@ function formatBytes(bytes) {
 }
 
 const transferZipUrl = computed(() => {
-    if (result.value?.type !== "transfer") return "";
+    if (result.value?.type !== "transfer" || result.value.encrypted) return "";
     return `${FILES_API}/transfer/${encodeURIComponent(result.value.code)}/zip`;
 });
 
@@ -453,6 +631,9 @@ function transferFileUrl(file) {
 
 function reset() {
     result.value = null;
+    busyFile.value = "";
+    downloadingSingle.value = false;
+    error.value = null;
     value.value = "";
     passwordNeeded.value = false;
     password.value = "";

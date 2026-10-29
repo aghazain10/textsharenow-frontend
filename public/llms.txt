@@ -15,7 +15,7 @@
 
 TextShareNow is a free, browser-based tool for instantly transferring text, links, and notes between any devices using short 5-character codes. It eliminates the need to email yourself, use messaging apps, or rely on ecosystem-specific tools like AirDrop. The entire transfer takes under 10 seconds.
 
-The same short-code flow also handles files: upload a photo, screenshot, or short video (PNG, JPEG, WebP, MP4, WebM — up to 10 MB), get a code, and download it on the other device. Files are scanned for malware and deleted after the first download or when their timer ends.
+The same short-code flow also handles files: upload a photo, screenshot, or short video (PNG, JPEG, WebP, MP4, WebM — up to 10 MB), get a code, and download it on the other device. Standard uploads are scanned for malware and deleted after the first download or when their timer ends. An optional Private file mode encrypts file contents in the browser with AES-256-GCM; the key stays in the link fragment, file names/sizes/paths remain visible, and encrypted contents cannot be scanned.
 
 ## How It Works
 
@@ -34,11 +34,12 @@ The same short-code flow also handles files: upload a photo, screenshot, or shor
 - **Character Limit**: Up to 10,000 characters per transfer
 - **Encrypted**: HTTPS/TLS in transit, AES-256-GCM at rest
 - **Zero-Knowledge Option**: "Encrypt Now" encrypts text in the browser (AES-256-GCM); the key stays in the link fragment (`#k=`) and never reaches the server. Private shares must be opened with the full link, not just the code.
+- **Private File Mode**: "Encrypt files" encrypts file contents in the browser (AES-256-GCM). The key stays in the link fragment; the server stores ciphertext and cannot read or scan it. File names, types, sizes, and folder paths remain visible. Encrypted transfers download one file at a time.
 - **Secure**: Rate limiting prevents brute-force code enumeration; 10 wrong passwords deletes a protected share
 - **Code Space**: Over 33 million possible 5-character combinations
 - **File Sharing**: Photos, screenshots, and short videos up to 10 MB (PNG, JPEG, WebP, MP4, WebM)
 - **File Deletion**: Files are deleted after the first download or when their 10 min / 30 min / 1 h timer ends
-- **Malware Scanning**: Every uploaded file is scanned with ClamAV before it becomes downloadable
+- **Malware Scanning**: Standard uploads are scanned with ClamAV before becoming downloadable. End-to-end encrypted file contents cannot be scanned
 - **Optional Pro**: $5/month for 100,000 characters, 100 MB files, longer expiry, multi-reads, passwords, custom codes, a My Shares dashboard, plus API and MCP access
 
 ## Technology Stack
@@ -121,9 +122,10 @@ The same short-code flow also handles files: upload a photo, screenshot, or shor
 
 - Text is stored encrypted at rest (10 minutes to 30 days, or never if the sender chooses on Pro) and deleted after the read limit
 - Private mode encrypts text in the browser; the server stores ciphertext it cannot decrypt and never receives the key
-- Files are stored only until the first download or their timer, then permanently deleted
-- Every uploaded file is scanned with ClamAV before becoming downloadable
-- All data encrypted in transit (HTTPS/TLS) and at rest
+- Files are stored only until the first download (or, for private files, after download + decryption acknowledgement) or their timer, then permanently deleted
+- Standard uploads are scanned with ClamAV before becoming downloadable; private file contents are browser-encrypted and cannot be scanned
+- Private file mode encrypts contents in the browser; the key never reaches the server. File names, types, sizes, and folder paths remain visible
+- All traffic is encrypted in transit (HTTPS/TLS). Text is encrypted at rest; standard files are stored on an access-controlled server, while private file contents are ciphertext
 - No account or email required; an optional Pro license key unlocks paid features (Gumroad returns the license email, cached with the license check for up to 24 hours, never used for marketing)
 - Rate limiting prevents brute-force code attempts
 - Security events (failed passwords, burned shares) are logged for up to 7 days without content or IP addresses
@@ -195,7 +197,7 @@ A: Yes. Pro includes a Bearer-token HTTP API and the `textsharenow-mcp` server f
 A: Yes. Pro includes a My Shares dashboard at /my-shares. It lists active text shares tied to your license, with remaining reads, expiry, copy-link, and delete controls. No account is needed.
 
 **Q: Can I share files or images?**
-A: Yes. PNG, JPEG, WebP, MP4, and WebM files up to 10 MB. Files are scanned for malware and deleted after the first download or when their timer ends.
+A: Yes. PNG, JPEG, WebP, MP4, and WebM files up to 10 MB. Standard uploads are scanned for malware; an optional Private file mode encrypts contents in the browser (not scannable). Files are deleted after download or when their timer ends.
 
 **Q: Is my text stored on your servers?**
 A: Only temporarily. Free shares last at most 1 hour; Pro shares follow the chosen expiry (up to 30 days or never) or the read limit, then are permanently deleted.

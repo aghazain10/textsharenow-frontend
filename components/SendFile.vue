@@ -40,7 +40,7 @@
                 <button type="button" class="btn-ghost !h-9 !px-3 !text-[13px]" @click="pickFolder">
                     <TsnIcon name="folder" class="h-4 w-4" stroke="1.8" />Choose a folder
                 </button>
-                <span class="text-[12px] text-muted">Folder paths are kept in the download.</span>
+                <span class="text-[12px] text-muted">{{ encryptFiles ? "Folder paths stay visible; encrypted files download one at a time." : "Folder paths are kept in the download." }}</span>
                 <input ref="folderInput" type="file" class="sr-only" webkitdirectory directory multiple @change="onFolderPick" />
             </div>
 
@@ -61,8 +61,17 @@
                 </ul>
             </template>
 
+            <p v-if="encryptFiles && items.length" class="mt-3 flex items-start gap-1.5 text-[12px] text-muted">
+                <TsnIcon name="lock" class="mt-0.5 h-3.5 w-3.5 shrink-0" stroke="1.8" />
+                <span>
+                    Contents are encrypted in your browser. File names and sizes stay visible, and encrypted files are
+                    <strong class="font-medium text-ink">not virus-scanned</strong> — share only with people you trust.
+                    Recipients must open the full link, not the 5-character code.
+                </span>
+            </p>
+
             <div v-if="uploading" class="mt-3 rounded-lg border border-line p-4">
-                <div class="flex justify-between text-[13px] font-medium"><span>{{ isTransferSelection ? "Uploading files" : "Uploading" }}</span><span class="tabular-nums text-muted">{{ progress }}%</span></div>
+                <div class="flex justify-between text-[13px] font-medium"><span>{{ phase === "encrypting" ? "Encrypting files" : isTransferSelection ? "Uploading files" : "Uploading" }}</span><span class="tabular-nums text-muted">{{ progress }}%</span></div>
                 <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-2">
                     <div class="h-full origin-left rounded-full bg-brand transition-transform" :style="{ transform: `scaleX(${progress / 100})` }" />
                 </div>
@@ -82,13 +91,45 @@
                     <p class="text-[13px] text-muted">{{ isTransferSelection ? "Each file is deleted after its first download." : "Deleted after one download." }}</p>
                     <ExpirySelect v-model="expires" :options="FILE_EXPIRY_OPTIONS" />
                 </div>
-                <button type="button" class="btn-primary ml-auto" :disabled="!items.length || uploading" @click="upload">
-                    {{ uploading ? "Uploading…" : "Generate code" }}
-                </button>
+                <div class="ml-auto flex flex-wrap items-center justify-end gap-2.5">
+                    <button
+                        type="button"
+                        role="switch"
+                        :aria-checked="encryptFiles"
+                        :disabled="uploading"
+                        title="Encrypt file contents in your browser. Recipients must open the full link; encrypted files cannot be virus-scanned."
+                        class="inline-flex items-center gap-2 rounded-md border border-line px-2.5 py-1.5 text-[13px] font-medium text-muted transition-colors hover:text-ink disabled:opacity-60"
+                        @click="encryptFiles = !encryptFiles"
+                    >
+                        <span
+                            class="relative inline-block h-4 w-7 shrink-0 rounded-full transition-colors"
+                            :class="encryptFiles ? 'bg-ink' : 'bg-line'"
+                            aria-hidden="true"
+                        >
+                            <span
+                                class="absolute left-[2px] top-[2px] h-3 w-3 rounded-full transition-transform"
+                                :class="encryptFiles ? 'translate-x-[14px] bg-bg' : 'translate-x-0 bg-muted'"
+                            />
+                        </span>
+                        <span :class="encryptFiles ? 'text-ink' : ''">Encrypt files</span>
+                    </button>
+                    <button type="button" class="btn-primary" :disabled="!items.length || uploading" @click="upload">
+                        {{ uploading ? (phase === "encrypting" ? "Encrypting…" : "Uploading…") : (encryptFiles ? "Encrypt & share" : "Generate code") }}
+                    </button>
+                </div>
             </div>
         </div>
 
-        <CodeResult v-else :code="code" :ttl="resultTtl" :qr-url="qrUrl" :kind="resultKind" :file-count="resultCount" @reset="reset" />
+        <CodeResult
+            v-else
+            :code="code"
+            :ttl="resultTtl"
+            :qr-url="qrUrl"
+            :kind="resultKind"
+            :file-count="resultCount"
+            :encrypted="resultEncrypted"
+            @reset="reset"
+        />
     </div>
 </template>
 
@@ -104,6 +145,8 @@ import {
     PRO_FILE_LABEL,
 } from "~/utils/premium.js";
 import { isBlockedFile, normalizeTransferPath } from "~/utils/filePolicy.js";
+import { encryptFile } from "~/utils/fileE2e.js";
+import { generateShareKey } from "~/utils/e2e.js";
 
 const config = useRuntimeConfig();
 const API_URL = config.public.FILES_API_URL;
@@ -123,6 +166,9 @@ const expires = ref(DEFAULT_EXPIRY);
 const resultTtl = ref(DEFAULT_EXPIRY);
 const resultKind = ref("file");
 const resultCount = ref(1);
+const resultEncrypted = ref(false);
+const encryptFiles = ref(false);
+const phase = ref("");
 let itemSeq = 0;
 
 const maxSize = computed(() => (isPro.value ? PRO_MAX_FILE : FREE_MAX_FILE));
@@ -288,49 +334,94 @@ async function upload() {
     uploading.value = true;
     error.value = "";
     progress.value = 0;
+    phase.value = "";
+    const encrypt = encryptFiles.value;
 
     try {
         const transfer = isTransferSelection.value;
-        let result;
+        const shareKey = encrypt ? generateShareKey() : "";
+        const prepared = [];
 
+        if (encrypt) {
+            phase.value = "encrypting";
+            let done = 0;
+            let encryptedTotal = 0;
+            for (const item of items.value) {
+                let blob;
+                try {
+                    blob = await encryptFile(item.file, shareKey);
+                } catch {
+                    error.value = "Couldn't encrypt that file in this browser. Try a smaller file or a different browser.";
+                    return;
+                }
+                // The ticket allows a little ciphertext overhead on top of the
+                // normal plaintext caps (64 KB per file, 1 MB per transfer).
+                if (blob.size > maxSize.value + 65536 || encryptedTotal + blob.size > maxTotal.value + 1048576) {
+                    error.value = "This encrypted selection is slightly over the limit. Remove a file and try again.";
+                    return;
+                }
+                prepared.push({ item, blob, csize: blob.size });
+                encryptedTotal += blob.size;
+                done += item.file.size;
+                progress.value = Math.round((done / Math.max(1, totalBytes.value)) * 100);
+            }
+            phase.value = "uploading";
+            progress.value = 0;
+        } else {
+            for (const item of items.value) prepared.push({ item, blob: item.file, csize: item.file.size });
+        }
+
+        const manifest = prepared.map(({ item, csize }) => ({
+            name: item.file.name,
+            type: item.file.type || "application/octet-stream",
+            size: item.file.size,
+            ...(encrypt ? { csize } : {}),
+            path: item.path,
+        }));
+
+        let result;
         if (transfer) {
             const ticket = await $fetch(`${config.public.API_BASE}/api/pro/transfer-ticket`, {
                 method: "POST",
-                body: {
-                    expires: expires.value,
-                    files: items.value.map((item) => ({
-                        name: item.file.name,
-                        type: item.file.type || "application/octet-stream",
-                        size: item.file.size,
-                        path: item.path,
-                    })),
-                },
+                body: { expires: expires.value, enc: encrypt, files: manifest },
             });
 
             const form = new FormData();
             form.append("ticket", ticket.ticket);
             form.append("expires", String(expires.value));
-            form.append("manifest", JSON.stringify(items.value.map((item) => ({
-                name: item.file.name,
-                type: item.file.type || "application/octet-stream",
-                size: item.file.size,
-                path: item.path,
-            }))));
-            for (const item of items.value) form.append("files", item.file, item.file.name);
+            form.append("manifest", JSON.stringify(manifest));
+            if (encrypt) form.append("enc", "1");
+            for (const file of prepared) form.append("files", file.blob, file.item.file.name);
             result = await sendForm(form, `${API_URL}/transfer`);
         } else {
-            const item = items.value[0];
+            const file = prepared[0];
             const form = new FormData();
-            form.append("file", item.file);
+            form.append("file", file.blob, file.item.file.name);
             form.append("expires", String(expires.value));
+            if (encrypt) form.append("enc", "1");
+
             if (isPro.value) {
                 const ticket = await $fetch(`${config.public.API_BASE}/api/pro/upload-ticket`, {
                     method: "POST",
                     body: {
                         expires: expires.value,
-                        size: item.file.size,
-                        name: item.file.name,
-                        type: item.file.type,
+                        size: file.csize,
+                        name: file.item.file.name,
+                        type: file.item.file.type,
+                        enc: encrypt,
+                    },
+                });
+                form.append("ticket", ticket.ticket);
+            } else if (encrypt) {
+                // Free E2E still needs a server-issued ticket so the files
+                // service can trust the mode instead of the form field.
+                const ticket = await $fetch(`${config.public.API_BASE}/api/e2e-upload-ticket`, {
+                    method: "POST",
+                    body: {
+                        expires: expires.value,
+                        size: file.csize,
+                        name: file.item.file.name,
+                        type: file.item.file.type,
                     },
                 });
                 form.append("ticket", ticket.ticket);
@@ -342,8 +433,9 @@ async function upload() {
         resultTtl.value = Number(result.expires_in) || expires.value;
         resultKind.value = transfer ? "transfer" : "file";
         resultCount.value = count;
+        resultEncrypted.value = !!shareKey;
         code.value = result.code;
-        qrUrl.value = `${window.location.origin}/r?${transfer ? "tcode" : "fcode"}=${result.code}`;
+        qrUrl.value = `${window.location.origin}/r?${transfer ? "tcode" : "fcode"}=${result.code}${shareKey ? `#k=${shareKey}` : ""}`;
         $fetch(`${config.public.API_BASE}/api/file-share`, {
             method: "POST",
             body: { count },
@@ -356,9 +448,9 @@ async function upload() {
         }
     } finally {
         uploading.value = false;
+        phase.value = "";
     }
 }
-
 function reset() {
     clear();
     code.value = "";
@@ -367,5 +459,7 @@ function reset() {
     resultTtl.value = expires.value;
     resultKind.value = "file";
     resultCount.value = 1;
+    resultEncrypted.value = false;
+    encryptFiles.value = false;
 }
 </script>

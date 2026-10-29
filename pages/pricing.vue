@@ -120,9 +120,9 @@
 
                 <p class="mt-8 max-w-[68ch] text-[16px] leading-7 text-muted">
                     Both plans share the same engine: instant 5-character codes, QR codes and shareable links, malware
-                    scanning, no account required, and content that is deleted from our servers when its read limit or
-                    timer is reached. Both also include Private mode — text encrypted in your browser with a key we
-                    never see. Pro only raises the ceilings.
+                    scanning for standard uploads, no account required, and content that is deleted from our servers when
+                    its read limit or timer is reached. Both also include Private mode — text and file contents encrypted
+                    in your browser with a key we never see. Pro only raises the ceilings.
                 </p>
             </div>
         </section>
@@ -309,13 +309,14 @@ const freeFeatures = [
     "Expiry: 10 minutes, 30 minutes or 1 hour",
     "Single-use codes — deleted after one read",
     "QR code and shareable link for every code",
-    "Optional Private mode — encrypted in your browser",
-    "Malware scanning on every file",
+    "Optional Private mode — text and file contents encrypted in your browser",
+    "Malware scanning on standard uploads",
     "No account, no sign-up, no data resale",
 ];
 
 const proFeatures = [
     "Everything in Free, plus:",
+    "Encrypted file transfers (contents end-to-end encrypted)",
     "Up to 100,000 characters per share (10×)",
     "Up to 20 files, 100 MB total — any non-executable type",
     "Expiry: 1 day, 7 days, 30 days — or never",
@@ -336,12 +337,12 @@ const compareRows = [
     ["Share expiry", ["text", "10 min, 30 min, 1 h"], ["text", "10 min – 30 days, or never"]],
     ["Reads per share", ["text", "1 (single-use)"], ["text", "1, 5, 10 or unlimited"]],
     ["Password protection", ["bad", "Not included"], ["good", "Included"]],
-    ["Private (zero-knowledge) mode", ["good", "Included"], ["good", "Included"]],
+    ["Private mode (E2E text + file contents)", ["good", "Included"], ["good", "Included"]],
     ["Custom code", ["text", "Random 5 characters"], ["good", "Any available name"]],
     ["API & MCP", ["text", "Free-plan limits only"], ["good", "Full Pro limits + MCP server"]],
     ["My Shares dashboard", ["bad", "Not included"], ["good", "List, copy and delete active links"]],
     ["QR code + share link", ["good", "Included"], ["good", "Included"]],
-    ["Malware scanning", ["good", "Included"], ["good", "Included"]],
+    ["Malware scanning (standard uploads)", ["good", "Included"], ["good", "Included"]],
     ["Manage or cancel", ["text", "Nothing to manage"], ["good", "Cancel anytime"]],
 ];
 

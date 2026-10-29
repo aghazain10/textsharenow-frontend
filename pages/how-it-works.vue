@@ -38,7 +38,7 @@
             <h2 class="text-[26px] font-semibold tracking-[-0.03em] text-ink">Share Files Between Devices: Photos, Screenshots, Short Videos</h2>
             <p class="mt-4 text-[16px] leading-7 text-muted">
               The file flow works the same way: upload on one device, get a 5-character code, type it on the other device, download.
-              Files are single-use, scanned for malware, and deleted after the first download or when their timer ends — 10 minutes,
+              Files are single-use, standard uploads are scanned for malware (Private file mode is browser-encrypted and cannot be scanned), and files are deleted after the first download (or decryption acknowledgement in Private mode) or when their timer ends — 10 minutes,
               30 minutes or 1 hour on the free plan, up to 30 days with Pro. For supported formats, size limits, and a step-by-step walkthrough, see the
               <NuxtLink to="/share-files-online" class="text-link">share files online guide</NuxtLink>.
             </p>
@@ -79,7 +79,7 @@ const laptopToPhoneSteps = [
 const fileShareSteps = [
   { title: 'Open TextShareNow and switch to the Share Files tab', detail: 'Click "Share Files" at the top of the tool on your sending device.' },
   { title: 'Select Send File', detail: 'Drag and drop a file or click to browse. Accepted types: PNG, JPEG, WebP, MP4, WebM (max 10 MB).' },
-  { title: 'Upload and get your code', detail: 'The file is uploaded, scanned for malware, and a 5-character code is generated. You choose the expiry: 10 min to 30 days (Pro).' },
+  { title: 'Upload and get your code', detail: 'The file is uploaded, a 5-character code is generated, and you choose the expiry: 10 min to 30 days (Pro). Standard uploads are scanned for malware; Private file mode encrypts contents in your browser instead.' },
   { title: 'Open Share Files on the receiving device', detail: 'Switch to the Share Files tab on the other device.' },
   { title: 'Select Receive File and enter the code', detail: 'Type the code and click Download. The file downloads directly to your device with the correct filename.' },
 ]

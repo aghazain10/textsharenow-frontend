@@ -64,7 +64,8 @@ const sections = [
                 type: "ul",
                 items: [
                     "Text content you submit is temporarily stored only to fulfil the transfer request.",
-                    "Files you upload are temporarily stored only to fulfil the transfer request and are scanned for malware before becoming available. The free plan accepts PNG, JPEG, WebP, MP4 and WebM files up to 10 MB. Pro accepts up to 20 files and 100 MB total per transfer (any non-executable file type, up to 100 MB per file), within a per-license storage allowance. Multi-file transfers also store the original file names and folder paths so the recipient can download them correctly.",
+                    "Files you upload are temporarily stored only to fulfil the transfer request. Standard uploads are scanned for malware before becoming available. Private file mode encrypts the contents in your browser; we store ciphertext, never receive the key, and cannot scan the contents. File names, MIME types, sizes, and folder paths remain visible in both modes.",
+                    "The free plan accepts PNG, JPEG, WebP, MP4 and WebM files up to 10 MB. Pro accepts up to 20 files and 100 MB total per transfer (any non-executable file type, up to 100 MB per file), within a per-license storage allowance. Multi-file transfers also store the original file names and folder paths so the recipient can download them correctly.",
                     "If you activate Pro, the license key you enter is stored in a signed, http-only cookie on your device for up to 30 days, and a SHA-256 hash of the key is cached on our servers for up to 24 hours so we do not have to contact Gumroad on every request. We send the key to Gumroad to verify the subscription. When you use the API or MCP server, the key is sent with each request and verified the same way.",
                     "For Pro text shares, we keep a private receipt of event times (created, opened, read, and closed) so you can see how a share was accessed. Receipts do not include IP addresses, device data, or the shared text, are deleted 90 days after the share closes, and never-expiring shares keep a one-year receipt window.",
                     "We do not ask for your name, phone number, or an account to use the tool. If you activate Pro, Gumroad returns the email address associated with the license; we cache it with the license check for up to 24 hours and never use it for marketing or share it.",
@@ -83,11 +84,11 @@ const sections = [
             },
             {
                 type: "p",
-                text: "When you upload a file, it is stored on a dedicated server. Free uploads use the same TTL choices: 10 minutes, 30 minutes or 1 hour. Pro uploads can be kept for 1 day, 7 days or 30 days. All uploaded files are scanned for malware using ClamAV before becoming available for download. Files that fail the malware scan are immediately deleted and are never served.",
+                text: "When you upload a file, it is stored on a dedicated server. Free uploads use the same TTL choices: 10 minutes, 30 minutes or 1 hour. Pro uploads can be kept for 1 day, 7 days or 30 days. Standard uploads are scanned for malware using ClamAV before becoming available; files that fail the scan are deleted and never served. If you enable Private file mode, the contents are encrypted in your browser with AES-256-GCM before upload. We store only ciphertext and never receive the key, so we cannot read or scan the contents. File names, MIME types, sizes, and folder paths remain visible. Encrypted files are deleted after the recipient acknowledges decryption or when the timer ends.",
             },
             {
                 type: "p",
-                text: "Free text shares are deleted immediately upon their first successful retrieval. Pro shares can allow 5, 10, or unlimited reads and are deleted when their read limit is reached or their timer ends, whichever comes first. Files are deleted after their first successful download or when their timer ends. Pro text shares set to never expire remain stored until their read limit is reached (if one applies) or until we remove them for a violation of our Terms; a Pro share with no expiry and unlimited reads remains stored indefinitely.",
+                text: "Free text shares are deleted immediately upon their first successful retrieval. Pro shares can allow 5, 10, or unlimited reads and are deleted when their read limit is reached or their timer ends, whichever comes first. Standard files are deleted after their first successful download or when their timer ends. Private files are deleted after the recipient downloads and acknowledges decryption, or when their timer ends. Pro text shares set to never expire remain stored until their read limit is reached (if one applies) or until we remove them for a violation of our Terms; a Pro share with no expiry and unlimited reads remains stored indefinitely.",
             },
             {
                 type: "p",
@@ -165,7 +166,7 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "All data in transit is encrypted using HTTPS/TLS, with HSTS enabled. Stored text is encrypted at rest with AES-256-GCM. In Private mode the text is also encrypted in your browser with a key we never receive. Uploaded files are stored on a dedicated server with strict access controls and are never served as static files.",
+                text: "All data in transit is encrypted using HTTPS/TLS, with HSTS enabled. Stored text is encrypted at rest with AES-256-GCM. In Private mode the text is also encrypted in your browser with a key we never receive. Uploaded files are stored on a dedicated server with strict access controls and are never served as static files. In Private file mode the contents are browser-encrypted before upload; we store only ciphertext and never receive the key.",
             },
             {
                 type: "p",
@@ -173,7 +174,7 @@ const sections = [
             },
             {
                 type: "p",
-                text: "All uploaded files are automatically scanned for malware using ClamAV before becoming available for download. Files that fail the scan are immediately deleted.",
+                text: "Standard uploads are automatically scanned for malware using ClamAV before becoming available for download; files that fail the scan are immediately deleted. Private file mode is end-to-end encrypted, so the server cannot scan the contents. Only open encrypted files from senders you trust.",
             },
             {
                 type: "p",

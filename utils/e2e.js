@@ -24,13 +24,13 @@ const KEY_RE = /^[A-Za-z0-9_-]{43}$/; // 32 bytes, base64url, unpadded
 
 // ── base64url ────────────────────────────────────────────────────────────────
 
-function toB64url(bytes) {
+export function toB64url(bytes) {
     let bin = "";
     for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
     return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
-function fromB64url(s) {
+export function fromB64url(s) {
     const b64 = s.replace(/-/g, "+").replace(/_/g, "/");
     const padded = b64 + "=".repeat((4 - (b64.length % 4)) % 4);
     const bin = atob(padded);
@@ -62,7 +62,9 @@ export function captureFragmentKey() {
     if (pair) return pair;
     try {
         const query = new URLSearchParams(window.location.search);
-        const code = (query.get("code") || "").trim();
+        // Text, single-file, and transfer links all carry their code in the
+        // query; the key stays in the fragment.
+        const code = (query.get("code") || query.get("fcode") || query.get("tcode") || "").trim();
         const m = (window.location.hash || "").match(/[#&]k=([A-Za-z0-9_-]+)/);
         if (code && m && KEY_RE.test(m[1])) {
             pair = { code: code.toLowerCase(), key: m[1] };

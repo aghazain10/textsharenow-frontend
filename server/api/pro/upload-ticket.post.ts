@@ -49,10 +49,14 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const expires = Number(body?.expires)
   const size = Number(body?.size)
+  const enc = body?.enc === true
   const name = typeof body?.name === 'string' ? body.name.slice(0, 255) : ''
   const type = typeof body?.type === 'string' ? body.type.slice(0, 100) : ''
+  // E2E ciphertext carries a small authenticated header and per-chunk tag.
+  // Give 64 KB of headroom so a 100 MB plaintext file can still be sent.
+  const maxBytes = enc ? PRO_MAX_FILE + 65536 : PRO_MAX_FILE
 
-  if (!Number.isInteger(size) || size <= 0 || size > PRO_MAX_FILE) {
+  if (!Number.isInteger(size) || size <= 0 || size > maxBytes) {
     throw createError({ statusCode: 422, message: `Pro uploads must be between 1 B and ${Math.floor(PRO_MAX_FILE / 1048576)} MB.` })
   }
   if (!FILE_TTLS.includes(expires)) {
@@ -82,10 +86,10 @@ export default defineEventHandler(async (event) => {
   }
 
   const ticket = randomBytes(32).toString('hex')
-  const payload = JSON.stringify({ mb: PRO_MAX_FILE, ttl: expires, size })
+  const payload = JSON.stringify({ v: 2, kind: 'file', mb: maxBytes, ttl: expires, size, enc })
   await redisCommand(config, ['SETEX', `fticket:${ticket}`, FILE_TICKET_TTL, payload])
 
   await reserveLedger(config, licenseKey, size, expires)
 
-  return { ticket, maxBytes: PRO_MAX_FILE, ttl: expires }
+  return { ticket, maxBytes, ttl: expires, enc }
 })

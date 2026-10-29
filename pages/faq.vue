@@ -234,7 +234,7 @@ const categories = [
       {
         question: 'What file types can I share?',
         answer:
-          'TextShareNow supports PNG, JPEG, WebP, MP4, and WebM files. Images are re-encoded from raw pixels for security before being stored. SVG files are explicitly rejected.',
+          'TextShareNow supports PNG, JPEG, WebP, MP4, and WebM files. Standard images are re-encoded from raw pixels for security before being stored. If you turn on Private file mode, the contents are encrypted in your browser first and are never re-encoded. SVG files are explicitly rejected.',
         link: {
           to: '/share-files-online',
           text: 'Share files online — free, no sign-up',
@@ -248,12 +248,21 @@ const categories = [
       {
         question: 'How long do files stay on the server?',
         answer:
-          'Files are available until the first download or until their timer ends — whichever comes first. The sender chooses 10 minutes, 30 minutes or 1 hour when uploading. After that, both the file and its metadata are permanently deleted. Files are never archived or backed up.',
+          'Standard files are available until the first download or until their timer ends — whichever comes first. Private files are deleted after you download and acknowledge decryption, or when the timer ends. The sender chooses 10 minutes, 30 minutes or 1 hour when uploading. After that, both the file and its metadata are permanently deleted. Files are never archived or backed up.',
       },
       {
         question: 'Are files scanned for malware?',
         answer:
-          'Yes. Every uploaded file is scanned with ClamAV before becoming available for download. Files that fail the scan are immediately rejected and deleted — they are never stored or served.',
+          'Standard uploads are scanned with ClamAV before becoming available for download; files that fail the scan are rejected and deleted. Private file mode is end-to-end encrypted, so the server cannot scan the contents. Only open encrypted files from people you trust.',
+      },
+      {
+        question: 'Are files end-to-end encrypted?',
+        answer:
+          'You choose. Standard uploads are encrypted in transit and scanned before serving. Turn on “Encrypt files” and your browser encrypts the contents with AES-256-GCM before upload; the key stays in the link after the # and never reaches us. File names, types, sizes, and folder paths remain visible, and encrypted contents cannot be virus-scanned. A Private file or transfer must be opened with the full link — the 5-character code alone will not work. Encrypted transfers download one file at a time.',
+        link: {
+          to: '/security',
+          text: 'How private file mode works',
+        },
       },
       {
         question: 'Can I download the same file more than once?',

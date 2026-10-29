@@ -49,6 +49,7 @@ export default defineEventHandler(async (event) => {
     maxFiles?: number
     owner?: string
     tid?: string
+    enc?: boolean
   }
   try {
     minted = JSON.parse(res.result)
@@ -82,6 +83,7 @@ export default defineEventHandler(async (event) => {
     ok: true,
     maxBytes,
     ttl,
+    enc: minted.enc === true,
     ...(isTransfer
       ? {
           kind: 'transfer',

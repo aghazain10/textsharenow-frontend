@@ -57,9 +57,10 @@
                         <h2 class="text-[26px] font-semibold tracking-[-0.03em] text-ink">What We Already Block</h2>
                         <ul class="mt-4 list-disc space-y-2 pl-5 marker:text-line">
                             <li>Executable files and installers are blocked on every plan, including Pro.</li>
-                            <li>Every uploaded file is scanned with ClamAV before it can be downloaded.</li>
+                            <li>Standard uploads are scanned with ClamAV before they can be downloaded.</li>
                             <li>Rate limits apply to code lookups and password attempts.</li>
                             <li>Pro uploads are capped by a per-license storage allowance.</li>
+                            <li>Private file contents are end-to-end encrypted and cannot be scanned — report them here and we will act on the share.</li>
                         </ul>
                         <p class="mt-4">
                             These controls catch most abuse automatically. Reports still help us find what slips

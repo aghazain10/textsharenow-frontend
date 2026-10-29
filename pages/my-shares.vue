@@ -155,7 +155,7 @@
                     </section>
 
                     <div class="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5 text-[13px] text-muted">
-                        <p>Text shares and multi-file transfers created with this license appear here. Single-file links are not listed yet. Receipts store event times only and are kept for 90 days after a share closes.</p>
+                        <p>Text shares and multi-file transfers created with this license appear here. Single-file links are not listed yet. Receipts store event times only and are kept for 90 days after a share closes. Private-mode keys live only in the full link — we do not store them, so copy the full link from the share screen; it cannot be recovered here.</p>
                         <button type="button" class="font-medium text-muted underline decoration-line underline-offset-4 hover:text-ink" @click="deactivatePro">
                             Deactivate Pro on this device
                         </button>

@@ -77,19 +77,22 @@
                         is the same: upload a file on one device, get a short
                         code, type it on the other device, and the file
                         downloads. No accounts, no apps, no cloud storage
-                        sitting around. Files are scanned for malware before
-                        becoming available, and automatically deleted after the
-                        first download or when the sender's timer ends — 10
-                        minutes, 30 minutes or 1 hour on the free plan, up to 30
-                        days with Pro — whichever comes first.
+                        sitting around. Standard files are scanned for malware
+                        before becoming available, and files are automatically
+                        deleted after the first download or when the sender's
+                        timer ends — 10 minutes, 30 minutes or 1 hour on the free
+                        plan, up to 30 days with Pro — whichever comes first.
+                        Private file mode encrypts contents in your browser
+                        instead, so the server cannot read or scan them.
                     </p>
                     <p class="mt-4">
                         Supported formats include PNG, JPEG, WebP, MP4, and
                         WebM, with a 10 MB size limit per file. Images are
-                        re-encoded from raw pixels for security. Every file is
-                        stored on a dedicated server with strict access
-                        controls — never served as static files, never indexed
-                        by search engines.
+                        re-encoded from raw pixels for security in standard
+                        mode; Private file mode leaves the encrypted bytes
+                        untouched. Every file is stored on a dedicated server
+                        with strict access controls — never served as static
+                        files, never indexed by search engines.
                     </p>
 
                     <h2 class="mt-12 border-t border-line pt-12 text-[26px] font-semibold tracking-[-0.03em] text-ink">Who Built This</h2>

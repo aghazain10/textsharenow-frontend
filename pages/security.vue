@@ -3,7 +3,7 @@
         <PageHero
             title="Security You Can Verify"
             meta="Security · Last reviewed October 2026"
-            lead="Private mode encrypts your text in the browser with a key our servers never receive. Standard shares are encrypted in transit and at rest. Here is exactly how both work, what we store, and what we cannot see."
+            lead="Private mode encrypts your text or file contents in the browser with a key our servers never receive. Standard shares are encrypted in transit and at rest. Here is exactly how both work, what we store, and what we cannot see."
         >
             <div class="mt-8 flex flex-wrap gap-3">
                 <NuxtLink to="/#tool" class="btn-primary">
@@ -192,14 +192,14 @@
                 <div class="mt-8 grid gap-6 md:grid-cols-2">
                     <ul class="grid gap-3 text-[15px] leading-6 text-muted">
                         <li class="flex gap-2"><TsnIcon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-ok" stroke="2.4" />TLS in transit and strict access controls on the storage server.</li>
-                        <li class="flex gap-2"><TsnIcon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-ok" stroke="2.4" />Every upload is scanned with ClamAV before it becomes downloadable; failing files are deleted.</li>
+                        <li class="flex gap-2"><TsnIcon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-ok" stroke="2.4" />Standard uploads are scanned with ClamAV before they become downloadable; failing files are deleted.</li>
                         <li class="flex gap-2"><TsnIcon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-ok" stroke="2.4" />Executables and installers are blocked on every plan.</li>
-                        <li class="flex gap-2"><TsnIcon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-ok" stroke="2.4" />Images are re-encoded from raw pixels, which strips EXIF metadata.</li>
+                        <li class="flex gap-2"><TsnIcon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-ok" stroke="2.4" />Standard images are re-encoded from raw pixels, which strips EXIF metadata.</li>
                     </ul>
                     <div class="rounded-xl border border-line bg-surface-2/60 p-5 text-[14px] leading-6 text-muted">
-                        <p class="font-medium text-ink">Honest limitation</p>
+                        <p class="font-medium text-ink">Private file mode</p>
                         <p class="mt-2">
-                            File contents are not end-to-end encrypted yet. They are encrypted in transit, scanned, access-controlled, and deleted after download or expiry — but the server can read them while stored. Browser-side file encryption is the next security milestone.
+                            Turn on “Encrypt files” and the browser encrypts the contents with AES-256-GCM before upload; the key stays in the link after the # and never reaches us. File names, MIME types, sizes, and folder paths remain visible. Encrypted contents cannot be virus-scanned, so only open files from people you trust. Standard uploads are scanned. Encrypted transfers download one file at a time because the server cannot build a plaintext ZIP. Lose the link and the file cannot be recovered.
                         </p>
                     </div>
                 </div>
@@ -285,13 +285,14 @@ const visibilityRows = [
     ["Standard text", "AES-256-GCM ciphertext at rest; decrypted at request time", "Yes — to deliver it"],
     ["Private text", "Ciphertext only; the key never reaches us", "No"],
     ["Private text + passphrase", "Ciphertext plus a salted hash of the key mix", "No — even with the database"],
-    ["Files", "The uploaded file on an access-controlled server", "Yes — for scanning and serving"],
+    ["Standard files", "File bytes on an access-controlled server, scanned before serving", "Yes — for scanning and serving"],
+    ["Private files", "Ciphertext only; the key never reaches us. Names, types, sizes, and paths remain visible", "No"],
     ["API / MCP text", "Standard-mode ciphertext at rest", "Yes — while processing"],
 ];
 
 const retentionRows = [
     ["Text shares (standard and private)", "Deleted at the read limit or when the timer ends — 10 minutes to 30 days, or never if the sender chooses"],
-    ["Files", "Deleted after their download or when the timer ends (10 minutes to 30 days)"],
+    ["Files", "Standard: deleted after download. Private: deleted after download + decryption acknowledgement. Either way, also when the timer ends (10 minutes to 30 days)"],
     ["Pro receipts", "Event times only (no IP or content) — 90 days after a share closes; never-expiring shares keep a one-year window"],
     ["Security events", "Event type, share code, and timestamp — 7 days"],
     ["Server logs", "IP address and timestamp — up to 7 days"],

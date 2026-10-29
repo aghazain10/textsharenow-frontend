@@ -63,15 +63,15 @@ const sections = [
             },
             {
                 type: "p",
-                text: "Pro also includes a My Shares dashboard plus a developer API and MCP server for programmatic text sharing. API and MCP requests authenticate with the Pro license key instead of a browser cookie, and the same content, expiry, read-limit, and password rules apply.",
+                text: "Pro also includes a My Shares dashboard plus a developer API and MCP server for programmatic text sharing. API and MCP requests authenticate with the Pro license key instead of a browser cookie, and the same content, expiry, read-limit, and password rules apply. Private file mode encrypts file contents in your browser; file names, types, sizes, and folder paths remain visible, and encrypted contents cannot be virus-scanned.",
             },
             {
                 type: "p",
-                text: "Free shares are automatically deleted after first retrieval or when their timer ends (10 minutes, 30 minutes or 1 hour), whichever occurs first. Pro shares can be configured with a longer expiry (1 day, 7 days, 30 days or never), multiple reads (5, 10 or unlimited), or both, and are deleted when their read limit is reached, when their timer ends, or after retrieval on single-read shares. A Pro share configured never to expire remains stored until its read limit is reached (if one applies) or until it is removed under these Terms. Files are automatically deleted after first download or when their timer ends, and file shares are available for up to 30 days on Pro. In a multi-file transfer, each file is deleted after its first download and the transfer ends when all files are gone or the timer ends. This is described in more detail in our Privacy Policy.",
+                text: "Free shares are automatically deleted after first retrieval or when their timer ends (10 minutes, 30 minutes or 1 hour), whichever occurs first. Pro shares can be configured with a longer expiry (1 day, 7 days, 30 days or never), multiple reads (5, 10 or unlimited), or both, and are deleted when their read limit is reached, when their timer ends, or after retrieval on single-read shares. A Pro share configured never to expire remains stored until its read limit is reached (if one applies) or until it is removed under these Terms. Standard files are automatically deleted after first download or when their timer ends; private files are deleted after download and decryption acknowledgement, or when their timer ends. File shares are available for up to 30 days on Pro. In a multi-file transfer, each file is deleted after its first download (or decryption acknowledgement for private files) and the transfer ends when all files are gone or the timer ends. This is described in more detail in our Privacy Policy.",
             },
             {
                 type: "p",
-                text: "Accepted file types for the free plan are limited to PNG, JPEG, WebP, MP4 and WebM, with a maximum size of 10 MB per file. Pro accepts up to 20 files and 100 MB total per transfer (any non-executable file type, up to 100 MB per file), within a per-license live storage allowance. Executable files and installers are blocked on every plan. All uploaded files are scanned for malware before becoming available for download.",
+                text: "Accepted file types for the free plan are limited to PNG, JPEG, WebP, MP4 and WebM, with a maximum size of 10 MB per file. Pro accepts up to 20 files and 100 MB total per transfer (any non-executable file type, up to 100 MB per file), within a per-license live storage allowance. Executable files and installers are blocked on every plan. Standard uploads are scanned for malware before becoming available for download. End-to-end encrypted file contents cannot be scanned and are not scanned.",
             },
         ],
     },
@@ -87,7 +87,7 @@ const sections = [
                 items: [
                     "Transmit content that is illegal, defamatory, obscene, or infringes on the rights of others.",
                     "Distribute malware, phishing links, or other malicious content.",
-                    "Upload files containing viruses, trojans, or other harmful code — all uploads are scanned and rejected if malware is detected.",
+                    "Upload files containing viruses, trojans, or other harmful code — standard uploads are scanned and rejected if malware is detected. Private file mode is not a way to distribute malware; abuse reports are acted on.",
                     "Upload executables, installers, or scripts designed to run automatically. These are blocked on every plan, including Pro.",
                     "Upload files that exceed the limits of your plan or use a format blocked on that plan (free: the five formats above up to 10 MB; Pro: up to 20 files / 100 MB total per transfer, any non-executable file up to 100 MB, within the storage allowance).",
                     "Circumvent storage caps, rate limits, or other restrictions by creating multiple licenses or accounts, or by automated means.",

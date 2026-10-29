@@ -17,4 +17,5 @@ export const FREE_MAX_READS = 1;
 // TTLs offered for file shares (seconds). The files service hard-caps free
 // uploads at 3600s; longer TTLs are authorized via an upload ticket.
 export const FILE_TTLS = [600, 1800, 3600, 86400, 604800, 2592000];
+export const FREE_FILE_TTLS = [600, 1800, 3600];
 export const FILE_TICKET_TTL = 600; // must upload within 10 minutes of minting

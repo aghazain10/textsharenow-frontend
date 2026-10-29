@@ -70,7 +70,10 @@
                     </div>
                     <p v-if="encrypted && !expired" class="mt-3 flex items-start gap-1.5 text-[13px] text-muted">
                         <TsnIcon name="lock" class="mt-0.5 h-3.5 w-3.5 shrink-0" stroke="1.9" />
-                        <span>Encrypted in your browser before sending — we can't read it. The 5-character code won't work: share the full link, including the part after the #.</span>
+                        <span>
+                            Encrypted in your browser before sending — we can't read it. The 5-character code won't work: share the full link, including the part after the #.
+                            <template v-if="kind !== 'text'"> File contents are not virus-scanned in this mode, so only open files from people you trust.</template>
+                        </span>
                     </p>
                 </div>
 
@@ -128,7 +131,7 @@ const props = defineProps({
     passwordSet: { type: Boolean, default: false },
     kind: { type: String, default: "text" }, // "text" | "file" | "transfer"
     fileCount: { type: Number, default: 0 },
-    encrypted: { type: Boolean, default: false }, // E2E text: full link required
+    encrypted: { type: Boolean, default: false }, // E2E text/file: full link required
 });
 defineEmits(["reset"]);
 
@@ -142,10 +145,12 @@ const left = ref(props.ttl);
 const expired = computed(() => !never.value && left.value <= 0);
 const readLabel = computed(() => {
     if (props.kind === "transfer") return `${props.fileCount || 1} ${props.fileCount === 1 ? "file" : "files"}`;
+    if (props.kind === "file") return "deleted after download";
     return props.maxReads === 0 ? "unlimited reads" : props.maxReads > 1 ? `${props.maxReads} reads` : "works once";
 });
 const bigReadLabel = computed(() => {
     if (props.kind === "transfer") return "Each file works once.";
+    if (props.kind === "file") return "Deleted after download.";
     return props.maxReads === 0 ? "Unlimited reads." : props.maxReads > 1 ? `Works up to ${props.maxReads} times.` : "Works once.";
 });
 const clock = computed(() => {

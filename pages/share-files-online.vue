@@ -25,12 +25,12 @@
 
             <p class="mx-auto mt-6 flex max-w-3xl items-center justify-center gap-2 text-center text-[13px] text-muted">
                 <TsnIcon name="lock" class="h-4 w-4 shrink-0" stroke="1.8" />
-                Files auto-delete after first download or expiry (10 min–1 h) · Scanned for malware
+                Files auto-delete after first download or expiry (10 min–1 h) · Standard uploads scanned
             </p>
             <ul class="mx-auto mt-3 flex max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-muted">
                 <li class="inline-flex items-center gap-1.5"><TsnIcon name="user-x" class="h-4 w-4" stroke="1.8" />No sign-up</li>
                 <li class="inline-flex items-center gap-1.5"><TsnIcon name="clock" class="h-4 w-4" stroke="1.8" />Files auto-delete after first download or expiry</li>
-                <li class="inline-flex items-center gap-1.5"><TsnIcon name="lock" class="h-4 w-4" stroke="1.8" />Scanned for malware</li>
+                <li class="inline-flex items-center gap-1.5"><TsnIcon name="lock" class="h-4 w-4" stroke="1.8" />Optional browser encryption</li>
                 <li class="inline-flex items-center gap-1.5"><TsnIcon name="globe" class="h-4 w-4" stroke="1.8" />Any browser, any device</li>
             </ul>
         </section>
@@ -134,7 +134,7 @@
                     </li>
                 </ul>
 
-                <p class="mt-6 max-w-[68ch] text-[15px] leading-7 text-muted">Maximum file size: 10 MB per file. All files are scanned for malware before becoming available.</p>
+                <p class="mt-6 max-w-[68ch] text-[15px] leading-7 text-muted">Maximum file size: 10 MB per file. Standard uploads are scanned for malware before becoming available. Private file contents are browser-encrypted and cannot be scanned.</p>
             </div>
         </section>
 
@@ -259,12 +259,12 @@ const advantages = [
     {
         icon: 'clock',
         title: 'Auto-Delete After Download',
-        desc: 'Each file is single-use. After the first download or when its timer ends — 10 min, 30 min, 1 h, or up to 30 days with Pro — it\'s permanently deleted. No archives, no backups.',
+        desc: 'Each file is single-use. After the first download (or decryption acknowledgement in Private mode) or when its timer ends — 10 min, 30 min, 1 h, or up to 30 days with Pro — it\'s permanently deleted. No archives, no backups.',
     },
     {
         icon: 'lock',
         title: 'Malware Scanned',
-        desc: 'Every file is scanned with ClamAV before it becomes available. Infected files are rejected immediately.',
+        desc: 'Standard uploads are scanned with ClamAV before they become available. Private-mode contents are browser-encrypted and cannot be scanned.',
     },
     {
         icon: 'phone',
@@ -288,7 +288,7 @@ const faqs = [
     },
     {
         q: 'What file types are supported?',
-        a: 'We support PNG, JPEG, WebP, MP4, and WebM. Images are re-encoded from raw pixels for security. SVG files are explicitly rejected.',
+        a: 'We support PNG, JPEG, WebP, MP4, and WebM. Standard images are re-encoded from raw pixels for security. In Private file mode the contents are encrypted in your browser and are not re-encoded. SVG files are explicitly rejected.',
     },
     {
         q: 'What is the maximum file size?',
@@ -296,11 +296,15 @@ const faqs = [
     },
     {
         q: 'How long does a file stay on the server?',
-        a: 'Files are available until the first download or until their timer ends — whichever comes first. The sender chooses 10 minutes, 30 minutes or 1 hour on the free plan (up to 30 days with Pro). After that, the file and its metadata are permanently deleted.',
+        a: 'Standard files are available until the first download or until their timer ends. Private files are deleted after download and decryption acknowledgement, or when the timer ends. The sender chooses 10 minutes, 30 minutes or 1 hour on the free plan (up to 30 days with Pro). After that, the file and its metadata are permanently deleted.',
     },
     {
         q: 'Are files scanned for malware?',
-        a: 'Yes. Every uploaded file is scanned with ClamAV antivirus before becoming available for download. Files that fail the scan are immediately rejected and deleted.',
+        a: 'Standard uploads are scanned with ClamAV antivirus before becoming available for download; files that fail the scan are rejected and deleted. Private file mode is end-to-end encrypted, so the contents cannot be scanned. Only open encrypted files from people you trust.',
+    },
+    {
+        q: 'Are files end-to-end encrypted?',
+        a: 'You choose. Standard uploads are encrypted in transit and scanned before serving. Turn on “Encrypt files” and your browser encrypts the contents with AES-256-GCM before upload; the key stays in the link after the # and never reaches us. File names, types, sizes, and folder paths remain visible, and encrypted contents cannot be virus-scanned. Private file links must be opened in full — the 5-character code alone will not work.',
     },
     {
         q: 'Can I download the same file more than once?',

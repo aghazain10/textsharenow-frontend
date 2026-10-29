@@ -57,6 +57,10 @@ const faqs = [
         answer: "Yes. Every share is encrypted in transit and at rest. Toggle “Encrypt Now” for zero-knowledge mode: your browser encrypts the text with AES-256-GCM and the key stays in the link — our server cannot read it. Private shares must be opened with the full link, not just the code.",
     },
     {
+        question: "Are file uploads encrypted?",
+        answer: "You choose. Standard uploads are encrypted in transit and scanned for malware before serving. Turn on “Encrypt files” and your browser encrypts the contents with AES-256-GCM; the key stays in the link and never reaches our server. File names, types, sizes, and folder paths remain visible, and encrypted contents cannot be virus-scanned. Private file links must be opened in full — the 5-character code alone will not work.",
+    },
+    {
         question: "What is the maximum text size I can share?",
         answer: "You can share up to 10,000 characters per transfer — enough for most URLs, notes, code snippets, and short messages.",
     },
