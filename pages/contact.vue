@@ -18,18 +18,10 @@
                     </p>
 
                     <div class="mt-8 grid gap-4 sm:grid-cols-2">
-                        <a href="mailto:info@textsharenow.com" class="tile flex items-center gap-4 !p-5 transition-colors hover:bg-surface-2">
-                            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-line bg-bg text-ink"><TsnIcon name="mail" class="h-5 w-5" stroke="1.8" /></span>
-                            <span class="min-w-0">
-                                <span class="block text-[13px] font-medium text-muted">Email (Support)</span>
-                                <span class="block break-words text-[15px] font-medium text-ink">info@textsharenow.com</span>
-                            </span>
-                        </a>
-
                         <a href="mailto:aghazain10@gmail.com" class="tile flex items-center gap-4 !p-5 transition-colors hover:bg-surface-2">
                             <span class="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-line bg-bg text-ink"><TsnIcon name="mail" class="h-5 w-5" stroke="1.8" /></span>
                             <span class="min-w-0">
-                                <span class="block text-[13px] font-medium text-muted">Email (Personal)</span>
+                                <span class="block text-[13px] font-medium text-muted">Email (Support)</span>
                                 <span class="block break-words text-[15px] font-medium text-ink">aghazain10@gmail.com</span>
                             </span>
                         </a>
@@ -54,6 +46,8 @@
                     <h2 class="mt-12 border-t border-line pt-12 text-[26px] font-semibold tracking-[-0.03em] text-ink">What To Contact Me About</h2>
                     <ul class="mt-4 max-w-[68ch] list-disc space-y-2 pl-5 marker:text-line">
                         <li>Bugs or issues with sending / receiving text</li>
+                        <li>Pro license key problems — activation, renewal, or a key that won't work</li>
+                        <li>Billing or refund questions (handled through Gumroad)</li>
                         <li>Feature requests or feedback on the tool</li>
                         <li>Business, partnership, or advertising inquiries</li>
                         <li>Privacy or data questions about how TextShareNow works</li>

@@ -21,7 +21,7 @@
                         <h2 class="text-[26px] font-semibold tracking-[-0.03em] text-ink">Contact</h2>
                         <p class="mt-4 text-[16px] leading-7 text-muted">
                             Questions about these Terms can be sent to
-                            <a href="mailto:info@textsharenow.com" class="text-link">info@textsharenow.com</a>.
+                            <a href="mailto:aghazain10@gmail.com" class="text-link">aghazain10@gmail.com</a>.
                             Abuse reports can also be filed through our
                             <NuxtLink to="/abuse" class="text-link">abuse report page</NuxtLink>.
                         </p>
@@ -99,7 +99,7 @@ const sections = [
             },
             {
                 type: "p",
-                text: "To report abuse, contact info@textsharenow.com or use our abuse report page with the share code or link and a description of the problem. We review every report and may remove content and suspend or revoke access, including Pro access, without notice where a violation is found or the stability of the Service is threatened.",
+                text: "To report abuse, contact aghazain10@gmail.com or use our abuse report page with the share code or link and a description of the problem. We review every report and may remove content and suspend or revoke access, including Pro access, without notice where a violation is found or the stability of the Service is threatened.",
             },
         ],
     },
@@ -159,7 +159,7 @@ const sections = [
             },
             {
                 type: "p",
-                text: "Refunds are handled case by case through Gumroad. Contact us at info@textsharenow.com if a key will not activate, or if you do not recognise a charge. If a refund or chargeback is issued, Pro access may be revoked.",
+                text: "Refunds are handled case by case through Gumroad. Contact us at aghazain10@gmail.com if a key will not activate, or if you do not recognise a charge. If a refund or chargeback is issued, Pro access may be revoked.",
             },
             {
                 type: "p",

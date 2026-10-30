@@ -8,7 +8,7 @@
 - **URL**: https://www.textsharenow.com
 - **Type**: Web Application (Utilities)
 - **Creator**: Zain Rizvee
-- **Contact**: info@textsharenow.com
+- **Contact**: aghazain10@gmail.com
 - **Pricing**: Free forever; optional Pro at $5/month or $50/year (save 17%)
 
 ## Core Value Proposition
@@ -208,7 +208,7 @@ A: Extremely unlikely. Over 60 million combinations with rate limiting.
 
 ## Contact
 
-- **Email**: info@textsharenow.com
+- **Email**: aghazain10@gmail.com
 - **Creator**: Zain Rizvee
 - **Location**: Skardu, Pakistan
 - **Built with**: Laravel, Nuxt, Vue

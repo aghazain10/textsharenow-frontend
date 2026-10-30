@@ -25,7 +25,7 @@
                         <h2 class="text-[26px] font-semibold tracking-[-0.03em] text-ink">How to Report</h2>
                         <p class="mt-4">
                             Email
-                            <a href="mailto:info@textsharenow.com?subject=Abuse%20report" class="text-link">info@textsharenow.com</a>
+                            <a href="mailto:aghazain10@gmail.com?subject=Abuse%20report" class="text-link">aghazain10@gmail.com</a>
                             with the subject “Abuse report” and include:
                         </p>
                         <ul class="mt-4 list-disc space-y-2 pl-5 marker:text-line">

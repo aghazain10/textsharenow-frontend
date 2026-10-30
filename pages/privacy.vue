@@ -30,7 +30,7 @@
                         <h2 class="text-[26px] font-semibold tracking-[-0.03em] text-ink">Contact</h2>
                         <p class="mt-4 text-[16px] leading-7 text-muted">
                             For privacy questions or data requests, contact us at
-                            <a href="mailto:info@textsharenow.com" class="text-link">info@textsharenow.com</a>.
+                            <a href="mailto:aghazain10@gmail.com" class="text-link">aghazain10@gmail.com</a>.
                         </p>
                         <p class="mt-3 text-[16px] leading-7 text-muted">
                             To report abusive or illegal content, use our

@@ -243,7 +243,7 @@
                     <h2 id="contact-title" class="section-title">Report a security issue</h2>
                     <p class="section-lead">
                         Found a flaw, or think a claim on this page is wrong? Email
-                        <a href="mailto:info@textsharenow.com?subject=Security%20report" class="text-link">info@textsharenow.com</a>
+                        <a href="mailto:aghazain10@gmail.com?subject=Security%20report" class="text-link">aghazain10@gmail.com</a>
                         with the subject “Security report”. Include the steps to reproduce it. We read every report and will not take legal action against good-faith research.
                     </p>
                     <p class="mt-6 text-[14px] leading-6 text-muted">
