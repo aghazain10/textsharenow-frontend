@@ -11,118 +11,124 @@
                 @keydown.esc="close"
             >
                 <div class="absolute inset-0 bg-ink/40 backdrop-blur-[2px]" aria-hidden="true" />
-                <div ref="panel" class="pro-panel relative w-full max-w-md rounded-xl border border-line bg-surface p-6 shadow-card">
-                    <button type="button" class="btn-icon absolute top-3 right-3" aria-label="Close" @click="close">
-                        <TsnIcon name="x" class="h-4 w-4" stroke="2.2" />
-                    </button>
-
-                    <span class="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface-2 px-2.5 py-1 text-[12px] font-semibold text-ink">
-                        <TsnIcon name="lock" class="h-3 w-3" stroke="2.2" />
-                        Premium feature
-                    </span>
-
-                    <h2 id="pro-modal-title" class="mt-3 text-[22px] font-bold tracking-[-0.02em] text-ink">{{ copy.title }}</h2>
-                    <p class="mt-1.5 text-[14px] leading-relaxed text-muted">{{ copy.line }}</p>
-
-                    <ul class="mt-4 grid gap-2.5">
-                        <li v-for="f in FEATURES" :key="f" class="flex items-start gap-2.5 text-[14px] text-ink">
-                            <span class="mt-0.5 grid h-4.5 w-4.5 shrink-0 place-items-center rounded-full bg-brand-soft text-ink">
-                                <TsnIcon name="check" class="h-3 w-3" stroke="3" />
-                            </span>
-                            {{ f }}
-                        </li>
-                    </ul>
-
-                    <div class="mt-5 rounded-lg border border-line bg-bg px-4 py-3">
-                        <div class="flex items-baseline justify-between gap-3">
-                            <span class="text-[15px] font-semibold text-ink">TextShareNow Pro</span>
-                            <span class="text-[15px] font-bold text-ink">{{ planDisplay.price }}<span class="text-[13px] font-medium text-muted">{{ planDisplay.period }}</span></span>
-                        </div>
-                        <div class="mt-2 inline-flex rounded-md border border-line bg-surface-2 p-0.5" role="radiogroup" aria-label="Billing period">
-                            <button
-                                type="button"
-                                role="radio"
-                                :aria-checked="plan === 'monthly'"
-                                class="rounded px-2.5 py-1 text-[12px] font-medium transition-colors"
-                                :class="plan === 'monthly' ? 'bg-surface text-ink shadow-card' : 'text-muted hover:text-ink'"
-                                @click="plan = 'monthly'"
-                            >Monthly</button>
-                            <button
-                                type="button"
-                                role="radio"
-                                :aria-checked="plan === 'annual'"
-                                class="rounded px-2.5 py-1 text-[12px] font-medium transition-colors"
-                                :class="plan === 'annual' ? 'bg-surface text-ink shadow-card' : 'text-muted hover:text-ink'"
-                                @click="plan = 'annual'"
-                            >Annual <span class="ml-0.5 font-semibold text-brand">−17%</span></button>
-                        </div>
-                        <p v-if="plan === 'annual'" class="mt-1.5 text-[12px] text-muted">billed as $50/year — two months free</p>
-                    </div>
-
-                    <!-- Already activated on this device -->
-                    <div v-if="isPro" class="mt-4 rounded-lg border border-line bg-surface-2 p-4 text-center">
-                        <p class="text-[14px] font-semibold text-ink">Pro is active on this device 🎉</p>
-                        <p class="mt-1 text-[13px] text-muted">All power features are unlocked, including API &amp; MCP access.</p>
-                        <NuxtLink to="/my-shares" class="btn-ghost mt-3 w-full" @click="close">Manage my shares</NuxtLink>
-                        <button
-                            type="button"
-                            class="mt-2 rounded-md border border-line bg-bg px-3 py-1.5 text-[13px] font-medium text-muted transition-colors hover:text-ink"
-                            @click="deactivate"
-                        >
-                            Deactivate Pro
-                        </button>
-                    </div>
-
-                    <!-- Not activated: buy or redeem a key -->
-                    <template v-else>
-                        <a
-                            :href="checkoutHref"
-                            class="btn-primary mt-4 flex w-full items-center justify-center"
-                            @click="onBuyClick"
-                        >
-                            Get Pro — {{ planDisplay.cta }}
-                        </a>
-
-                        <button
-                            type="button"
-                            class="mt-3 w-full text-[13px] font-medium text-brand transition-colors hover:underline"
-                            @click="showKey = !showKey"
-                        >
-                            {{ showKey ? "Hide license key entry" : "I already have a license key" }}
+                <div ref="panel" class="pro-panel relative flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col rounded-xl border border-line bg-surface shadow-card">
+                    <!-- Fixed header — stays visible while the body scrolls -->
+                    <div class="relative shrink-0 px-6 pt-6 pb-4">
+                        <button type="button" class="btn-icon absolute top-4 right-4" aria-label="Close" @click="close">
+                            <TsnIcon name="x" class="h-4 w-4" stroke="2.2" />
                         </button>
 
-                        <div v-if="showKey" class="mt-2 flex gap-2">
-                            <input
-                                v-model="licenseKey"
-                                type="text"
-                                placeholder="XXXX-XXXX-XXXX-XXXX"
-                                aria-label="License key"
-                                class="min-w-0 flex-1 rounded-md border border-line bg-bg px-3 py-2 font-mono text-[13px] text-ink placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-brand"
-                                autocomplete="off"
-                                spellcheck="false"
-                                @keyup.enter="onActivate"
-                            />
+                        <span class="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface-2 px-2.5 py-1 text-[12px] font-semibold text-ink">
+                            <TsnIcon name="lock" class="h-3 w-3" stroke="2.2" />
+                            Premium feature
+                        </span>
+
+                        <h2 id="pro-modal-title" class="mt-3 text-[22px] font-bold tracking-[-0.02em] text-ink">{{ copy.title }}</h2>
+                        <p class="mt-1.5 text-[14px] leading-relaxed text-muted">{{ copy.line }}</p>
+                    </div>
+
+                    <!-- Scrollable body -->
+                    <div class="min-h-0 flex-1 overflow-y-auto px-6 pb-6">
+                        <ul class="grid gap-2.5">
+                            <li v-for="f in FEATURES" :key="f" class="flex items-start gap-2.5 text-[14px] text-ink">
+                                <span class="mt-0.5 grid h-4.5 w-4.5 shrink-0 place-items-center rounded-full bg-brand-soft text-ink">
+                                    <TsnIcon name="check" class="h-3 w-3" stroke="3" />
+                                </span>
+                                {{ f }}
+                            </li>
+                        </ul>
+
+                        <div class="mt-5 rounded-lg border border-line bg-bg px-4 py-3">
+                            <div class="flex items-baseline justify-between gap-3">
+                                <span class="text-[15px] font-semibold text-ink">TextShareNow Pro</span>
+                                <span class="text-[15px] font-bold text-ink">{{ planDisplay.price }}<span class="text-[13px] font-medium text-muted">{{ planDisplay.period }}</span></span>
+                            </div>
+                            <div class="mt-2 inline-flex rounded-md border border-line bg-surface-2 p-0.5" role="radiogroup" aria-label="Billing period">
+                                <button
+                                    type="button"
+                                    role="radio"
+                                    :aria-checked="plan === 'monthly'"
+                                    class="rounded px-2.5 py-1 text-[12px] font-medium transition-colors"
+                                    :class="plan === 'monthly' ? 'bg-surface text-ink shadow-card' : 'text-muted hover:text-ink'"
+                                    @click="plan = 'monthly'"
+                                >Monthly</button>
+                                <button
+                                    type="button"
+                                    role="radio"
+                                    :aria-checked="plan === 'annual'"
+                                    class="rounded px-2.5 py-1 text-[12px] font-medium transition-colors"
+                                    :class="plan === 'annual' ? 'bg-surface text-ink shadow-card' : 'text-muted hover:text-ink'"
+                                    @click="plan = 'annual'"
+                                >Annual <span class="ml-0.5 font-semibold text-brand">−17%</span></button>
+                            </div>
+                            <p v-if="plan === 'annual'" class="mt-1.5 text-[12px] text-muted">billed as $50/year — two months free</p>
+                        </div>
+
+                        <!-- Already activated on this device -->
+                        <div v-if="isPro" class="mt-4 rounded-lg border border-line bg-surface-2 p-4 text-center">
+                            <p class="text-[14px] font-semibold text-ink">Pro is active on this device 🎉</p>
+                            <p class="mt-1 text-[13px] text-muted">All power features are unlocked, including API &amp; MCP access.</p>
+                            <NuxtLink to="/my-shares" class="btn-ghost mt-3 w-full" @click="close">Manage my shares</NuxtLink>
                             <button
                                 type="button"
-                                class="btn-primary !px-4"
-                                :disabled="activating || !licenseKey.trim()"
-                                @click="onActivate"
+                                class="mt-2 rounded-md border border-line bg-bg px-3 py-1.5 text-[13px] font-medium text-muted transition-colors hover:text-ink"
+                                @click="deactivate"
                             >
-                                {{ activating ? "…" : "Activate" }}
+                                Deactivate Pro
                             </button>
                         </div>
 
-                        <p
-                            v-if="feedback"
-                            class="mt-2 text-center text-[13px]"
-                            :class="feedbackOk ? 'text-ok' : 'text-bad'"
-                            role="status"
-                        >{{ feedback }}</p>
+                        <!-- Not activated: buy or redeem a key -->
+                        <template v-else>
+                            <a
+                                :href="checkoutHref"
+                                class="btn-primary mt-4 flex w-full items-center justify-center"
+                                @click="onBuyClick"
+                            >
+                                Get Pro — {{ planDisplay.cta }}
+                            </a>
 
-                        <button type="button" class="mt-2 w-full rounded-md py-2 text-[14px] font-medium text-muted transition-colors hover:text-ink" @click="close">
-                            Maybe later
-                        </button>
-                    </template>
+                            <button
+                                type="button"
+                                class="mt-3 w-full text-[13px] font-medium text-brand transition-colors hover:underline"
+                                @click="showKey = !showKey"
+                            >
+                                {{ showKey ? "Hide license key entry" : "I already have a license key" }}
+                            </button>
+
+                            <div v-if="showKey" class="mt-2 flex gap-2">
+                                <input
+                                    v-model="licenseKey"
+                                    type="text"
+                                    placeholder="XXXX-XXXX-XXXX-XXXX"
+                                    aria-label="License key"
+                                    class="min-w-0 flex-1 rounded-md border border-line bg-bg px-3 py-2 font-mono text-[13px] text-ink placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-brand"
+                                    autocomplete="off"
+                                    spellcheck="false"
+                                    @keyup.enter="onActivate"
+                                />
+                                <button
+                                    type="button"
+                                    class="btn-primary !px-4"
+                                    :disabled="activating || !licenseKey.trim()"
+                                    @click="onActivate"
+                                >
+                                    {{ activating ? "…" : "Activate" }}
+                                </button>
+                            </div>
+
+                            <p
+                                v-if="feedback"
+                                class="mt-2 text-center text-[13px]"
+                                :class="feedbackOk ? 'text-ok' : 'text-bad'"
+                                role="status"
+                            >{{ feedback }}</p>
+
+                            <button type="button" class="mt-2 w-full rounded-md py-2 text-[14px] font-medium text-muted transition-colors hover:text-ink" @click="close">
+                                Maybe later
+                            </button>
+                        </template>
+                    </div>
                 </div>
             </div>
         </Transition>
