@@ -147,7 +147,7 @@ const sections = [
         content: [
             {
                 type: "p",
-                text: "Pro is billed at $5 USD per month through Gumroad, our third-party payment processor. Subscriptions renew automatically each month until cancelled.",
+                text: "Pro is billed at $5 USD per month or $50 USD per year through Gumroad, our third-party payment processor. Subscriptions renew automatically each month or each year until cancelled.",
             },
             {
                 type: "p",

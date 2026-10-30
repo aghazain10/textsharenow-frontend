@@ -2,7 +2,7 @@
 
 MCP server for [TextShareNow Pro](https://www.textsharenow.com/pricing) — lets AI agents share text as short links and receive text from them. Works with Claude Code, Claude Desktop, opencode, Cursor, and any MCP client.
 
-A TextShareNow Pro license key ($5/month) is required. The key is sent as `Authorization: Bearer <key>` to the same API the website uses, so Pro limits, expiry, passwords, and auto-deletion all apply.
+A TextShareNow Pro license key ($5/month or $50/year) is required. The key is sent as `Authorization: Bearer <key>` to the same API the website uses, so Pro limits, expiry, passwords, and auto-deletion all apply.
 
 ## Quick start
 

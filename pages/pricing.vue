@@ -6,10 +6,10 @@
             <div class="wrap grid items-center gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-14">
                 <div>
                     <p class="text-[13px] font-medium text-muted">Pricing</p>
-                    <h1 class="mt-3 max-w-[20ch] text-[clamp(2.4rem,6vw,4.2rem)] font-bold leading-[1.05] tracking-[-0.045em]">TextShareNow Pricing: Free Plan, Pro at $5/Month</h1>
-                    <p class="mt-5 max-w-[58ch] text-[18px] leading-relaxed text-muted">Share text and files for free with no sign-up — forever. Go Pro for 100,000 characters, up to 20 files / 100 MB total, expiry up to never, multi-reads, and password protection.</p>
+                    <h1 class="mt-3 max-w-[20ch] text-[clamp(2.4rem,6vw,4.2rem)] font-bold leading-[1.05] tracking-[-0.045em]">TextShareNow Pricing: Free Plan, Pro from $5/Month</h1>
+                    <p class="mt-5 max-w-[58ch] text-[18px] leading-relaxed text-muted">Share text and files for free with no sign-up — forever. Go Pro for 100,000 characters, up to 20 files / 100 MB total, expiry up to never, multi-reads, and password protection. $5/month or $50/year (save 17%).</p>
                     <div class="mt-7 flex flex-wrap gap-3">
-                        <a :href="checkoutHref('hero')" class="btn-primary" @click="onCtaClick('hero')">Get Pro — $5/month</a>
+                        <a :href="checkoutHref('hero')" class="btn-primary" @click="onCtaClick('hero')">Get Pro — $5/month or $50/year</a>
                         <NuxtLink to="/#tool" class="btn-ghost">Start with the free plan</NuxtLink>
                     </div>
                     <p class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] text-muted">
@@ -62,10 +62,30 @@
                     <article class="tile relative flex flex-col !border-brand shadow-[0_0_0_1px_var(--color-brand)]">
                         <span class="absolute -top-3 left-5 rounded-full bg-brand px-2.5 py-0.5 text-[12px] font-semibold text-on-brand">Most popular</span>
                         <h3 class="text-[15px] font-semibold uppercase tracking-[0.06em] text-brand">Pro</h3>
+                        <div class="mt-4 inline-flex w-fit rounded-lg border border-line bg-surface-2 p-0.5" role="radiogroup" aria-label="Billing period">
+                            <button
+                                type="button"
+                                role="radio"
+                                :aria-checked="plan === 'monthly'"
+                                class="rounded-md px-4 py-1.5 text-[13px] font-medium transition-colors"
+                                :class="plan === 'monthly' ? 'bg-surface text-ink shadow-card' : 'text-muted hover:text-ink'"
+                                @click="setPlan('monthly')"
+                            >Monthly</button>
+                            <button
+                                type="button"
+                                role="radio"
+                                :aria-checked="plan === 'annual'"
+                                class="rounded-md px-4 py-1.5 text-[13px] font-medium transition-colors"
+                                :class="plan === 'annual' ? 'bg-surface text-ink shadow-card' : 'text-muted hover:text-ink'"
+                                @click="setPlan('annual')"
+                            >Annual <span class="ml-1 text-[12px] font-semibold text-brand">−17%</span></button>
+                        </div>
                         <p class="mt-4 flex items-baseline gap-2">
-                            <span class="text-[44px] font-bold leading-none tracking-[-0.04em] text-ink">$5</span>
-                            <span class="text-[15px] text-muted">/ month</span>
+                            <span class="text-[44px] font-bold leading-none tracking-[-0.04em] text-ink">{{ planDisplay.price }}</span>
+                            <span class="text-[15px] text-muted">{{ planDisplay.period }}</span>
                         </p>
+                        <p v-if="plan === 'annual'" class="mt-1 text-[13px] text-muted">billed as $50/year — two months free</p>
+                        <p v-else class="mt-1 text-[13px] text-muted">switch to annual to save 17%</p>
                         <p class="mt-3 text-[15px] leading-relaxed text-muted">For power users: 10× the limits, real control over expiry and access.</p>
                         <ul class="mt-6 grid flex-1 gap-2.5 text-[14px]">
                             <li v-for="f in proFeatures" :key="f" class="flex items-start gap-2.5">
@@ -73,7 +93,7 @@
                                 <span class="text-ink">{{ f }}</span>
                             </li>
                         </ul>
-                        <a :href="checkoutHref('plan_card')" class="btn-primary mt-7 w-full" @click="onCtaClick('plan_card')">Get Pro — $5/month</a>
+                        <a :href="checkoutHref('plan_card')" class="btn-primary mt-7 w-full" @click="onCtaClick('plan_card')">Get Pro — {{ planDisplay.cta }}</a>
                         <p class="mt-2 text-center text-[12px] text-muted">Gumroad checkout · instant license key · cancel anytime</p>
                         <button type="button" class="mt-2 w-full rounded-md py-2 text-[14px] font-medium text-brand transition-colors hover:underline" @click="openProModal('general')">
                             Already have a license key? Activate it
@@ -97,7 +117,7 @@
                             <tr>
                                 <th scope="col" class="px-5 py-5 font-medium text-muted">Feature</th>
                                 <th scope="col" class="px-5 py-5 font-semibold text-ink">Free</th>
-                                <th scope="col" class="bg-surface-2 px-5 py-5 font-semibold text-ink">Pro — $5/month</th>
+                                <th scope="col" class="bg-surface-2 px-5 py-5 font-semibold text-ink">Pro — $5/mo or $50/yr</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -222,7 +242,7 @@
                             </p>
                         </li>
                     </ol>
-                    <a :href="checkoutHref('how_to')" class="btn-primary mt-6 w-full" @click="onCtaClick('how_to')">Get Pro — $5/month</a>
+                    <a :href="checkoutHref('how_to')" class="btn-primary mt-6 w-full" @click="onCtaClick('how_to')">Get Pro — {{ planDisplay.cta }}</a>
                     <p class="mt-2 text-center text-[12px] text-muted">You'll pay on Gumroad and get your key on the receipt.</p>
                     <button type="button" class="mt-2 w-full rounded-md py-2 text-[14px] font-medium text-brand transition-colors hover:underline" @click="openProModal('general')">
                         I already have a key — activate
@@ -257,7 +277,7 @@
                     <p class="section-lead mx-auto">No sign-up for either. Pro unlocks the moment you paste your license key.</p>
                     <div class="mt-8 flex flex-wrap justify-center gap-3">
                         <NuxtLink to="/#tool" class="btn-ghost">Use the free tool</NuxtLink>
-                        <a :href="checkoutHref('bottom')" class="btn-primary" @click="onCtaClick('bottom')">Get Pro — $5/month</a>
+                        <a :href="checkoutHref('bottom')" class="btn-primary" @click="onCtaClick('bottom')">Get Pro — $5/month or $50/year</a>
                     </div>
                 </div>
             </div>
@@ -270,18 +290,30 @@ import { proCheckoutPath } from "~/utils/checkout.js";
 import { trackProEvent } from "~/composables/useProTracking.js";
 
 useSeo({
-    title: "Pricing — Free Plan and Pro at $5/Month",
+    title: "Pricing — Free Plan and Pro from $5/Month",
     description:
-        "TextShareNow is free forever — no sign-up, 10,000 characters, 10 MB files. Pro costs $5/month and adds 100K characters, 100 MB files, expiry up to never, multi-reads, and password protection. Cancel anytime.",
+        "TextShareNow is free forever — no sign-up, 10,000 characters, 10 MB files. Pro costs $5/month or $50/year (save 17%) and adds 100K characters, 100 MB files, expiry up to never, multi-reads, and password protection. Cancel anytime.",
     pagePath: "/pricing",
 });
 
 const { open: openProModal } = useProModal();
 
-// Every CTA links to /go/pro, which counts the click and redirects straight
-// to Gumroad's checkout with UTMs attached.
-const checkoutHref = (location) => proCheckoutPath({ plan: "monthly", location });
-const onCtaClick = (location) => trackProEvent("pro_cta_click", { location, plan: "monthly" });
+// Billing period. Monthly is the default; the Pro card toggle and every CTA
+// below follow it. Each CTA links to /go/pro with the chosen plan, which
+// redirects to Gumroad with `&yearly=true` for annual.
+const plan = ref("monthly");
+function setPlan(p) { plan.value = p; }
+
+const planDisplay = computed(() =>
+    plan.value === "annual"
+        ? { price: "$50", period: "/ year", cta: "$50/year (save 17%)" }
+        : { price: "$5", period: "/ month", cta: "$5/month" },
+);
+
+// Plain function (not a computed): the template re-runs on `plan` change,
+// so reading plan.value here picks up the current selection each render.
+const checkoutHref = (location) => proCheckoutPath({ plan: plan.value, location });
+const onCtaClick = (location) => trackProEvent("pro_cta_click", { location, plan: plan.value });
 
 function onFaqToggle(index, event) {
     if (event.target.open) trackProEvent("pricing_faq_open", { question_index: index });
@@ -329,7 +361,7 @@ const proFeatures = [
 
 // [feature, free cell, pro cell] — cell = [kind, label]; kind: good | bad | text
 const compareRows = [
-    ["Price", ["text", "$0 — no billing"], ["text", "$5 per month, billed via Gumroad"]],
+    ["Price", ["text", "$0 — no billing"], ["text", "$5/month or $50/year (save 17%), billed via Gumroad"]],
     ["Account required", ["good", "None"], ["good", "None — just a license key"]],
     ["Text per share", ["text", "10,000 characters"], ["text", "100,000 characters"]],
     ["File size", ["text", "10 MB"], ["text", "100 MB total, up to 20 files"]],
@@ -397,7 +429,7 @@ const proDetails = [
 ];
 
 const activationSteps = [
-    { title: "Subscribe on Gumroad", detail: "$5/month through our secure Gumroad checkout — no account on this site required." },
+    { title: "Subscribe on Gumroad", detail: "$5/month or $50/year through our secure Gumroad checkout — no account on this site required." },
     { title: "Copy your license key", detail: "Gumroad shows the key on the receipt page and emails it to you right away." },
     { title: "Paste it and activate", detail: "Open the ⭐ Pro panel anywhere on the site, choose “I already have a license key”, paste, and every limit lifts instantly." },
 ];
@@ -409,7 +441,7 @@ const faqs = [
     },
     {
         q: "How much does TextShareNow Pro cost?",
-        a: "Pro is $5 per month, billed in USD through Gumroad. There are no tiers, add-ons, or hidden fees, and you can cancel anytime from your Gumroad receipt.",
+        a: "Pro is $5 per month or $50 per year (two months free), billed in USD through Gumroad. There are no tiers, add-ons, or hidden fees, and you can cancel anytime from your Gumroad receipt.",
     },
     {
         q: "What happens after I click Get Pro?",
@@ -469,13 +501,24 @@ useHead({
                 description:
                     "Premium plan for TextShareNow: 100,000 characters per share, 100 MB files, expiry up to never, multi-read shares, and password protection.",
                 url: "https://www.textsharenow.com/pricing",
-                offers: {
-                    "@type": "Offer",
-                    price: "5.00",
-                    priceCurrency: "USD",
-                    availability: "https://schema.org/InStock",
-                    url: "https://www.textsharenow.com/pricing",
-                },
+                offers: [
+                    {
+                        "@type": "Offer",
+                        name: "Monthly",
+                        price: "5.00",
+                        priceCurrency: "USD",
+                        availability: "https://schema.org/InStock",
+                        url: "https://www.textsharenow.com/pricing",
+                    },
+                    {
+                        "@type": "Offer",
+                        name: "Annual",
+                        price: "50.00",
+                        priceCurrency: "USD",
+                        availability: "https://schema.org/InStock",
+                        url: "https://www.textsharenow.com/pricing",
+                    },
+                ],
             }),
         },
     ],

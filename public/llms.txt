@@ -9,7 +9,7 @@
 - **Type**: Web Application (Utilities)
 - **Creator**: Zain Rizvee
 - **Contact**: info@textsharenow.com
-- **Pricing**: Free forever; optional Pro at $5/month
+- **Pricing**: Free forever; optional Pro at $5/month or $50/year (save 17%)
 
 ## Core Value Proposition
 
@@ -40,7 +40,7 @@ The same short-code flow also handles files: upload a photo, screenshot, or shor
 - **File Sharing**: Photos, screenshots, and short videos up to 10 MB (PNG, JPEG, WebP, MP4, WebM)
 - **File Deletion**: Files are deleted after the first download or when their 10 min / 30 min / 1 h timer ends
 - **Malware Scanning**: Standard uploads are scanned with ClamAV before becoming downloadable. End-to-end encrypted file contents cannot be scanned
-- **Optional Pro**: $5/month for 100,000 characters, 100 MB files, longer expiry, multi-reads, passwords, custom codes, a My Shares dashboard, plus API and MCP access
+- **Optional Pro**: $5/month or $50/year for 100,000 characters, 100 MB files, longer expiry, multi-reads, passwords, custom codes, a My Shares dashboard, plus API and MCP access
 
 ## Technology Stack
 
@@ -163,7 +163,7 @@ The same short-code flow also handles files: upload a photo, screenshot, or shor
 
 ## Monetization
 
-- Optional TextShareNow Pro subscription: $5/month via Gumroad (the free tier remains free)
+- Optional TextShareNow Pro subscription: $5/month or $50/year via Gumroad (the free tier remains free)
 - The free plan remains free for unlimited everyday use
 
 ## Target Audience

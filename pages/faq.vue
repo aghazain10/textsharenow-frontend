@@ -277,7 +277,7 @@ const categories = [
       {
         question: 'Is TextShareNow free?',
         answer:
-          'Yes. The core tool is free with no sign-up required — no credits, no hidden fees, and no account. An optional $5/month Pro plan adds larger limits, longer expiry, up to 20 files and 100 MB total, multi-reads, passwords, custom codes, a My Shares dashboard, and API/MCP access for developers and AI agents.',
+          'Yes. The core tool is free with no sign-up required — no credits, no hidden fees, and no account. An optional Pro plan ($5/month or $50/year, save 17%) adds larger limits, longer expiry, up to 20 files and 100 MB total, multi-reads, passwords, custom codes, a My Shares dashboard, and API/MCP access for developers and AI agents.',
         link: {
           to: '/pricing',
           text: 'Compare free and Pro',

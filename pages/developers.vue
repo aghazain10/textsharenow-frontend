@@ -6,7 +6,7 @@
             lead="TextShareNow Pro includes a small HTTP API and an MCP server, so scripts and AI agents can create and receive shares without a browser. Your license key is the only credential — no extra account, no OAuth."
         >
             <div class="mt-7 flex flex-wrap gap-3">
-                <a :href="checkoutHref" class="btn-primary">Get Pro — $5/month</a>
+                <a :href="checkoutHref" class="btn-primary">Get Pro — $5/month or $50/year</a>
                 <NuxtLink to="/pricing" class="btn-ghost">See what Pro includes</NuxtLink>
             </div>
         </PageHero>
@@ -28,7 +28,7 @@
                     <div class="tile mt-8">
                         <h3 class="text-[15px] font-semibold text-ink">Good to know</h3>
                         <ul class="mt-3 grid gap-2 text-[14px] text-muted">
-                            <li>Works with the same $5/month Pro key as the website.</li>
+                            <li>Works with the same Pro license key as the website — $5/month or $50/year.</li>
                             <li>Free-plan limits apply to unauthenticated API calls.</li>
                             <li>Files are not available through the API or MCP yet.</li>
                         </ul>
@@ -294,7 +294,7 @@ const passwordHash = `p2$210000$${salt}$${derived}`;</code></pre>
                     <h2 class="section-title mx-auto max-w-[24ch]">Give your agent a share tool.</h2>
                     <p class="section-lead mx-auto">One license key, one npm package, four tools. Works with any MCP client.</p>
                     <div class="mt-8 flex flex-wrap justify-center gap-3">
-                        <a :href="checkoutHref" class="btn-primary">Get Pro — $5/month</a>
+                        <a :href="checkoutHref" class="btn-primary">Get Pro — $5/month or $50/year</a>
                         <NuxtLink to="/#tool" class="btn-ghost">Try the free web tool</NuxtLink>
                     </div>
                     <p class="mt-4 text-[13px] text-muted">Node 18+ · <code class="font-mono">npx -y textsharenow-mcp@latest</code></p>

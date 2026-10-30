@@ -33,9 +33,30 @@
                         </li>
                     </ul>
 
-                    <div class="mt-5 flex items-baseline justify-between gap-3 rounded-lg border border-line bg-bg px-4 py-3">
-                        <span class="text-[15px] font-semibold text-ink">TextShareNow Pro</span>
-                        <span class="text-[15px] font-bold text-ink">$5<span class="text-[13px] font-medium text-muted">/month</span></span>
+                    <div class="mt-5 rounded-lg border border-line bg-bg px-4 py-3">
+                        <div class="flex items-baseline justify-between gap-3">
+                            <span class="text-[15px] font-semibold text-ink">TextShareNow Pro</span>
+                            <span class="text-[15px] font-bold text-ink">{{ planDisplay.price }}<span class="text-[13px] font-medium text-muted">{{ planDisplay.period }}</span></span>
+                        </div>
+                        <div class="mt-2 inline-flex rounded-md border border-line bg-surface-2 p-0.5" role="radiogroup" aria-label="Billing period">
+                            <button
+                                type="button"
+                                role="radio"
+                                :aria-checked="plan === 'monthly'"
+                                class="rounded px-2.5 py-1 text-[12px] font-medium transition-colors"
+                                :class="plan === 'monthly' ? 'bg-surface text-ink shadow-card' : 'text-muted hover:text-ink'"
+                                @click="plan = 'monthly'"
+                            >Monthly</button>
+                            <button
+                                type="button"
+                                role="radio"
+                                :aria-checked="plan === 'annual'"
+                                class="rounded px-2.5 py-1 text-[12px] font-medium transition-colors"
+                                :class="plan === 'annual' ? 'bg-surface text-ink shadow-card' : 'text-muted hover:text-ink'"
+                                @click="plan = 'annual'"
+                            >Annual <span class="ml-0.5 font-semibold text-brand">−17%</span></button>
+                        </div>
+                        <p v-if="plan === 'annual'" class="mt-1.5 text-[12px] text-muted">billed as $50/year — two months free</p>
                     </div>
 
                     <!-- Already activated on this device -->
@@ -59,7 +80,7 @@
                             class="btn-primary mt-4 flex w-full items-center justify-center"
                             @click="onBuyClick"
                         >
-                            Get Pro — $5/month
+                            Get Pro — {{ planDisplay.cta }}
                         </a>
 
                         <button
@@ -126,10 +147,17 @@ const FEATURES = [
     "API & MCP access for scripts and AI agents",
 ];
 
-const checkoutHref = computed(() => proCheckoutPath({ plan: "monthly", location: "pro_modal" }));
+const plan = ref("monthly");
+const planDisplay = computed(() =>
+    plan.value === "annual"
+        ? { price: "$50", period: "/ year", cta: "$50/year (save 17%)" }
+        : { price: "$5", period: "/ month", cta: "$5/month" },
+);
+
+const checkoutHref = computed(() => proCheckoutPath({ plan: plan.value, location: "pro_modal" }));
 
 function onBuyClick() {
-    trackProEvent("pro_cta_click", { location: "pro_modal", plan: "monthly", reason: reason.value });
+    trackProEvent("pro_cta_click", { location: "pro_modal", plan: plan.value, reason: reason.value });
 }
 
 const showKey = ref(false);

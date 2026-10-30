@@ -268,7 +268,7 @@ const tools = [
         files: 'Yes — 10 MB free (photos/short video); 100 MB / 20 files Pro',
         encryption: 'Optional browser-side AES-256-GCM for text and files',
         selfHost: 'No — hosted',
-        pricing: 'Free; Pro $5/mo',
+        pricing: 'Free; Pro $5/mo or $50/yr',
         summary: 'The same 5-character code handles text and files. Private mode encrypts contents in the browser before upload; standard uploads are scanned for malware. Free text is 10,000 characters; free files are 10 MB and limited to photos and short videos. Pro raises limits and adds passwords, custom codes, and API/MCP access.',
         choose: 'You want one tool for text and files, no account, optional browser-side encryption, and a code that works from any browser.',
         skip: 'Self-hosting or open-source verification is a hard requirement, or you need team audit logs and SSO.',

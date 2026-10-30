@@ -12,8 +12,7 @@
 
 export const PRO_PLANS = {
     monthly: { label: "Monthly", enabled: true, recurrence: "monthly", price: "$5/month" },
-    // Flip `enabled` only after the yearly recurrence is live on Gumroad.
-    annual: { label: "Annual", enabled: false, recurrence: "yearly", price: "$50/year" },
+    annual: { label: "Annual", enabled: true, recurrence: "yearly", price: "$50/year", monthlyEquivalent: "$4.17/month", discount: "Save 17%" },
 };
 
 // Where a CTA lives. Kept small and whitelisted so counts stay comparable.
