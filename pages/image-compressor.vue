@@ -91,7 +91,7 @@
                 <ToolShareCta tool="image-compressor" path="/image-compressor" label="the image compressor" />
                 <div class="mt-4 grid gap-4 md:grid-cols-3">
                     <NuxtLink to="/pdf-tools" class="tile block transition-colors hover:border-muted">
-                        <h3 class="text-[17px] font-semibold tracking-[-0.02em]">PDF Merge / Split / Compress</h3>
+                        <h3 class="text-[17px] font-semibold tracking-[-0.02em]">Combine PDF Files</h3>
                         <p class="mt-2 text-[14px] leading-relaxed text-muted">Combine, extract or shrink PDFs locally.</p>
                     </NuxtLink>
                     <NuxtLink to="/exif-remover" class="tile block transition-colors hover:border-muted">

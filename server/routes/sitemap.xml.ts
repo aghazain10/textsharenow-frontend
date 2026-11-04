@@ -27,7 +27,7 @@ const staticPages = [
   { path: '/share-files-online', lastmod: '2026-10-29', priority: '0.90' },
   { path: '/tools', lastmod: '2026-11-04', priority: '0.85' },
   { path: '/image-compressor', lastmod: '2026-11-04', priority: '0.70' },
-  { path: '/pdf-tools', lastmod: '2026-11-04', priority: '0.70' },
+  { path: '/pdf-tools', lastmod: '2026-11-04', priority: '0.85' },
   { path: '/exif-remover', lastmod: '2026-11-04', priority: '0.70' },
   { path: '/blog', lastmod: '2026-10-19', priority: '0.80' },
   { path: '/author/zain-rizvee', lastmod: '2026-10-02', priority: '0.60' },

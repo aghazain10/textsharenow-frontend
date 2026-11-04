@@ -58,7 +58,7 @@
                 </ul>
                 <div class="mt-4 flex flex-wrap items-center gap-3">
                     <button type="button" class="btn-primary" :disabled="mergeFiles.length < 2 || !!busy" @click="runMerge">
-                        {{ busy === "merge" ? "Merging…" : `Merge ${mergeFiles.length} PDFs` }}
+                        {{ busy === "merge" ? "Combining…" : `Combine ${mergeFiles.length} PDFs` }}
                     </button>
                     <span class="text-[13px] text-muted">Order above is the page order in the result.</span>
                 </div>
@@ -218,7 +218,7 @@ import {
 import { trackToolComplete, trackToolView } from "~/composables/useAnalytics.js";
 
 const TABS = [
-    { id: "merge", label: "Merge" },
+    { id: "merge", label: "Combine" },
     { id: "split", label: "Split" },
     { id: "compress", label: "Compress" },
 ];
@@ -382,7 +382,7 @@ async function runMerge() {
             name: pdfOutputName(mergeFiles.value[0].file, "merged"),
             size,
             before,
-            note: `${mergeFiles.value.length} PDFs merged`,
+            note: `${mergeFiles.value.length} PDFs combined`,
             detail: `${mergeFiles.value.length} files`,
         };
         trackToolComplete(TOOL, { mode: "merge", files: mergeFiles.value.length, original_bytes: before, output_bytes: size });
