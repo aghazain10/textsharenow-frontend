@@ -64,7 +64,6 @@
 <script setup>
 const LINKS = [
     { to: "/", label: "Tool" },
-    { to: "/tools", label: "Tools" },
     { to: "/share-files-online", label: "Share Files" },
     { to: "/how-it-works", label: "How It Works" },
     { to: "/pricing", label: "Pricing" },
@@ -72,6 +71,7 @@ const LINKS = [
     { to: "/blog", label: "Blog" },
     { to: "/about", label: "About" },
     { to: "/contact", label: "Contact" },
+    { to: "/tools", label: "Free Tools" },
 ];
 
 const { isPro } = usePremium();
