@@ -187,6 +187,7 @@ const area = ref(null);
 const pwInput = ref(null);
 const canPaste = ref(false);
 const pasteHint = ref("");
+const route = useRoute();
 const limitModalShown = ref(false); // open the "Go Pro" modal only once per visit to the limit
 
 // What was actually sent — shown in the result card
@@ -279,6 +280,12 @@ onMounted(() => {
     const mac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
     if (mac) shortcut.value = "⌘ Enter";
     canPaste.value = !!navigator.clipboard?.readText;
+
+    // Tool pages link here with ?text=<page URL> so the box is ready to send.
+    const preset = route.query.text;
+    if (typeof preset === "string" && preset.trim() && !text.value) {
+        text.value = preset.trim().slice(0, maxChars.value);
+    }
 });
 
 // One-tap paste from the clipboard (the browser may ask for permission first)

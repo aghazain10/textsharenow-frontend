@@ -2,7 +2,7 @@
     <div>
         <PageHero
             title="Free Private Tools for People Who Work Across Devices"
-            meta="Tools · Launching now"
+            meta="Tools · Free · Runs in your browser"
             lead="A small, growing set of browser-based tools that solve one specific problem each — and never upload your data. No account, no install, no AI in the loop."
         >
             <div class="mt-8 flex flex-wrap gap-3">
@@ -16,7 +16,7 @@
         <section class="section pt-0" aria-labelledby="what-title">
             <div class="wrap">
                 <div class="max-w-2xl">
-                    <p class="text-[13px] font-medium text-muted">Why this page exists</p>
+                    <p class="text-[13px] font-medium text-muted">Live now</p>
                     <h2 id="what-title" class="section-title mt-3">One problem per tool, in your browser</h2>
                     <p class="section-lead">
                         Every tool here does exactly one job, runs entirely in your browser, and never sends your files or text anywhere.
@@ -25,6 +25,24 @@
                 </div>
 
                 <div class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <NuxtLink v-for="t in live" :key="t.path" :to="t.path" class="tile block transition-colors hover:border-muted">
+                        <div class="flex items-center justify-between gap-3">
+                            <h3 class="text-[18px] font-semibold tracking-[-0.02em]">{{ t.title }}</h3>
+                            <span class="rounded-full border border-brand bg-brand-soft px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-ink">Live</span>
+                        </div>
+                        <p class="mt-2 text-[14px] leading-relaxed text-muted">{{ t.desc }}</p>
+                        <p class="mt-3 text-[12px] font-medium text-brand">Targets “{{ t.query }}”</p>
+                        <p class="mt-3 text-[13px] font-medium text-brand">Open →</p>
+                    </NuxtLink>
+                </div>
+
+                <div class="mt-14 max-w-2xl">
+                    <p class="text-[13px] font-medium text-muted">In development</p>
+                    <h2 class="section-title mt-3">Coming next</h2>
+                    <p class="section-lead">The same rule applies to every one of these: local processing or no tool at all.</p>
+                </div>
+
+                <div class="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     <article v-for="t in coming" :key="t.title" class="tile">
                         <div class="flex items-center justify-between gap-3">
                             <h3 class="text-[18px] font-semibold tracking-[-0.02em]">{{ t.title }}</h3>
@@ -40,8 +58,8 @@
         <section class="section" aria-labelledby="available-title">
             <div class="wrap">
                 <div class="max-w-2xl">
-                    <p class="text-[13px] font-medium text-muted">Available now</p>
-                    <h2 id="available-title" class="section-title mt-3">What you can use today</h2>
+                    <p class="text-[13px] font-medium text-muted">Also available</p>
+                    <h2 id="available-title" class="section-title mt-3">The sharing tools behind these utilities</h2>
                     <p class="section-lead">These are part of TextShareNow already — no separate install, no account.</p>
                 </div>
 
@@ -71,14 +89,32 @@
 useSeo({
     title: "Free Private Browser Tools",
     description:
-        "A growing set of free, browser-based tools that solve one specific problem each and never upload your data. No account, no install. Image compression, PDF tools, webhook testing, domain checks, QR codes and more — launching now.",
+        "Free browser-based tools that solve one specific problem each and never upload your data. No account, no install. Compress images, merge or split PDFs, strip photo metadata — with more in development.",
     pagePath: "/tools",
 });
 
+const live = [
+    {
+        title: "Image Compressor & Converter",
+        path: "/image-compressor",
+        desc: "Compress a photo to an exact target size, resize it, or convert between JPEG, PNG and WebP — including HEIC from an iPhone. Runs in your browser; your photos never upload.",
+        query: "compress image to 100KB",
+    },
+    {
+        title: "PDF Merge / Split / Compress",
+        path: "/pdf-tools",
+        desc: "Combine several PDFs, extract specific pages, or shrink a PDF locally. No upload, no file sitting on someone else's server.",
+        query: "merge PDF without uploading",
+    },
+    {
+        title: "EXIF / Location Remover",
+        path: "/exif-remover",
+        desc: "See the GPS and camera data hidden in a photo, then strip it before you share the file. Lossless on JPEG, PNG and WebP.",
+        query: "remove location from photo",
+    },
+];
+
 const coming = [
-    { title: "Image Compressor & Converter", status: "Coming", desc: "Compress an image to an exact target size, convert HEIC/WebP/PNG/JPEG. Runs in your browser — your photos never upload.", query: "compress image to 100KB" },
-    { title: "PDF Merge / Split / Compress", status: "Coming", desc: "Combine, split, or shrink PDFs locally. No upload, no file sitting on someone else's server.", query: "merge PDF without uploading" },
-    { title: "EXIF / Location Remover", status: "Coming", desc: "Strip GPS and metadata from photos before you share them.", query: "remove location from photo" },
     { title: "Webhook Tester", status: "Coming", desc: "Get a public URL that captures live requests so you can inspect payloads and replay them.", query: "test a webhook online" },
     { title: "Domain & Email Health Check", status: "Coming", desc: "DNS, SSL, headers, redirects, SPF/DKIM/DMARC in one report.", query: "check SPF record / SSL expiry" },
     { title: "QR Code Suite", status: "Coming", desc: "WiFi, vCard, WhatsApp, menu and logo QR codes — plus editable dynamic QRs with scan counts.", query: "WiFi QR code generator" },

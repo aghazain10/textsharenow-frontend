@@ -1,41 +1,12 @@
 <template>
     <div>
         <PageHero
-            title="PDF Tools — Merge, Split, and Compress PDFs in the Browser"
-            meta="PDF tools · Launching now"
-            lead="Combine multiple PDFs into one, extract specific pages, or shrink a PDF's size — all within your browser. No upload, no server, no account."
+            title="PDF Tools — Merge, Split and Compress PDFs in the Browser"
+            meta="PDF tools · Free · No upload"
+            lead="Combine several PDFs into one, extract specific pages, or shrink a PDF — all inside your browser. The document never leaves your device."
         >
-            <div class="mt-8">
-                <p class="text-[13px] font-medium text-muted">How it works</p>
-                <ol class="mt-4 grid gap-4 md:grid-cols-2">
-                    <li>
-                        <strong>Select PDFs</strong> — choose up to 5 PDF files from your device. Maximum total size 100MB.
-                    </li>
-                    <li>
-                        <strong>Choose operation</strong> — <strong>Merge</strong> combines all PDFs into one, <strong>Split</strong> extracts specific pages, or <strong>Compress</strong> reduces file size.
-                    </li>
-                    <li>
-                        <strong>Adjust settings</strong> — for Split: select which pages to extract. For Compress: drag the size slider (Small, Medium, Large, Custom).
-                    </li>
-                    <li>
-                        <strong>Process & download</strong> — the operation runs entirely in your browser. Click download when ready.
-                    </li>
-                </ol>
-            </div>
-
-            <div class="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <NuxtLink to="/online-text-sharing" class="tile block transition-colors hover:border-muted">
-                    <h3 class="text-[18px] font-semibold tracking-[-0.02em]">← Back: Online Text Sharing</h3>
-                    <p class="mt-2 text-[14px] leading-relaxed text-muted">Move text, links, and notes between devices.</p>
-                </NuxtLink>
-                <NuxtLink to="/share-files-online" class="tile block transition-colors hover:border-muted">
-                    <h3 class="text-[18px] font-semibold tracking-[-0.02em]">← Share Files Online</h3>
-                    <p class="mt-2 text-[14px] leading-relaxed text-muted">Send photos and short videos between devices.</p>
-                </NuxtLink>
-                <NuxtLink to="/tools" class="tile block transition-colors hover:border-muted">
-                    <h3 class="text-[18px] font-semibold tracking-[-0.02em]">← Free Tools Hub</h3>
-                    <p class="mt-2 text-[14px] leading-relaxed text-muted">More browser-only tools coming soon.</p>
-                </NuxtLink>
+            <div class="mt-10">
+                <PdfToolkit />
             </div>
         </PageHero>
 
@@ -44,10 +15,12 @@
                 <div class="max-w-2xl mx-auto">
                     <h2 class="section-title mt-3">PDF tools, private by default</h2>
                     <p class="section-lead mt-2 text-[15px] leading-relaxed text-muted">
-                        Most PDF tools on the web require you to upload your document to their server first. This one runs <em>entirely in your browser</em>. Your PDF never leaves your device — the merging, splitting, or compressing happens locally, and only the final result is returned to you.
+                        Most PDF tools on the web require you to upload your document to their server first. This one runs <em>entirely in your browser</em>.
+                        The merging, splitting and re-saving happen locally, and only the finished file is handed back to you.
                     </p>
                     <p class="mt-4 text-[14px] text-muted">
-                        This matters because: contracts, proposals, forms, and presentations often contain sensitive business information you don't want on a random server.
+                        That matters for contracts, proposals, invoices, forms and client documents — the files you'd rather not park on a random server
+                        just to delete three pages.
                     </p>
                 </div>
             </div>
@@ -57,14 +30,18 @@
             <div class="wrap">
                 <div class="max-w-xl mx-auto">
                     <h2 class="section-title mt-3">Choose an operation</h2>
-                    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        <article v-for="(op, i) in operations" :key="i" class="tile p-6 text-center">
-                            <div class="text-4xl font-bold text-brand mb-3">{{ op.icon }}</div>
-                            <h3 class="mt-3 text-[18px]">{{ op.title }}</h3>
-                            <p class="mt-2 text-muted line-clamp-2">{{ op.desc }}</p>
-                            <NuxtLink :to="op.path" class="mt-4 inline-block text-brand font-medium">Go →</NuxtLink>
+                    <div class="mt-6 grid gap-4 sm:grid-cols-3">
+                        <article v-for="op in operations" :key="op.title" class="tile p-5">
+                            <div class="text-3xl font-bold text-brand mb-3">{{ op.icon }}</div>
+                            <h3 class="text-[18px]">{{ op.title }}</h3>
+                            <p class="mt-2 text-[14px] leading-relaxed text-muted">{{ op.desc }}</p>
                         </article>
                     </div>
+                    <p class="mt-6 text-[13px] leading-relaxed text-muted">
+                        Merge keeps each source page exactly as it was. Split copies the pages you list into a new file, in the order you write them.
+                        Compress re-saves with optimized object streams and removes document metadata — text stays selectable, and embedded photos
+                        are not re-encoded, so image-heavy scans may only shrink slightly.
+                    </p>
                 </div>
             </div>
         </section>
@@ -77,22 +54,22 @@
                         <article class="tile">
                             <TsnIcon name="shield" class="h-5 w-5 text-ink" stroke="1.8" />
                             <h3 class="mt-3 text-[18px] text-brand">Privacy first</h3>
-                            <p class="mt-2 text-[14px] leading-relaxed text-muted">Your PDF never leaves your device. No upload, no server, no storage. The operation runs in JavaScript inside your browser.</p>
+                            <p class="mt-2 text-[14px] leading-relaxed text-muted">Your PDF never leaves your device. No upload, no server copy, no storage. The operation runs in JavaScript inside your browser.</p>
                         </article>
                         <article class="tile">
                             <TsnIcon name="speed" class="h-5 w-5 text-ink" stroke="1.8" />
-                            <h3 class="mt-3 text-[18px] text-brand">Fast & free</h3>
-                            <p class="mt-2 text-[14px] leading-relaxed text-muted">No account, no sign-up, no waiting. Open the page, process, download. Instant.</p>
+                            <h3 class="mt-3 text-[18px] text-brand">No account, no watermark</h3>
+                            <p class="mt-2 text-[14px] leading-relaxed text-muted">No sign-up wall after the upload, and no branding added to your file. Process a document and download it.</p>
                         </article>
                         <article class="tile">
                             <TsnIcon name="upload" class="h-5 w-5 text-ink" stroke="1.8" />
-                            <h3 class="mt-3 text-[18px] text-brand">No file size limits from a server</h3>
-                            <p class="mt-2 text-[14px] leading-relaxed text-muted">Server-based tools cap you at what their infrastructure can handle. This one respects your device's capability.</p>
+                            <h3 class="mt-3 text-[18px] text-brand">No server file-size cap</h3>
+                            <p class="mt-2 text-[14px] leading-relaxed text-muted">Free sites often block files over 10–20 MB. This one is limited by your own device and browser, not a subscription tier.</p>
                         </article>
                         <article class="tile">
                             <TsnIcon name="download" class="h-5 w-5 text-ink" stroke="1.8" />
-                            <h3 class="mt-3 text-[18px] text-brand">Download anywhere</h3>
-                            <p class="mt-2 text-[14px] leading-relaxed text-muted">The processed PDF is yours. Use it on your website, send it to a client, print it, or upload it wherever you need.</p>
+                            <h3 class="mt-3 text-[18px] text-brand">Text stays text</h3>
+                            <p class="mt-2 text-[14px] leading-relaxed text-muted">Merging and splitting keep the original pages untouched. Compress optimizes the file structure without rasterizing it into unsearchable images.</p>
                         </article>
                     </div>
                 </div>
@@ -101,10 +78,20 @@
 
         <section class="section">
             <div class="wrap">
-                <div class="tile px-6 py-12 text-center sm:px-12">
-                    <h2 class="section-title mx-auto max-w-[22ch]">Ready to process PDFs?</h2>
-                    <p class="section-lead mx-auto">Open in any browser, select your PDFs, choose an operation, download. Private, fast, free.</p>
-                    <NuxtLink to="/" class="btn-primary mt-8">Use the share tool now</NuxtLink>
+                <ToolShareCta tool="pdf-tools" path="/pdf-tools" label="the PDF tools" />
+                <div class="mt-4 grid gap-4 md:grid-cols-3">
+                    <NuxtLink to="/image-compressor" class="tile block transition-colors hover:border-muted">
+                        <h3 class="text-[17px] font-semibold tracking-[-0.02em]">Image Compressor & Converter</h3>
+                        <p class="mt-2 text-[14px] leading-relaxed text-muted">Hit an exact file size, or convert JPEG/PNG/WebP/HEIC.</p>
+                    </NuxtLink>
+                    <NuxtLink to="/exif-remover" class="tile block transition-colors hover:border-muted">
+                        <h3 class="text-[17px] font-semibold tracking-[-0.02em]">EXIF / Location Remover</h3>
+                        <p class="mt-2 text-[14px] leading-relaxed text-muted">Strip GPS and camera data before sharing a photo.</p>
+                    </NuxtLink>
+                    <NuxtLink to="/tools" class="tile block transition-colors hover:border-muted">
+                        <h3 class="text-[17px] font-semibold tracking-[-0.02em]">Free Tools Hub</h3>
+                        <p class="mt-2 text-[14px] leading-relaxed text-muted">All the browser-only tools in one place.</p>
+                    </NuxtLink>
                 </div>
             </div>
         </section>
@@ -113,20 +100,34 @@
 
 <script setup>
 useSeo({
-    title: "PDF Tools — Merge, Split, and Compress PDFs in the Browser",
+    title: "PDF Tools — Merge, Split and Compress PDFs in the Browser",
     description:
-        "Merge multiple PDFs into one, extract specific pages, or compress PDF file size — all within your browser. No upload, no server, no account.",
+        "Merge multiple PDFs into one, extract specific pages, or compress PDF file size — all inside your browser. No upload, no server, no account.",
     pagePath: "/pdf-tools",
-})
+});
 
-import { trackEvent, trackToolView, trackToolComplete, trackToolToShare } from "~/composables/useAnalytics.js"
+const operations = [
+    { icon: "⊕", title: "Merge", desc: "Combine two or more PDFs into one file, in the order you set. Original pages are copied untouched." },
+    { icon: "✂", title: "Split", desc: "Extract the pages you list — 1-3,5, for example — into a new PDF. The original is left alone." },
+    { icon: "↓", title: "Compress", desc: "Re-save with optimized object streams and metadata removed. Text stays selectable." },
+];
 
-trackToolView("pdf-tools")
-
-const finished = ref(false)
-
-function finishTool() {
-    trackToolComplete("pdf-tools", { finished: finished.value })
-    finished.value = true
-}
+useHead({
+    script: [
+        {
+            type: "application/ld+json",
+            innerHTML: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebApplication",
+                name: "PDF Merge, Split and Compress",
+                url: "https://www.textsharenow.com/pdf-tools",
+                description:
+                    "Merge, split and compress PDF files in the browser without uploading them to a server.",
+                applicationCategory: "BusinessApplication",
+                operatingSystem: "Any",
+                offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+            }),
+        },
+    ],
+});
 </script>
