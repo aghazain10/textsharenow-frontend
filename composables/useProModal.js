@@ -32,6 +32,8 @@ const COPY = {
     },
 };
 
+import { trackEvent } from "./useAnalytics.js";
+
 export function useProModal() {
     const isOpen = useState("pro-modal-open", () => false);
     const reason = useState("pro-modal-reason", () => "general");
@@ -40,6 +42,7 @@ export function useProModal() {
     const open = (r = "general") => {
         reason.value = r;
         isOpen.value = true;
+        trackEvent("share_to_pro", { reason: r });
     };
     const close = () => {
         isOpen.value = false;

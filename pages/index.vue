@@ -45,6 +45,30 @@
         <AboutTool />
         <FeaturesSection />
         <UseCases />
+
+        <!-- Guides: internal links to the dedicated landing pages -->
+        <section class="section" aria-labelledby="guides-title">
+            <div class="wrap">
+                <div class="max-w-2xl">
+                    <p class="text-[13px] font-medium text-muted">Guides</p>
+                    <h2 id="guides-title" class="section-title mt-3">Learn the Flows</h2>
+                    <p class="section-lead">Step-by-step guides for the two most common transfers.</p>
+                </div>
+                <div class="mt-10 grid gap-4 md:grid-cols-2">
+                    <NuxtLink to="/online-text-sharing" class="tile block transition-colors hover:border-muted">
+                        <h3 class="text-[19px] font-semibold tracking-[-0.02em]">Online Text Sharing</h3>
+                        <p class="mt-2 text-[15px] leading-relaxed text-muted">Move text, links, and notes between any devices with a 5-character code. No app, no sign-up, cross-platform.</p>
+                        <p class="mt-3 text-[13px] font-medium text-brand">Read the guide →</p>
+                    </NuxtLink>
+                    <NuxtLink to="/share-files-online" class="tile block transition-colors hover:border-muted">
+                        <h3 class="text-[19px] font-semibold tracking-[-0.025em]">Share Files Online</h3>
+                        <p class="mt-2 text-[15px] leading-relaxed text-muted">Send photos, screenshots, and short videos between devices. Files auto-delete after one download.</p>
+                        <p class="mt-3 text-[13px] font-medium text-brand">Read the guide →</p>
+                    </NuxtLink>
+                </div>
+            </div>
+        </section>
+
         <BlogPreview />
         <FaqSection />
     </div>
@@ -52,9 +76,9 @@
 
 <script setup>
 useSeo({
-    title: "Share Text and Files Between Any Devices",
+    title: "Share Text Online Free — Send Text Between Devices in Seconds",
     description:
-        "Share text, links, notes and files between devices using a short code. No app, no sign-up. Works phone to laptop — files auto-delete after download.",
+        "Share text, links, notes and files between devices using a short code. Free, no app, no sign-up. Works phone to laptop — files auto-delete after download.",
     pagePath: "/",
 });
 

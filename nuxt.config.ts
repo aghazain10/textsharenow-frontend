@@ -153,6 +153,7 @@ export default defineNuxtConfig({
         "/pricing": { prerender: true },
         "/online-text-sharing": { prerender: true },
         "/share-files-online": { prerender: true },
+        "/tools": { prerender: true },
         "/developers": { prerender: true },
         "/security": { prerender: true },
         "/r": { prerender: true },

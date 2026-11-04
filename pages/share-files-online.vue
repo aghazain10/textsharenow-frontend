@@ -200,6 +200,33 @@
             </div>
         </section>
 
+        <!-- Related -->
+        <section class="section" aria-labelledby="related-title">
+            <div class="wrap">
+                <div class="max-w-2xl">
+                    <p class="text-[13px] font-medium text-muted">Keep going</p>
+                    <h2 id="related-title" class="section-title mt-3">Related Guides</h2>
+                </div>
+                <div class="mt-10 grid gap-4 md:grid-cols-3">
+                    <NuxtLink to="/online-text-sharing" class="tile block transition-colors hover:border-muted">
+                        <h3 class="text-[18px] font-semibold tracking-[-0.02em]">Online Text Sharing</h3>
+                        <p class="mt-2 text-[14px] leading-relaxed text-muted">Move text, links, and notes between any devices with a 5-character code.</p>
+                        <p class="mt-3 text-[13px] font-medium text-brand">Read the guide →</p>
+                    </NuxtLink>
+                    <NuxtLink to="/how-it-works" class="tile block transition-colors hover:border-muted">
+                        <h3 class="text-[18px] font-semibold tracking-[-0.02em]">How It Works</h3>
+                        <p class="mt-2 text-[14px] leading-relaxed text-muted">The full flow for text and files, with device-specific tips.</p>
+                        <p class="mt-3 text-[13px] font-medium text-brand">Read the guide →</p>
+                    </NuxtLink>
+                    <NuxtLink to="/tools" class="tile block transition-colors hover:border-muted">
+                        <h3 class="text-[18px] font-semibold tracking-[-0.02em]">Free Private Tools</h3>
+                        <p class="mt-2 text-[14px] leading-relaxed text-muted">Browser-based tools that solve one problem each and never upload your data.</p>
+                        <p class="mt-3 text-[13px] font-medium text-brand">Browse tools →</p>
+                    </NuxtLink>
+                </div>
+            </div>
+        </section>
+
         <!-- CTA -->
         <section class="section">
             <div class="wrap">

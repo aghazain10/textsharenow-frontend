@@ -167,6 +167,7 @@ import { generateShareKey, encryptText, createPassphrase } from "~/utils/e2e.js"
 import { normalizeCustomCode, isValidCustomCode } from "~/utils/customCode.js";
 
 const API_BASE = useRuntimeConfig().public.API_BASE;
+import { trackEvent } from "~/composables/useAnalytics.js";
 const { isPro } = usePremium();
 const { open: openProModal } = useProModal();
 const text = ref("");
@@ -350,6 +351,7 @@ async function send() {
         resultReads.value = isPro.value ? maxReads.value : 1;
         resultPassword.value = !!(isPro.value && password.value);
         resultEncrypted.value = !!shareKey;
+        trackEvent("share_created", { kind: "text", chars: body.text ? body.text.length : 0, encrypted: !!shareKey, pro: isPro.value });
         text.value = "";
     } catch (e) {
         error.value = e?.data?.message || "Couldn't create a code. Check your connection and try again.";

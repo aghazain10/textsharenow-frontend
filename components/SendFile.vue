@@ -149,6 +149,7 @@ import { encryptFile } from "~/utils/fileE2e.js";
 import { generateShareKey } from "~/utils/e2e.js";
 
 const config = useRuntimeConfig();
+import { trackEvent } from "~/composables/useAnalytics.js";
 const API_URL = config.public.FILES_API_URL;
 const { isPro } = usePremium();
 const { open: openProModal } = useProModal();
@@ -441,6 +442,7 @@ async function upload() {
         resultEncrypted.value = !!shareKey;
         code.value = result.code;
         qrUrl.value = `${window.location.origin}/r?${transfer ? "tcode" : "fcode"}=${result.code}${shareKey ? `#k=${shareKey}` : ""}`;
+        trackEvent("share_created", { kind: transfer ? "transfer" : "file", count, encrypted: !!shareKey, pro: isPro.value });
         $fetch(`${config.public.API_BASE}/api/file-share`, {
             method: "POST",
             body: { count },
