@@ -1,17 +1,26 @@
 <template>
-    <div class="tool-glow rounded-xl border border-line bg-surface p-3 text-left sm:p-5">
+    <div class="tool-glow rounded-2xl border border-line bg-surface p-3 text-left sm:p-4">
+        <div class="mb-3 flex items-center justify-between gap-3 border-b border-line px-1 pb-3">
+            <p class="inline-flex items-center gap-2 text-[13px] font-semibold tracking-[-0.01em]">
+                <TsnIcon name="image" class="h-4 w-4" stroke="1.9" />Image compressor
+            </p>
+            <span class="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-muted">
+                <i class="live-dot" aria-hidden="true" />Runs locally
+            </span>
+        </div>
+
         <!-- Empty state -->
         <div v-if="!file">
             <label
                 for="image-input"
-                class="drop flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-line px-6 py-12 text-center transition-colors"
+                class="drop flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-line px-6 py-14 text-center transition-colors"
                 :class="{ 'is-over': dragging }"
                 @dragenter.prevent="dragging = true"
                 @dragover.prevent="dragging = true"
                 @dragleave.prevent="dragging = false"
                 @drop.prevent="onDrop"
             >
-                <span class="grid h-12 w-12 place-items-center rounded-lg border border-line bg-bg text-ink shadow-card">
+                <span class="grid h-14 w-14 place-items-center rounded-xl border border-line bg-bg text-ink shadow-card">
                     <TsnIcon name="upload" class="h-7 w-7" />
                 </span>
                 <span class="mt-4 text-[17px] font-semibold tracking-[-0.01em]">
@@ -152,9 +161,14 @@
             </p>
 
             <!-- Result -->
-            <div v-if="result" class="mt-4 rounded-lg border border-line p-4">
+            <div v-if="result" class="mt-4 rounded-xl border border-line bg-surface-2/40 p-4">
                 <div class="flex flex-wrap items-center justify-between gap-2">
-                    <p class="text-[15px] font-semibold">{{ result.note || "Compressed image ready" }}</p>
+                    <p class="flex items-center gap-2 text-[15px] font-semibold">
+                        <span class="grid h-6 w-6 place-items-center rounded-full bg-ok-soft text-ok">
+                            <TsnIcon name="check" class="h-3.5 w-3.5" stroke="2.6" />
+                        </span>
+                        {{ result.note || "Compressed image ready" }}
+                    </p>
                     <span v-if="result.savedPct !== null" class="rounded-full border border-line px-2.5 py-0.5 text-[12px] font-semibold text-ink">
                         {{ result.savedPct >= 0 ? `${result.savedPct}% smaller` : `${Math.abs(result.savedPct)}% larger` }}
                     </span>

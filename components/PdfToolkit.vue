@@ -1,5 +1,14 @@
 <template>
-    <div class="tool-glow rounded-xl border border-line bg-surface p-3 text-left sm:p-5">
+    <div class="tool-glow rounded-2xl border border-line bg-surface p-3 text-left sm:p-4">
+        <div class="mb-3 flex items-center justify-between gap-3 border-b border-line px-1 pb-3">
+            <p class="inline-flex items-center gap-2 text-[13px] font-semibold tracking-[-0.01em]">
+                <TsnIcon name="pdf" class="h-4 w-4" stroke="1.9" />PDF toolkit
+            </p>
+            <span class="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-muted">
+                <i class="live-dot" aria-hidden="true" />Runs locally
+            </span>
+        </div>
+
         <div class="grid grid-cols-3 gap-1 rounded-lg bg-surface-2 p-1" role="tablist" aria-label="Choose a PDF operation">
             <button
                 v-for="t in TABS"
@@ -19,20 +28,25 @@
         <div v-if="tab === 'merge'" class="mt-4">
             <label
                 for="merge-input"
-                class="drop flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-line px-6 py-10 text-center transition-colors"
+                class="drop flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-line px-6 py-12 text-center transition-colors"
                 :class="{ 'is-over': dragging === 'merge' }"
                 @dragenter.prevent="dragging = 'merge'"
                 @dragover.prevent="dragging = 'merge'"
                 @dragleave.prevent="dragging = ''"
                 @drop.prevent="onDrop($event, 'merge')"
             >
-                <span class="grid h-12 w-12 place-items-center rounded-lg border border-line bg-bg text-ink shadow-card">
+                <span class="grid h-14 w-14 place-items-center rounded-xl border border-line bg-bg text-ink shadow-card">
                     <TsnIcon name="upload" class="h-7 w-7" />
                 </span>
                 <span class="mt-4 text-[17px] font-semibold tracking-[-0.01em]">
                     Drop PDFs here, or <span class="underline underline-offset-4">browse</span>
                 </span>
                 <span class="mt-1 text-[14px] text-muted">Two or more PDFs, up to {{ maxLabel }} total</span>
+                <span class="mt-3 inline-flex flex-wrap items-center justify-center gap-1.5 text-[12px] font-medium">
+                    <span class="rounded-md border border-line bg-bg px-2 py-0.5">Any page order</span>
+                    <span class="rounded-md border border-line bg-bg px-2 py-0.5">No watermark</span>
+                    <span class="rounded-md border border-line bg-bg px-2 py-0.5">No upload</span>
+                </span>
                 <input id="merge-input" type="file" class="sr-only" accept="application/pdf,.pdf" multiple @change="onMergePick" />
             </label>
 
@@ -70,14 +84,14 @@
             <label
                 v-if="!splitFile"
                 for="split-input"
-                class="drop flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-line px-6 py-10 text-center transition-colors"
+                class="drop flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-line px-6 py-12 text-center transition-colors"
                 :class="{ 'is-over': dragging === 'split' }"
                 @dragenter.prevent="dragging = 'split'"
                 @dragover.prevent="dragging = 'split'"
                 @dragleave.prevent="dragging = ''"
                 @drop.prevent="onDrop($event, 'split')"
             >
-                <span class="grid h-12 w-12 place-items-center rounded-lg border border-line bg-bg text-ink shadow-card">
+                <span class="grid h-14 w-14 place-items-center rounded-xl border border-line bg-bg text-ink shadow-card">
                     <TsnIcon name="upload" class="h-7 w-7" />
                 </span>
                 <span class="mt-4 text-[17px] font-semibold tracking-[-0.01em]">
@@ -130,14 +144,14 @@
             <label
                 v-if="!compressFile"
                 for="compress-input"
-                class="drop flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-line px-6 py-10 text-center transition-colors"
+                class="drop flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-line px-6 py-12 text-center transition-colors"
                 :class="{ 'is-over': dragging === 'compress' }"
                 @dragenter.prevent="dragging = 'compress'"
                 @dragover.prevent="dragging = 'compress'"
                 @dragleave.prevent="dragging = ''"
                 @drop.prevent="onDrop($event, 'compress')"
             >
-                <span class="grid h-12 w-12 place-items-center rounded-lg border border-line bg-bg text-ink shadow-card">
+                <span class="grid h-14 w-14 place-items-center rounded-xl border border-line bg-bg text-ink shadow-card">
                     <TsnIcon name="upload" class="h-7 w-7" />
                 </span>
                 <span class="mt-4 text-[17px] font-semibold tracking-[-0.01em]">
@@ -178,9 +192,14 @@
             <TsnIcon name="alert" class="mt-0.5 h-4 w-4 shrink-0" />{{ error }}
         </p>
 
-        <div v-if="result" class="mt-4 rounded-lg border border-line p-4">
+        <div v-if="result" class="mt-4 rounded-xl border border-line bg-surface-2/40 p-4">
             <div class="flex flex-wrap items-center justify-between gap-2">
-                <p class="text-[15px] font-semibold">{{ result.note }}</p>
+                <p class="flex items-center gap-2 text-[15px] font-semibold">
+                    <span class="grid h-6 w-6 place-items-center rounded-full bg-ok-soft text-ok">
+                        <TsnIcon name="check" class="h-3.5 w-3.5" stroke="2.6" />
+                    </span>
+                    {{ result.note }}
+                </p>
                 <span class="rounded-full border border-line px-2.5 py-0.5 text-[12px] font-semibold text-ink">
                     {{ result.size <= result.before ? `${formatPdfSize(result.before - result.size)} saved` : "No size savings" }}
                 </span>

@@ -1,111 +1,71 @@
 <template>
     <div>
-        <PageHero
-            title="EXIF Remover — Strip Location & Metadata from Photos"
-            meta="Privacy tools · Free · No upload"
-            lead="See the GPS coordinates and camera details hidden in a photo, then remove them before you share it. The file is processed entirely in your browser."
+        <ToolPageHero
+            eyebrow="EXIF remover"
+            title="EXIF Remover — strip location and metadata before you share"
+            lead="See the GPS coordinates, camera model and timestamps hidden in a photo, then remove them. JPEG, PNG and WebP pixels are copied exactly; the file never leaves your browser."
+            :badges="badges"
+            footnote="Processed on this device · Nothing is uploaded or stored"
         >
-            <div class="mt-10">
-                <ExifCleaner />
-            </div>
-        </PageHero>
+            <ExifCleaner />
+        </ToolPageHero>
 
-        <section class="section pt-0">
-            <div class="wrap">
-                <div class="max-w-2xl mx-auto">
-                    <h2 class="section-title mt-3">Strip location from photos before sharing</h2>
-                    <p class="section-lead mt-2 text-[15px] leading-relaxed text-muted">
-                        Photos taken with a phone or camera usually contain hidden metadata: GPS coordinates, the camera model, and the exact date and time.
-                        When you send the file — over email, a messaging app, or a marketplace listing — that data travels with it. This tool removes it locally,
-                        leaving only the image.
-                    </p>
-                    <p class="mt-4 text-[14px] text-muted">
-                        On JPEG, PNG and WebP the metadata blocks are cut out at the byte level, so the pixels are copied exactly and no quality is lost.
-                        HEIC and other formats are rebuilt through a canvas, which produces a clean JPEG.
-                    </p>
-                </div>
+        <ToolCompare
+            eyebrow="Why it matters"
+            title="A photo can reveal where you live, work or shoot"
+            local-label="This remover"
+            typical-label="Typical metadata remover"
+            :rows="compareRows"
+        >
+            <p class="mt-4 text-[15px] leading-relaxed text-muted">
+                A phone photo usually carries more than pixels: GPS coordinates, camera make and model, lens, ISO, shutter speed and
+                the exact time it was taken. Send the file by email, chat, marketplace or cloud link and that data travels with it.
+            </p>
+            <p class="mt-3 text-[15px] leading-relaxed text-muted">
+                Social networks are inconsistent — some strip metadata, some keep it, and it depends on the upload path. If you want
+                the location gone, strip it before the file leaves your device.
+            </p>
+            <ul class="mt-5 space-y-2.5 text-[14px] leading-relaxed text-muted">
+                <li class="flex items-start gap-2">
+                    <TsnIcon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-ink" stroke="2.4" />
+                    The GPS alarm shows the coordinates before anything is removed.
+                </li>
+                <li class="flex items-start gap-2">
+                    <TsnIcon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-ink" stroke="2.4" />
+                    The output is scanned again, so you can verify the result instead of trusting a claim.
+                </li>
+                <li class="flex items-start gap-2">
+                    <TsnIcon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-ink" stroke="2.4" />
+                    On JPEG, PNG and WebP the compressed image data is copied byte for byte — no re-compression.
+                </li>
+            </ul>
+        </ToolCompare>
+
+        <section class="border-t border-line px-4 py-12 sm:py-16" aria-labelledby="exif-steps-title">
+            <div class="tool-wrap">
+                <p class="text-[12px] font-semibold uppercase tracking-[0.14em] text-muted">How it works</p>
+                <h2 id="exif-steps-title" class="mt-2 max-w-[28ch] text-[clamp(1.6rem,3.2vw,2.25rem)] font-bold leading-[1.1] tracking-[-0.03em]">
+                    See it, strip it, verify it
+                </h2>
+                <p class="mt-3 max-w-[58ch] text-[15px] leading-relaxed text-muted">
+                    The photo is read in the browser, cleaned in the browser, and checked again before you download it.
+                </p>
+                <ToolSteps :steps="steps" :cols="4" />
             </div>
         </section>
 
-        <section class="section">
-            <div class="wrap">
-                <div class="max-w-xl mx-auto">
-                    <h2 class="section-title mt-3">How it works</h2>
-                    <ol class="mt-6 grid gap-6 sm:grid-cols-2">
-                        <li class="p-4 border rounded-lg bg-surface shadow-card">
-                            <div class="text-3xl font-bold text-brand">1</div>
-                            <h3 class="mt-3 text-[18px]">Select a photo</h3>
-                            <p class="text-muted mt-2">JPEG, PNG, WebP and HEIC/HEIF. The file is read in the browser — nothing is uploaded.</p>
-                        </li>
-                        <li class="p-4 border rounded-lg bg-surface shadow-card">
-                            <div class="text-3xl font-bold text-brand">2</div>
-                            <h3 class="mt-3 text-[18px]">See what's hidden</h3>
-                            <p class="text-muted mt-2">GPS coordinates, camera make and model, lens, ISO, shutter speed, and the date taken are read out of the EXIF block.</p>
-                        </li>
-                        <li class="p-4 border rounded-lg bg-surface shadow-card">
-                            <div class="text-3xl font-bold text-brand">3</div>
-                            <h3 class="mt-3 text-[18px]">Remove the metadata</h3>
-                            <p class="text-muted mt-2">One click strips EXIF, XMP, IPTC, comments, text chunks and GPS data. The pixels are not touched on JPEG, PNG and WebP.</p>
-                        </li>
-                        <li class="p-4 border rounded-lg bg-surface shadow-card">
-                            <div class="text-3xl font-bold text-brand">4</div>
-                            <h3 class="mt-3 text-[18px]">Download the clean photo</h3>
-                            <p class="text-muted mt-2">The new file is checked again before download, so you can see that no readable metadata remains. The original stays untouched.</p>
-                        </li>
-                    </ol>
-                </div>
-            </div>
-        </section>
+        <ToolFaq
+            title="Removing photo metadata: questions"
+            lead="What the GPS tag contains, what happens to image quality, and why a cleaned photo sometimes looks rotated."
+            :items="faqs"
+        />
 
-        <section class="section" aria-labelledby="why-exif-title">
-            <div class="wrap">
-                <div class="max-w-2xl mx-auto">
-                    <h2 id="why-exif-title" class="section-title mt-3">Why this matters</h2>
-                    <div class="mt-6 grid gap-4 md:grid-cols-2">
-                        <article class="tile">
-                            <TsnIcon name="shield" class="h-5 w-5 text-ink" stroke="1.8" />
-                            <h3 class="mt-3 text-[18px] text-brand">Location privacy</h3>
-                            <p class="mt-2 text-[14px] leading-relaxed text-muted">A photo taken at home can carry the exact coordinates of your home. Stripping GPS before posting or selling something removes that leak.</p>
-                        </article>
-                        <article class="tile">
-                            <TsnIcon name="eye" class="h-5 w-5 text-ink" stroke="1.8" />
-                            <h3 class="mt-3 text-[18px] text-brand">See it before you trust it</h3>
-                            <p class="mt-2 text-[14px] leading-relaxed text-muted">The tool shows what it found before removing anything, and verifies the output afterwards. You don't have to take a claim on faith.</p>
-                        </article>
-                        <article class="tile">
-                            <TsnIcon name="lock" class="h-5 w-5 text-ink" stroke="1.8" />
-                            <h3 class="mt-3 text-[18px] text-brand">No upload, ever</h3>
-                            <p class="mt-2 text-[14px] leading-relaxed text-muted">The metadata scan and removal run in JavaScript inside your browser. The photo never reaches a server, so there's nothing to retain.</p>
-                        </article>
-                        <article class="tile">
-                            <TsnIcon name="download" class="h-5 w-5 text-ink" stroke="1.8" />
-                            <h3 class="mt-3 text-[18px] text-brand">No quality loss</h3>
-                            <p class="mt-2 text-[14px] leading-relaxed text-muted">On the common web formats the compressed image data is copied byte for byte — removing metadata doesn't re-compress your photo.</p>
-                        </article>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section">
-            <div class="wrap">
-                <ToolShareCta tool="exif-remover" path="/exif-remover" label="the EXIF remover" />
-                <div class="mt-4 grid gap-4 md:grid-cols-3">
-                    <NuxtLink to="/image-compressor" class="tile block transition-colors hover:border-muted">
-                        <h3 class="text-[17px] font-semibold tracking-[-0.02em]">Image Compressor & Converter</h3>
-                        <p class="mt-2 text-[14px] leading-relaxed text-muted">Hit an exact file size, or convert JPEG/PNG/WebP/HEIC.</p>
-                    </NuxtLink>
-                    <NuxtLink to="/pdf-tools" class="tile block transition-colors hover:border-muted">
-                        <h3 class="text-[17px] font-semibold tracking-[-0.02em]">Combine PDF Files</h3>
-                        <p class="mt-2 text-[14px] leading-relaxed text-muted">Combine, extract or shrink PDFs locally.</p>
-                    </NuxtLink>
-                    <NuxtLink to="/tools" class="tile block transition-colors hover:border-muted">
-                        <h3 class="text-[17px] font-semibold tracking-[-0.02em]">Free Tools Hub</h3>
-                        <p class="mt-2 text-[14px] leading-relaxed text-muted">All the browser-only tools in one place.</p>
-                    </NuxtLink>
-                </div>
-            </div>
-        </section>
+        <ToolFooter
+            tool="exif-remover"
+            path="/exif-remover"
+            label="the EXIF remover"
+            :items="related"
+        />
     </div>
 </template>
 
@@ -116,6 +76,77 @@ useSeo({
         "See and remove GPS coordinates, camera data and other metadata from photos before sharing. Runs entirely in your browser — your photos never upload.",
     pagePath: "/exif-remover",
 });
+
+const badges = [
+    { icon: "lock", label: "No upload" },
+    { icon: "map-pin", label: "GPS shown first" },
+    { icon: "check", label: "Lossless on JPEG" },
+    { icon: "shield", label: "Output verified" },
+];
+
+const compareRows = [
+    { label: "File leaves your device", local: "Never", typical: "Uploaded first" },
+    { label: "Shows hidden metadata first", local: "Yes — including GPS", typical: "Rarely" },
+    { label: "Lossless on JPEG / PNG / WebP", local: "Yes", typical: "Usually re-encodes" },
+    { label: "Verifies the cleaned file", local: "Yes — rescanned", typical: "No" },
+    { label: "Account required", local: "None", typical: "Often" },
+];
+
+const steps = [
+    {
+        icon: "upload",
+        title: "Drop the photo",
+        body: "JPEG, PNG, WebP or HEIC, up to 60 MB. The file is read locally; nothing is sent to a server.",
+    },
+    {
+        icon: "eye",
+        title: "Read what's hidden",
+        body: "GPS coordinates, camera make and model, lens, ISO, shutter speed and the date taken are read from the EXIF block.",
+    },
+    {
+        icon: "shield",
+        title: "Remove everything",
+        body: "One click strips EXIF, XMP, IPTC, comments, text chunks and GPS data. Pixels are not touched on JPEG, PNG and WebP.",
+    },
+    {
+        icon: "check",
+        title: "Verify and download",
+        body: "The cleaned file is scanned again before download. The original photo stays untouched on your device.",
+    },
+];
+
+const faqs = [
+    {
+        q: "How do I remove location from a photo?",
+        a: "Drop the photo above. If it contains GPS data, the tool shows the coordinates before changing anything. Press Remove metadata, then download the clean file. On JPEG, PNG and WebP the metadata blocks are cut out at the byte level, so the image itself is unchanged.",
+    },
+    {
+        q: "Does removing metadata reduce image quality?",
+        a: "Not on JPEG, PNG or WebP. Those formats store the compressed image data separately from metadata, so the pixels are copied exactly. HEIC and other containers are rebuilt through a canvas and saved as JPEG at 92% quality, which does re-encode the image.",
+    },
+    {
+        q: "Why is my photo rotated after cleaning it?",
+        a: "Some photos store their orientation in a metadata tag instead of rotating the pixels. Removing metadata removes that instruction, so a few viewers may show the image rotated. The tool warns you when this applies — open the result and check before sharing.",
+    },
+    {
+        q: "Are my photos uploaded?",
+        a: "No. The metadata scan, removal and verification all run in JavaScript inside your browser. The photo never reaches a server, so there is no copy to retain, log or delete.",
+    },
+    {
+        q: "Which file formats are supported?",
+        a: "JPEG, PNG and WebP are handled losslessly. HEIC and HEIF photos from an iPhone are decoded in the browser and saved as a clean JPEG. Raw camera formats depend on whether your browser can decode them — if the preview fails, convert the file to JPEG first.",
+    },
+    {
+        q: "Do social networks remove EXIF automatically?",
+        a: "Some do, some don't, and it can vary by upload path. If you are sending the original file directly — email, chat, a marketplace listing, a cloud link — assume the metadata is still inside. Strip it first if the location should not travel with the photo.",
+    },
+];
+
+const related = [
+    { to: "/image-compressor", icon: "image", title: "Image Compressor", desc: "Hit an exact file size, or convert JPEG, PNG, WebP and HEIC locally." },
+    { to: "/pdf-tools", icon: "pdf", title: "Combine PDF Files", desc: "Combine, extract pages or shrink PDFs locally, with no upload." },
+    { to: "/tools", icon: "lock", title: "All Free Tools", desc: "Every browser-only tool in one place — no account, no uploads." },
+];
 
 useHead({
     script: [
@@ -131,6 +162,18 @@ useHead({
                 applicationCategory: "SecurityApplication",
                 operatingSystem: "Any",
                 offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+            }),
+        },
+        {
+            type: "application/ld+json",
+            innerHTML: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                mainEntity: faqs.map((f) => ({
+                    "@type": "Question",
+                    name: f.q,
+                    acceptedAnswer: { "@type": "Answer", text: f.a },
+                })),
             }),
         },
     ],
