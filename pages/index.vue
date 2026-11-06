@@ -1,6 +1,7 @@
 <template>
-    <div>
-        <!-- Hero -->
+    <article>
+        <div>
+            <!-- Hero -->
         <section class="relative isolate overflow-hidden px-4 pb-16 pt-14 sm:pb-20 sm:pt-20" aria-labelledby="hero-title">
             <div class="hero-grid absolute inset-0 -z-10" aria-hidden="true" />
 
@@ -71,7 +72,8 @@
 
         <BlogPreview />
         <FaqSection />
-    </div>
+        </div>
+    </article>
 </template>
 
 <script setup>
