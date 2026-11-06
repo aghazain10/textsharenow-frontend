@@ -136,6 +136,14 @@ export default defineNuxtConfig({
                     async: true,
                     crossorigin: "anonymous",
                 },
+                // Mediavine ad script
+                {
+                    src: "//scripts.scriptwrapper.com/tags/313cf240-86a4-4ba2-a568-96247180b9f1.js",
+                    type: "text/javascript",
+                    async: true,
+                    "data-noptimize": "1",
+                    "data-cfasync": "false",
+                },
             ],
         },
     },
