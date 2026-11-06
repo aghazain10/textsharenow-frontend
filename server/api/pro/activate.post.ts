@@ -8,7 +8,7 @@
  * 502 — Gumroad unreachable (retryable)
  * 429 — more than 5 attempts per minute per IP
  */
-import { verifyGumroadLicense, setProSession } from '../../utils/pro'
+import { verifyGumroadLicense, setProSession, maskEmail } from '../../utils/pro'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
@@ -51,6 +51,18 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  await setProSession(event, licenseKey, check.email)
-  return { ok: true }
+  await setProSession(event, licenseKey, {
+    email: check.email,
+    plan: check.plan,
+    renewsAt: check.renewsAt,
+    endsAt: check.endsAt,
+    subscriptionId: check.subscriptionId,
+  })
+  return {
+    ok: true,
+    plan: check.plan ?? null,
+    email: maskEmail(check.email),
+    renewsAt: check.renewsAt ?? null,
+    endsAt: check.endsAt ?? null,
+  }
 })

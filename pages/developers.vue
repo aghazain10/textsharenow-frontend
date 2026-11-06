@@ -6,7 +6,7 @@
             lead="TextShareNow Pro includes a small HTTP API and an MCP server, so scripts and AI agents can create and receive shares without a browser. Your license key is the only credential — no extra account, no OAuth."
         >
             <div class="mt-7 flex flex-wrap gap-3">
-                <a :href="checkoutHref" class="btn-primary">Get Pro — $5/month or $50/year</a>
+                <a :href="checkoutHref" class="btn-primary" @click="onCtaClick('hero')">Get Pro — $5/month or $50/year</a>
                 <NuxtLink to="/pricing" class="btn-ghost">See what Pro includes</NuxtLink>
             </div>
         </PageHero>
@@ -50,7 +50,7 @@
                             over HTTPS, stored in your client config, and cached server-side only as a SHA-256 hash. Never commit it to a public repo.
                         </div>
                         <div class="mt-5 flex flex-wrap gap-3">
-                            <a :href="checkoutHref" class="btn-primary">Get a license key</a>
+                            <a :href="checkoutHref" class="btn-primary" @click="onCtaClick('api')">Get a license key</a>
                             <NuxtLink to="/pricing" class="btn-ghost">How activation works</NuxtLink>
                         </div>
                     </section>
@@ -294,7 +294,7 @@ const passwordHash = `p2$210000$${salt}$${derived}`;</code></pre>
                     <h2 class="section-title mx-auto max-w-[24ch]">Give your agent a share tool.</h2>
                     <p class="section-lead mx-auto">One license key, one npm package, four tools. Works with any MCP client.</p>
                     <div class="mt-8 flex flex-wrap justify-center gap-3">
-                        <a :href="checkoutHref" class="btn-primary">Get Pro — $5/month or $50/year</a>
+                        <a :href="checkoutHref" class="btn-primary" @click="onCtaClick('bottom')">Get Pro — $5/month or $50/year</a>
                         <NuxtLink to="/#tool" class="btn-ghost">Try the free web tool</NuxtLink>
                     </div>
                     <p class="mt-4 text-[13px] text-muted">Node 18+ · <code class="font-mono">npx -y textsharenow-mcp@latest</code></p>
@@ -306,6 +306,7 @@ const passwordHash = `p2$210000$${salt}$${derived}`;</code></pre>
 
 <script setup>
 import { proCheckoutPath } from "~/utils/checkout.js";
+import { trackProEvent } from "~/composables/useProTracking.js";
 
 useSeo({
     title: "API & MCP for Developers and AI Agents",
@@ -315,6 +316,11 @@ useSeo({
 });
 
 const checkoutHref = proCheckoutPath({ plan: "monthly", location: "developers" });
+
+function onCtaClick(placement) {
+    trackProEvent("pro_cta_click", { location: "developers", plan: "monthly", placement });
+    trackProEvent("checkout_started", { location: "developers", plan: "monthly", placement });
+}
 
 const tools = [
     { name: "share_text", desc: "Create a share link with optional expiry, read limit, password, and custom code." },
@@ -328,6 +334,6 @@ const endpoints = [
     { method: "GET", path: "/api/share/:code", auth: "None", desc: "Read the text. Consumes one read." },
     { method: "GET", path: "/api/share/:code/meta", auth: "None", desc: "Peek at expiry, reads, and password status." },
     { method: "DELETE", path: "/api/share/:code", auth: "License key", desc: "Delete a share you created." },
-    { method: "GET", path: "/api/pro/status", auth: "License key", desc: "Validate a key; returns { pro, via }." },
+    { method: "GET", path: "/api/pro/status", auth: "License key", desc: "Validate a key; returns { pro, plan, renewsAt, via }." },
 ];
 </script>

@@ -50,6 +50,7 @@
 
 <script setup>
 import { EXPIRY_OPTIONS } from "~/utils/expiry.js";
+import { trackLimitHit, PRO_FEATURES } from "~/composables/useAnalytics.js";
 
 const props = defineProps({
     modelValue: { type: Number, required: true }, // seconds (0 = never)
@@ -60,6 +61,10 @@ const props = defineProps({
     options: { type: Array, default: () => EXPIRY_OPTIONS },
     // What to tell the modal when a locked option is clicked
     reason: { type: String, default: "expiry" },
+    // Where this picker lives, forwarded to the paywall event
+    placement: { type: String, default: "composer" },
+    // The free ceiling for this control (seconds for expiry, reads for reads)
+    freeLimit: { type: [Number, String], default: null },
 });
 const emit = defineEmits(["update:modelValue"]);
 
@@ -93,7 +98,14 @@ function closeMenu(refocus = false) {
 function pick(o) {
     if (locked(o)) {
         closeMenu(true);
-        openProModal(props.reason);
+        const feature =
+            props.reason === "reads" ? PRO_FEATURES.READS : props.reason === "expiry" ? PRO_FEATURES.EXPIRY : props.reason;
+        trackLimitHit(feature, {
+            attempted: o.value === 0 ? (props.reason === "reads" ? "unlimited" : "never") : o.value,
+            limit: props.freeLimit,
+            placement: props.placement,
+        });
+        openProModal(props.reason, props.placement);
         return;
     }
     if (o.value !== props.modelValue) emit("update:modelValue", o.value);

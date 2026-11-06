@@ -24,7 +24,7 @@
                         Activate your license key on this device to see when a share was opened, how many times it was read, and when it closed.
                     </p>
                     <div class="mt-5 flex flex-wrap gap-2">
-                        <button type="button" class="btn-primary" @click="openProModal('general')">Activate Pro</button>
+                        <button type="button" class="btn-primary" @click="openProModal('general', 'receipts')">Activate Pro</button>
                         <NuxtLink to="/pricing" class="btn-ghost">See Pro features</NuxtLink>
                     </div>
                 </div>

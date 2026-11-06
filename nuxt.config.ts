@@ -42,6 +42,16 @@ export default defineNuxtConfig({
         // derived from the Upstash token so no secret lives in the repo;
         // set explicitly in production if you prefer (PRO_SECRET=...).
         PRO_SECRET: process.env.PRO_SECRET || "",
+        // Gumroad ping endpoint shared secret. Set the same value in the
+        // Gumroad product's "Ping URL" as ?secret=... (or leave unset to
+        // disable the endpoint entirely). NUXT_ prefix allows overriding at
+        // runtime without rebuilding.
+        GUMROAD_PING_SECRET: process.env.NUXT_GUMROAD_PING_SECRET || process.env.GUMROAD_PING_SECRET || "",
+        // GA4 Measurement Protocol credentials for server-confirmed events
+        // (checkout_completed, pro_deactivated). The measurement ID matches
+        // the gtag property in the app head by default.
+        GA4_API_SECRET: process.env.NUXT_GA4_API_SECRET || process.env.GA4_API_SECRET || "",
+        GA4_MEASUREMENT_ID: process.env.NUXT_GA4_MEASUREMENT_ID || process.env.GA4_MEASUREMENT_ID || "G-PXW7CX14YN",
         // Shared with the files service so dashboard deletes are authenticated.
         FILES_DELETE_SECRET: process.env.FILES_DELETE_SECRET || "",
         // Public (exposed to browser)

@@ -1,16 +1,9 @@
-// Client-side events for the Pro funnel. GA4 (gtag) is the primary channel;
-// Vercel Analytics custom events are sent too when the plan supports them.
-// Both calls are best-effort — analytics must never block a click or a render.
-import { track as vercelTrack } from "@vercel/analytics";
+// Client-side events for the Pro funnel. This is a thin alias over the shared
+// analytics module so every Pro event also reaches Vercel Analytics and uses
+// the same beacon transport as the rest of the site.
+export { ANALYTICS_EVENTS as PRO_EVENTS, trackLimitHit } from "./useAnalytics.js";
+import { trackEvent } from "./useAnalytics.js";
 
 export function trackProEvent(name, props = {}) {
-    if (!import.meta.client) return;
-
-    try {
-        window.gtag?.("event", name, { ...props, transport_type: "beacon" });
-    } catch {}
-
-    try {
-        vercelTrack(name, props);
-    } catch {}
+    trackEvent(name, props);
 }

@@ -26,7 +26,7 @@
                         type="button"
                         class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-line bg-bg px-2 py-0.5 text-muted transition-colors hover:text-ink"
                         title="Go Pro for up to 20 files and 100 MB total (executables stay blocked)"
-                        @click="openProModal('file')"
+                        @click="openProModal('file', 'send_file')"
                     >
                         <TsnIcon name="lock" class="h-3 w-3" stroke="2.2" />
                         Up to 20 files with Pro
@@ -82,14 +82,14 @@
             </p>
 
             <div class="mt-3 rounded-lg border border-line px-4 py-2.5 lg:hidden">
-                <ExpirySelect v-model="expires" :options="FILE_EXPIRY_OPTIONS" />
+                <ExpirySelect v-model="expires" :options="FILE_EXPIRY_OPTIONS" placement="send_file" :free-limit="3600" />
             </div>
 
             <div class="mt-3 flex flex-wrap items-center gap-3 pl-2">
                 <p class="text-[13px] text-muted lg:hidden">{{ isTransferSelection ? "Each file is deleted after its first download" : "Deleted after one download" }}, or after {{ expiryLabel(expires) }}.</p>
                 <div class="hidden items-center gap-3 lg:flex">
                     <p class="text-[13px] text-muted">{{ isTransferSelection ? "Each file is deleted after its first download." : "Deleted after one download." }}</p>
-                    <ExpirySelect v-model="expires" :options="FILE_EXPIRY_OPTIONS" />
+                    <ExpirySelect v-model="expires" :options="FILE_EXPIRY_OPTIONS" placement="send_file" :free-limit="3600" />
                 </div>
                 <div class="ml-auto flex flex-wrap items-center justify-end gap-2.5">
                     <button
@@ -149,7 +149,7 @@ import { encryptFile } from "~/utils/fileE2e.js";
 import { generateShareKey } from "~/utils/e2e.js";
 
 const config = useRuntimeConfig();
-import { trackEvent } from "~/composables/useAnalytics.js";
+import { trackEvent, trackLimitHit, PRO_FEATURES } from "~/composables/useAnalytics.js";
 const API_URL = config.public.FILES_API_URL;
 const { isPro } = usePremium();
 const { open: openProModal } = useProModal();
@@ -224,7 +224,12 @@ function addFiles(fileList, replace = true) {
 
     if (!isPro.value && incoming.length > 1) {
         error.value = "Free shares one file at a time. Go Pro to send up to 20 files in one transfer.";
-        openProModal("file");
+        trackLimitHit(PRO_FEATURES.FILE_COUNT, {
+            attempted: incoming.length,
+            limit: 1,
+            placement: "send_file",
+        });
+        openProModal("file", "send_file");
         return;
     }
 
@@ -245,7 +250,29 @@ function addFiles(fileList, replace = true) {
         const problem = validateFile(f);
         if (problem) {
             error.value = problem;
-            if (!isPro.value) openProModal("file");
+            // Only upsell when the block is actually a free-tier gate —
+            // executables and SVGs stay blocked on every plan.
+            const blockedEverywhere =
+                f.type === "image/svg+xml" ||
+                /\.svg$/i.test(f.name) ||
+                isBlockedFile(f.name, f.type);
+            if (!isPro.value && !blockedEverywhere) {
+                const freeTypes = FREE_FILE_ACCEPT.split(",");
+                if (!freeTypes.includes(f.type)) {
+                    trackLimitHit(PRO_FEATURES.FILE_TYPE, {
+                        attempted: f.type || "unknown",
+                        limit: FREE_FILE_LABEL,
+                        placement: "send_file",
+                    });
+                } else if (f.size > FREE_MAX_FILE) {
+                    trackLimitHit(PRO_FEATURES.FILE_SIZE, {
+                        attempted: f.size,
+                        limit: FREE_MAX_FILE,
+                        placement: "send_file",
+                    });
+                }
+                openProModal("file", "send_file");
+            }
             return;
         }
         if (seen.has(path.toLowerCase())) {
@@ -254,6 +281,14 @@ function addFiles(fileList, replace = true) {
         }
         if (total + f.size > maxTotal.value) {
             error.value = `This selection is ${size(total + f.size)}. ${isPro.value ? "Pro transfers are limited to 100 MB total." : "The free limit is 10 MB."} Remove a file and try again.`;
+            if (!isPro.value) {
+                trackLimitHit(PRO_FEATURES.TOTAL_SIZE, {
+                    attempted: total + f.size,
+                    limit: FREE_MAX_FILE,
+                    placement: "send_file",
+                });
+                openProModal("file", "send_file");
+            }
             return;
         }
         next.push({ id: ++itemSeq, file: f, path });
@@ -281,7 +316,12 @@ function onDrop(e) {
 
 function pickFolder() {
     if (!isPro.value) {
-        openProModal("file");
+        trackLimitHit(PRO_FEATURES.FILE_COUNT, {
+            attempted: "folder",
+            limit: 1,
+            placement: "send_file",
+        });
+        openProModal("file", "send_file");
         return;
     }
     folderInput.value?.click();

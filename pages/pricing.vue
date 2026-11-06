@@ -95,7 +95,7 @@
                         </ul>
                         <a :href="checkoutHref('plan_card')" class="btn-primary mt-7 w-full" @click="onCtaClick('plan_card')">Get Pro — {{ planDisplay.cta }}</a>
                         <p class="mt-2 text-center text-[12px] text-muted">Gumroad checkout · instant license key · cancel anytime</p>
-                        <button type="button" class="mt-2 w-full rounded-md py-2 text-[14px] font-medium text-brand transition-colors hover:underline" @click="openProModal('general')">
+                        <button type="button" class="mt-2 w-full rounded-md py-2 text-[14px] font-medium text-brand transition-colors hover:underline" @click="openProModal('general', 'pricing_plan_card')">
                             Already have a license key? Activate it
                         </button>
                     </article>
@@ -244,7 +244,7 @@
                     </ol>
                     <a :href="checkoutHref('how_to')" class="btn-primary mt-6 w-full" @click="onCtaClick('how_to')">Get Pro — {{ planDisplay.cta }}</a>
                     <p class="mt-2 text-center text-[12px] text-muted">You'll pay on Gumroad and get your key on the receipt.</p>
-                    <button type="button" class="mt-2 w-full rounded-md py-2 text-[14px] font-medium text-brand transition-colors hover:underline" @click="openProModal('general')">
+                    <button type="button" class="mt-2 w-full rounded-md py-2 text-[14px] font-medium text-brand transition-colors hover:underline" @click="openProModal('general', 'pricing_how_to')">
                         I already have a key — activate
                     </button>
                 </div>
@@ -313,7 +313,10 @@ const planDisplay = computed(() =>
 // Plain function (not a computed): the template re-runs on `plan` change,
 // so reading plan.value here picks up the current selection each render.
 const checkoutHref = (location) => proCheckoutPath({ plan: plan.value, location });
-const onCtaClick = (location) => trackProEvent("pro_cta_click", { location, plan: plan.value });
+const onCtaClick = (location) => {
+    trackProEvent("pro_cta_click", { location, plan: plan.value });
+    trackProEvent("checkout_started", { location, plan: plan.value });
+};
 
 function onFaqToggle(index, event) {
     if (event.target.open) trackProEvent("pricing_faq_open", { question_index: index });

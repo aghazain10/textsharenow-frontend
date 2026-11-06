@@ -8,6 +8,7 @@
  * Fail-open: if Redis is unreachable the redirect still happens.
  */
 import { proCheckoutUrl, normalizeProPlan, normalizeProLocation } from "~~/utils/checkout";
+import { recordFunnelEvent } from "../../utils/funnel";
 
 async function bumpCounter(redisUrl: string, token: string, key: string, field: string, ttlSeconds?: number) {
     const headers = {
@@ -49,6 +50,9 @@ export default defineEventHandler(async (event) => {
             await Promise.all([
                 bumpCounter(redisUrl, token, "stats:pro:total", location),
                 bumpCounter(redisUrl, token, `stats:pro:daily:${day}`, location, 60 * 60 * 24 * 400),
+                // Ad-block-resistant funnel count. GA4 gets the client event;
+                // this is the fallback when the browser never fires it.
+                recordFunnelEvent("checkout_started", { plan, location }, { sendToGa4: false }),
             ]);
         }
     } catch {

@@ -23,7 +23,7 @@
                     type="button"
                     class="inline-flex h-9 items-center gap-1.5 rounded-full border border-brand/40 bg-brand/10 px-3 text-[13px] font-semibold text-brand transition-colors hover:bg-brand/20"
                     title="Unlock TextShareNow Pro"
-                    @click="openProModal('general')"
+                    @click="openProModal('general', 'app_header')"
                 >
                     <span aria-hidden="true">⭐</span> Pro
                 </button>

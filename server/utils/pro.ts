@@ -65,10 +65,85 @@ async function upstash<T = any>(config: Upstash, command: unknown[]): Promise<T>
   return res.json()
 }
 
+export type ProPlan = 'monthly' | 'annual'
+
+/** Everything we know about a verified purchase, cached alongside the key. */
+export type ProEntitlement = {
+  email?: string
+  plan?: ProPlan | null
+  /** Next expected charge, when we can derive it from the purchase. */
+  renewsAt?: string | null
+  /** Access end date for a cancelled/ended subscription. */
+  endsAt?: string | null
+  subscriptionId?: string | null
+}
+
 export type LicenseCheck =
-  | { valid: true; email?: string }
+  | ({ valid: true } & ProEntitlement)
   | { valid: false; networkError: false; message: string }
   | { valid: false; networkError: true; message: string }
+
+/** ISO string from a Gumroad timestamp, or null when missing/invalid. */
+function isoDate(value: unknown): string | null {
+  if (!value) return null
+  const date = new Date(String(value))
+  return Number.isNaN(date.getTime()) ? null : date.toISOString()
+}
+
+export function detectPlan(purchase: any): ProPlan | null {
+  const raw = [
+    purchase.recurrence,
+    purchase.subscription_recurrence,
+    purchase.variants,
+    purchase.product_name,
+    purchase.price,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase()
+
+  if (/year|annual|yearly/.test(raw)) return 'annual'
+  if (/month|monthly/.test(raw)) return 'monthly'
+
+  // Gumroad reports prices in cents. $50/year vs $5/month boundary.
+  const price = Number(purchase.price)
+  if (Number.isFinite(price) && price > 0) return price >= 2000 ? 'annual' : 'monthly'
+  return null
+}
+
+/**
+ * Estimate the next charge date for an active subscription. Gumroad does not
+ * send a "period end" for active memberships, so derive it from the purchase
+ * date and recurrence. One-time purchases and cancelled memberships get null.
+ */
+function nextRenewal(purchase: any, plan: ProPlan | null): string | null {
+  if (!plan || !purchase.subscription_id || purchase.subscription_cancelled_at || purchase.subscription_ended_at) {
+    return null
+  }
+  const created = isoDate(purchase.created_at)
+  if (!created) return null
+
+  const date = new Date(created)
+  const months = plan === 'annual' ? 12 : 1
+  const now = Date.now()
+  let guard = 0
+  while (date.getTime() <= now && guard < 1200) {
+    date.setMonth(date.getMonth() + months)
+    guard += 1
+  }
+  return date.toISOString()
+}
+
+function entitlementFrom(purchase: any): ProEntitlement {
+  const plan = detectPlan(purchase)
+  return {
+    email: typeof purchase.email === 'string' ? purchase.email : undefined,
+    plan,
+    renewsAt: nextRenewal(purchase, plan),
+    endsAt: isoDate(purchase.subscription_ended_at) || isoDate(purchase.subscription_cancelled_at),
+    subscriptionId: purchase.subscription_id ? String(purchase.subscription_id) : null,
+  }
+}
 
 /**
  * Ask Gumroad whether a license key is valid and currently subscribed.
@@ -106,7 +181,7 @@ export async function verifyGumroadLicense(licenseKey: string): Promise<LicenseC
       return { valid: false, networkError: false, message: 'This subscription is cancelled or past due.' }
     }
 
-    return { valid: true, email: p.email }
+    return { valid: true, ...entitlementFrom(p) }
   } catch {
     return { valid: false, networkError: true, message: 'Could not reach the license server. Please try again.' }
   }
@@ -116,7 +191,9 @@ function cacheKey(licenseKey: string): string {
   return `pro:lic:${sha256(licenseKey.trim())}`
 }
 
-async function readCache(config: Upstash, licenseKey: string): Promise<{ hit: true; email?: string } | { hit: false }> {
+type CachedEntitlement = { hit: true } & ProEntitlement
+
+async function readCache(config: Upstash, licenseKey: string): Promise<CachedEntitlement | { hit: false }> {
   try {
     const res = await upstash<{ result: string | null }>(config, ['GET', cacheKey(licenseKey)])
     if (res.result) {
@@ -130,14 +207,14 @@ async function readCache(config: Upstash, licenseKey: string): Promise<{ hit: tr
   return { hit: false }
 }
 
-async function writeCache(config: Upstash, licenseKey: string, email?: string): Promise<void> {
+async function writeCache(config: Upstash, licenseKey: string, entitlement: ProEntitlement = {}): Promise<void> {
   try {
-    await upstash(config, ['SETEX', cacheKey(licenseKey), CACHE_TTL, JSON.stringify({ email })])
+    await upstash(config, ['SETEX', cacheKey(licenseKey), CACHE_TTL, JSON.stringify(entitlement)])
   } catch {}
 }
 
 /** Store the verified key in an httpOnly signed cookie + prime the cache. */
-export async function setProSession(event: any, licenseKey: string, email?: string): Promise<void> {
+export async function setProSession(event: any, licenseKey: string, entitlement: ProEntitlement = {}): Promise<void> {
   const config = useRuntimeConfig()
   const secret = getSecret(config)
   if (!secret) {
@@ -150,7 +227,7 @@ export async function setProSession(event: any, licenseKey: string, email?: stri
     maxAge: SESSION_TTL,
     path: '/',
   })
-  await writeCache(config, licenseKey, email)
+  await writeCache(config, licenseKey, entitlement)
 }
 
 export function clearProSession(event: any): void {
@@ -171,6 +248,36 @@ export function getProLicenseKey(event: any): string | null {
   return readSessionLicense(event)
 }
 
+function cachedEntitlement(cached: CachedEntitlement): ProEntitlement {
+  return {
+    email: cached.email,
+    plan: cached.plan,
+    renewsAt: cached.renewsAt,
+    endsAt: cached.endsAt,
+    subscriptionId: cached.subscriptionId,
+  }
+}
+
+function checkEntitlement(check: Extract<LicenseCheck, { valid: true }>): ProEntitlement {
+  return {
+    email: check.email,
+    plan: check.plan,
+    renewsAt: check.renewsAt,
+    endsAt: check.endsAt,
+    subscriptionId: check.subscriptionId,
+  }
+}
+
+/** a***@example.com — enough for a receipt confirmation, not a PII dump. */
+export function maskEmail(email?: string | null): string | null {
+  if (!email || typeof email !== 'string') return null
+  const at = email.lastIndexOf('@')
+  if (at <= 0) return null
+  const local = email.slice(0, at)
+  const domain = email.slice(at + 1)
+  return `${local.slice(0, 1)}${local.length > 1 ? '***' : ''}@${domain}`
+}
+
 /** Server-side entitlement check — the only source of truth for `pro`. */
 export async function isPro(event: any): Promise<boolean> {
   const config = useRuntimeConfig()
@@ -183,7 +290,7 @@ export async function isPro(event: any): Promise<boolean> {
   // Cache miss (or >24h since last check) — re-verify with Gumroad.
   const check = await verifyGumroadLicense(licenseKey)
   if (check.valid) {
-    await writeCache(config, licenseKey, check.email)
+    await writeCache(config, licenseKey, checkEntitlement(check))
     return true
   }
   if (check.networkError) {
@@ -230,15 +337,21 @@ async function allowGumroadVerify(config: any, event: any): Promise<boolean> {
  * identical. Bearer keys fail closed on network errors; the cookie keeps its
  * fail-open behavior because it proves a past successful verification.
  */
-export async function resolvePro(
-  event: any,
-): Promise<{ pro: boolean; licenseKey: string | null; via: 'bearer' | 'cookie' | null }> {
+export type ProResolution = {
+  pro: boolean
+  licenseKey: string | null
+  via: 'bearer' | 'cookie' | null
+} & ProEntitlement
+
+export async function resolvePro(event: any): Promise<ProResolution> {
   const config = useRuntimeConfig()
   const bearerKey = getBearerLicenseKey(event)
 
   if (bearerKey) {
     const cached = await readCache(config, bearerKey)
-    if (cached.hit) return { pro: true, licenseKey: bearerKey, via: 'bearer' }
+    if (cached.hit) {
+      return { pro: true, licenseKey: bearerKey, via: 'bearer', ...cachedEntitlement(cached) }
+    }
 
     if (!(await allowGumroadVerify(config, event))) {
       return { pro: false, licenseKey: null, via: 'bearer' }
@@ -246,14 +359,34 @@ export async function resolvePro(
 
     const check = await verifyGumroadLicense(bearerKey)
     if (check.valid) {
-      await writeCache(config, bearerKey, check.email)
-      return { pro: true, licenseKey: bearerKey, via: 'bearer' }
+      const entitlement = checkEntitlement(check)
+      await writeCache(config, bearerKey, entitlement)
+      return { pro: true, licenseKey: bearerKey, via: 'bearer', ...entitlement }
     }
     return { pro: false, licenseKey: null, via: 'bearer' }
   }
 
   const cookieKey = readSessionLicense(event)
   if (!cookieKey) return { pro: false, licenseKey: null, via: null }
-  const pro = await isPro(event)
-  return { pro, licenseKey: pro ? cookieKey : null, via: 'cookie' }
+
+  const cached = await readCache(config, cookieKey)
+  if (cached.hit) {
+    return { pro: true, licenseKey: cookieKey, via: 'cookie', ...cachedEntitlement(cached) }
+  }
+
+  const check = await verifyGumroadLicense(cookieKey)
+  if (check.valid) {
+    const entitlement = checkEntitlement(check)
+    await writeCache(config, cookieKey, entitlement)
+    return { pro: true, licenseKey: cookieKey, via: 'cookie', ...entitlement }
+  }
+  if (check.networkError) {
+    // Fail open: the signed cookie proves a past successful verification, we
+    // just can't refresh the plan details right now.
+    return { pro: true, licenseKey: cookieKey, via: 'cookie' }
+  }
+
+  // Definitively invalid (refunded / cancelled / revoked) — drop the session.
+  clearProSession(event)
+  return { pro: false, licenseKey: null, via: 'cookie' }
 }

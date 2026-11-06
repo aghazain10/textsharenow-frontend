@@ -23,7 +23,7 @@
                         Activate your license key on this device to see active shares, check how many reads are left, and remove links you no longer need.
                     </p>
                     <div class="mt-5 flex flex-wrap gap-2">
-                        <button type="button" class="btn-primary" @click="openProModal('general')">Activate Pro</button>
+                        <button type="button" class="btn-primary" @click="openProModal('general', 'my_shares')">Activate Pro</button>
                         <NuxtLink to="/pricing" class="btn-ghost">See Pro features</NuxtLink>
                     </div>
                 </div>

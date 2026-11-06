@@ -68,6 +68,7 @@
                         <div v-if="isPro" class="mt-4 rounded-lg border border-line bg-surface-2 p-4 text-center">
                             <p class="text-[14px] font-semibold text-ink">Pro is active on this device 🎉</p>
                             <p class="mt-1 text-[13px] text-muted">All power features are unlocked, including API &amp; MCP access.</p>
+                            <p v-if="planLabel" class="mt-1 text-[12px] font-medium text-ink">{{ planLabel }}</p>
                             <NuxtLink to="/my-shares" class="btn-ghost mt-3 w-full" @click="close">Manage my shares</NuxtLink>
                             <button
                                 type="button"
@@ -139,8 +140,8 @@
 import { proCheckoutPath } from "~/utils/checkout.js";
 import { trackProEvent } from "~/composables/useProTracking.js";
 
-const { isOpen, copy, reason, close } = useProModal();
-const { isPro, activating, activate, deactivate } = usePremium();
+const { isOpen, copy, reason, placement, close } = useProModal();
+const { isPro, activating, activate, deactivate, plan: proPlan, renewalAt, endsAt } = usePremium();
 
 const FEATURES = [
     "Up to 100,000 characters per share",
@@ -162,8 +163,27 @@ const planDisplay = computed(() =>
 
 const checkoutHref = computed(() => proCheckoutPath({ plan: plan.value, location: "pro_modal" }));
 
+function formatDate(iso) {
+    try {
+        return new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    } catch {
+        return "";
+    }
+}
+
+const planLabel = computed(() => {
+    if (!isPro.value) return "";
+    const name = proPlan.value === "annual" ? "Annual" : proPlan.value === "monthly" ? "Monthly" : "";
+    const date = renewalAt.value || endsAt.value;
+    const when = date ? formatDate(date) : "";
+    if (name && when) return `${name} plan · ${renewalAt.value ? "renews" : "ends"} ${when}`;
+    if (name) return `${name} plan`;
+    return "";
+});
+
 function onBuyClick() {
-    trackProEvent("pro_cta_click", { location: "pro_modal", plan: plan.value, reason: reason.value });
+    trackProEvent("pro_cta_click", { location: "pro_modal", plan: plan.value, reason: reason.value, placement: placement.value });
+    trackProEvent("checkout_started", { location: "pro_modal", plan: plan.value, reason: reason.value, placement: placement.value });
 }
 
 const showKey = ref(false);
@@ -175,7 +195,7 @@ async function onActivate() {
     const key = licenseKey.value.trim();
     if (!key || activating.value) return;
     feedback.value = "";
-    const res = await activate(key);
+    const res = await activate(key, { source: "pro_modal" });
     feedbackOk.value = res.ok;
     feedback.value = res.message;
     if (res.ok) {

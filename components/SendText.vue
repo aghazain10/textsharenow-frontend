@@ -37,7 +37,7 @@
                             class="inline-flex items-center gap-1 rounded-md border border-line px-1.5 py-0.5 text-[12px] font-medium text-muted transition-colors hover:text-ink"
                             :class="{ 'border-brand text-ink': text.length >= maxChars }"
                             title="Go Pro for 100,000 characters"
-                            @click="openProModal('chars')"
+                            @click="openProModal('chars', 'send_text')"
                         >
                             <TsnIcon name="lock" class="h-3 w-3" stroke="2.2" />
                             100K with Pro
@@ -61,7 +61,7 @@
 
             <!-- Premium controls: always visible; locked for free users -->
             <div class="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-line px-5 py-3">
-                <ExpirySelect v-model="maxReads" :options="READ_OPTIONS" label="Allowed reads" icon="eye" reason="reads" />
+                <ExpirySelect v-model="maxReads" :options="READ_OPTIONS" label="Allowed reads" icon="eye" reason="reads" placement="send_text" :free-limit="1" />
                 <label class="inline-flex min-w-[190px] flex-1 cursor-pointer items-center gap-1.5 text-[13px] text-muted">
                     <TsnIcon name="lock" class="h-3.5 w-3.5 shrink-0" :class="isPro ? 'text-muted' : ''" stroke="1.8" />
                     <input
@@ -115,7 +115,7 @@
                 <TsnIcon name="alert" class="h-4 w-4 shrink-0" />{{ error }}
             </p>
             <div class="flex flex-wrap items-center gap-3 px-3 pb-3 pl-5 pt-3">
-                <ExpirySelect v-model="ttl" />
+                <ExpirySelect v-model="ttl" placement="send_text" :free-limit="3600" />
                 <button
                     type="button"
                     role="switch"
@@ -167,7 +167,7 @@ import { generateShareKey, encryptText, createPassphrase } from "~/utils/e2e.js"
 import { normalizeCustomCode, isValidCustomCode } from "~/utils/customCode.js";
 
 const API_BASE = useRuntimeConfig().public.API_BASE;
-import { trackEvent } from "~/composables/useAnalytics.js";
+import { trackEvent, trackLimitHit, PRO_FEATURES } from "~/composables/useAnalytics.js";
 const { isPro } = usePremium();
 const { open: openProModal } = useProModal();
 const text = ref("");
@@ -217,7 +217,12 @@ function onBeforeInput(e) {
     const wouldExceed = text.value.length >= FREE_MAX_CHARS || text.value.length + incoming.length > FREE_MAX_CHARS;
     if (wouldExceed && !limitModalShown.value) {
         limitModalShown.value = true;
-        openProModal("chars");
+        trackLimitHit(PRO_FEATURES.CHARS, {
+            attempted: text.value.length + incoming.length,
+            limit: FREE_MAX_CHARS,
+            placement: "send_text",
+        });
+        openProModal("chars", "send_text");
     }
 }
 
@@ -225,14 +230,16 @@ function onBeforeInput(e) {
 function onPasswordFocus(e) {
     if (isPro.value) return;
     e.target.blur();
-    openProModal("password");
+    trackLimitHit(PRO_FEATURES.PASSWORD, { attempted: 1, limit: 0, placement: "send_text" });
+    openProModal("password", "send_text");
 }
 
 // Same for the custom code field.
 function onCustomFocus(e) {
     if (isPro.value) return;
     e.target.blur();
-    openProModal("code");
+    trackLimitHit(PRO_FEATURES.CODE, { attempted: 1, limit: 0, placement: "send_text" });
+    openProModal("code", "send_text");
 }
 
 // Keep the input lowercase + trimmed to the legal charset as they type.
@@ -295,7 +302,12 @@ async function pasteIn() {
         const clip = await navigator.clipboard.readText();
         if (clip.length > FREE_MAX_CHARS && !isPro.value) {
             limitModalShown.value = true;
-            openProModal("chars");
+            trackLimitHit(PRO_FEATURES.CHARS, {
+                attempted: clip.length,
+                limit: FREE_MAX_CHARS,
+                placement: "send_text",
+            });
+            openProModal("chars", "send_text");
         }
         if (clip) text.value = clip.slice(0, maxChars.value);
         else pasteHint.value = "Your clipboard is empty.";

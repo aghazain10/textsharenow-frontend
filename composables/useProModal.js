@@ -32,21 +32,31 @@ const COPY = {
     },
 };
 
-import { trackEvent } from "./useAnalytics.js";
+import { trackEvent, ANALYTICS_EVENTS } from "./useAnalytics.js";
 
 export function useProModal() {
     const isOpen = useState("pro-modal-open", () => false);
     const reason = useState("pro-modal-reason", () => "general");
+    const placement = useState("pro-modal-placement", () => "composer");
     const copy = computed(() => COPY[reason.value] || COPY.general);
 
-    const open = (r = "general") => {
+    /**
+     * Open the paywall.
+     * @param {string} r        why it opened (chars, file, reads, password…)
+     * @param {string} source   where it opened from (send_text, pricing_plan_card…)
+     */
+    const open = (r = "general", source = "composer") => {
         reason.value = r;
+        placement.value = source;
         isOpen.value = true;
-        trackEvent("share_to_pro", { reason: r });
+        // `paywall_view` is the funnel event; keep `share_to_pro` for the
+        // existing GA4 explorations that already depend on it.
+        trackEvent(ANALYTICS_EVENTS.PAYWALL_VIEW, { reason: r, placement: source });
+        trackEvent(ANALYTICS_EVENTS.SHARE_TO_PRO, { reason: r, placement: source });
     };
     const close = () => {
         isOpen.value = false;
     };
 
-    return { isOpen, reason, copy, open, close };
+    return { isOpen, reason, placement, copy, open, close };
 }
