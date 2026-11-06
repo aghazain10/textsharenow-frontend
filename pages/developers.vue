@@ -6,9 +6,10 @@
             lead="TextShareNow Pro includes a small HTTP API and an MCP server, so scripts and AI agents can create and receive shares without a browser. Your license key is the only credential — no extra account, no OAuth."
         >
             <div class="mt-7 flex flex-wrap gap-3">
-                <a :href="checkoutHref" class="btn-primary" @click="onCtaClick('hero')">Get Pro — $5/month or $50/year</a>
+                <a :href="checkoutHref" class="btn-primary" @click="onCtaClick('hero')">Start 7-day free trial</a>
                 <NuxtLink to="/pricing" class="btn-ghost">See what Pro includes</NuxtLink>
             </div>
+            <p class="mt-2 text-[13px] text-muted">No charge for 7 days · Then $5/month or $50/year · Cancel anytime</p>
         </PageHero>
 
         <section class="section">
@@ -50,7 +51,7 @@
                             over HTTPS, stored in your client config, and cached server-side only as a SHA-256 hash. Never commit it to a public repo.
                         </div>
                         <div class="mt-5 flex flex-wrap gap-3">
-                            <a :href="checkoutHref" class="btn-primary" @click="onCtaClick('api')">Get a license key</a>
+                            <a :href="checkoutHref" class="btn-primary" @click="onCtaClick('api')">Start 7-day free trial</a>
                             <NuxtLink to="/pricing" class="btn-ghost">How activation works</NuxtLink>
                         </div>
                     </section>
@@ -294,7 +295,7 @@ const passwordHash = `p2$210000$${salt}$${derived}`;</code></pre>
                     <h2 class="section-title mx-auto max-w-[24ch]">Give your agent a share tool.</h2>
                     <p class="section-lead mx-auto">One license key, one npm package, four tools. Works with any MCP client.</p>
                     <div class="mt-8 flex flex-wrap justify-center gap-3">
-                        <a :href="checkoutHref" class="btn-primary" @click="onCtaClick('bottom')">Get Pro — $5/month or $50/year</a>
+                        <a :href="checkoutHref" class="btn-primary" @click="onCtaClick('bottom')">Start 7-day free trial</a>
                         <NuxtLink to="/#tool" class="btn-ghost">Try the free web tool</NuxtLink>
                     </div>
                     <p class="mt-4 text-[13px] text-muted">Node 18+ · <code class="font-mono">npx -y textsharenow-mcp@latest</code></p>

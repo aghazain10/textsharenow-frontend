@@ -9,9 +9,10 @@
                     <h1 class="mt-3 max-w-[20ch] text-[clamp(2.4rem,6vw,4.2rem)] font-bold leading-[1.05] tracking-[-0.045em]">TextShareNow Pricing: Free Plan, Pro from $5/Month</h1>
                     <p class="mt-5 max-w-[58ch] text-[18px] leading-relaxed text-muted">Share text and files for free with no sign-up — forever. Go Pro for 100,000 characters, up to 20 files / 100 MB total, expiry up to never, multi-reads, and password protection. $5/month or $50/year (save 17%).</p>
                     <div class="mt-7 flex flex-wrap gap-3">
-                        <a :href="checkoutHref('hero')" class="btn-primary" @click="onCtaClick('hero')">Get Pro — $5/month or $50/year</a>
+                        <a :href="checkoutHref('hero')" class="btn-primary" @click="onCtaClick('hero')">Start 7-day free trial</a>
                         <NuxtLink to="/#tool" class="btn-ghost">Start with the free plan</NuxtLink>
                     </div>
+                    <p class="mt-2 text-[13px] text-muted">No charge for 7 days · Then $5/month or $50/year · Cancel anytime</p>
                     <p class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] text-muted">
                         <span class="inline-flex items-center gap-1.5"><TsnIcon name="lock" class="h-3.5 w-3.5" stroke="1.8" />Secure checkout by Gumroad</span>
                         <span>Instant license key</span>
@@ -93,8 +94,8 @@
                                 <span class="text-ink">{{ f }}</span>
                             </li>
                         </ul>
-                        <a :href="checkoutHref('plan_card')" class="btn-primary mt-7 w-full" @click="onCtaClick('plan_card')">Get Pro — {{ planDisplay.cta }}</a>
-                        <p class="mt-2 text-center text-[12px] text-muted">Gumroad checkout · instant license key · cancel anytime · <a href="https://gumroad.com/refund_policy" class="text-muted hover:text-ink" target="_blank" rel="noopener noreferrer">Refund policy</a></p>
+                        <a :href="checkoutHref('plan_card')" class="btn-primary mt-7 w-full" @click="onCtaClick('plan_card')">Start 7-day free trial</a>
+                        <p class="mt-2 text-center text-[12px] text-muted">No charge for 7 days · Then {{ planDisplay.cta }} · Cancel anytime · <a href="https://gumroad.com/refund_policy" class="text-muted hover:text-ink" target="_blank" rel="noopener noreferrer">Refund policy</a></p>
                         <button type="button" class="mt-2 w-full rounded-md py-2 text-[14px] font-medium text-brand transition-colors hover:underline" @click="openProModal('general', 'pricing_plan_card')">
                             Already have a license key? Activate it
                         </button>
@@ -242,8 +243,8 @@
                             </p>
                         </li>
                     </ol>
-                    <a :href="checkoutHref('how_to')" class="btn-primary mt-6 w-full" @click="onCtaClick('how_to')">Get Pro — {{ planDisplay.cta }}</a>
-                    <p class="mt-2 text-center text-[12px] text-muted">You'll pay on Gumroad and get your key on the receipt.</p>
+                    <a :href="checkoutHref('how_to')" class="btn-primary mt-6 w-full" @click="onCtaClick('how_to')">Start 7-day free trial</a>
+                    <p class="mt-2 text-center text-[12px] text-muted">No charge for 7 days · Then $5/month or $50/year · Cancel anytime</p>
                     <button type="button" class="mt-2 w-full rounded-md py-2 text-[14px] font-medium text-brand transition-colors hover:underline" @click="openProModal('general', 'pricing_how_to')">
                         I already have a key — activate
                     </button>
@@ -277,7 +278,7 @@
                     <p class="section-lead mx-auto">No sign-up for either. Pro unlocks the moment you paste your license key.</p>
                     <div class="mt-8 flex flex-wrap justify-center gap-3">
                         <NuxtLink to="/#tool" class="btn-ghost">Use the free tool</NuxtLink>
-                        <a :href="checkoutHref('bottom')" class="btn-primary" @click="onCtaClick('bottom')">Get Pro — $5/month or $50/year</a>
+                        <a :href="checkoutHref('bottom')" class="btn-primary" @click="onCtaClick('bottom')">Start 7-day free trial</a>
                     </div>
                 </div>
             </div>

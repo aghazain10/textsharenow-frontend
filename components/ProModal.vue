@@ -84,10 +84,20 @@
                             <a
                                 :href="checkoutHref"
                                 class="btn-primary mt-4 flex w-full items-center justify-center"
+                                @click="onTrialClick"
+                            >
+                                Start 7-day free trial
+                            </a>
+
+                            <a
+                                :href="checkoutHref"
+                                class="btn-ghost mt-2 flex w-full items-center justify-center"
                                 @click="onBuyClick"
                             >
                                 Get Pro — {{ planDisplay.cta }}
                             </a>
+
+                            <p class="mt-2 text-center text-[12px] text-muted">No charge for 7 days · Cancel anytime · Instant license key</p>
 
                             <button
                                 type="button"
@@ -190,6 +200,11 @@ const planLabel = computed(() => {
 function onBuyClick() {
     trackProEvent("pro_cta_click", { location: "pro_modal", plan: plan.value, reason: reason.value, placement: placement.value });
     trackProEvent("checkout_started", { location: "pro_modal", plan: plan.value, reason: reason.value, placement: placement.value });
+}
+
+function onTrialClick() {
+    trackProEvent("pro_cta_click", { location: "pro_modal", plan: plan.value, reason: reason.value, placement: placement.value, trial: true });
+    trackProEvent("checkout_started", { location: "pro_modal", plan: plan.value, reason: reason.value, placement: placement.value, trial: true });
 }
 
 const showKey = ref(false);
