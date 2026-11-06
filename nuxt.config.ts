@@ -102,22 +102,20 @@ export default defineNuxtConfig({
                         "Share text and files between devices in seconds with a short code. Free, private, no account needed.",
                 },
                 { name: "robots", content: "index, follow" },
-                { name: "google-adsense-account", content: "ca-pub-7341551960731079" },
             ],
             link: [
                 { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
                 { rel: "canonical", href: "https://www.textsharenow.com" },
-                {
-                    rel: "preconnect",
-                    href: "https://pagead2.googlesyndication.com",
-                    crossorigin: "",
-                },
-                {
-                    rel: "dns-prefetch",
-                    href: "https://pagead2.googlesyndication.com",
-                },
             ],
             script: [
+                // Mediavine ad script — placed first for earlier execution (higher bids)
+                {
+                    src: "//scripts.scriptwrapper.com/tags/313cf240-86a4-4ba2-a568-96247180b9f1.js",
+                    type: "text/javascript",
+                    async: true,
+                    "data-noptimize": "1",
+                    "data-cfasync": "false",
+                },
                 {
                     src: "https://www.googletagmanager.com/gtag/js?id=G-PXW7CX14YN",
                     async: true,
@@ -130,19 +128,6 @@ export default defineNuxtConfig({
                     innerHTML:
                         'var t="dark";try{t=localStorage.getItem("tsn-theme")||"dark"}catch(e){}document.documentElement.dataset.theme=t',
                     tagPosition: "head",
-                },
-                {
-                    src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7341551960731079",
-                    async: true,
-                    crossorigin: "anonymous",
-                },
-                // Mediavine ad script
-                {
-                    src: "//scripts.scriptwrapper.com/tags/313cf240-86a4-4ba2-a568-96247180b9f1.js",
-                    type: "text/javascript",
-                    async: true,
-                    "data-noptimize": "1",
-                    "data-cfasync": "false",
                 },
             ],
         },
