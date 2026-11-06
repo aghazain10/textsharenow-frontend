@@ -15,7 +15,7 @@
                     <p class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] text-muted">
                         <span class="inline-flex items-center gap-1.5"><TsnIcon name="lock" class="h-3.5 w-3.5" stroke="1.8" />Secure checkout by Gumroad</span>
                         <span>Instant license key</span>
-                        <span>Cancel anytime</span>
+                        <a href="https://gumroad.com/library" class="inline-flex items-center gap-1.5 text-muted hover:text-ink" target="_blank" rel="noopener noreferrer"><TsnIcon name="external" class="h-3.5 w-3.5" stroke="1.8" />Cancel anytime via Gumroad</a>
                     </p>
                 </div>
                 <ProPreview class="lg:justify-self-end" />
@@ -94,7 +94,7 @@
                             </li>
                         </ul>
                         <a :href="checkoutHref('plan_card')" class="btn-primary mt-7 w-full" @click="onCtaClick('plan_card')">Get Pro — {{ planDisplay.cta }}</a>
-                        <p class="mt-2 text-center text-[12px] text-muted">Gumroad checkout · instant license key · cancel anytime</p>
+                        <p class="mt-2 text-center text-[12px] text-muted">Gumroad checkout · instant license key · cancel anytime · <a href="https://gumroad.com/refund_policy" class="text-muted hover:text-ink" target="_blank" rel="noopener noreferrer">Refund policy</a></p>
                         <button type="button" class="mt-2 w-full rounded-md py-2 text-[14px] font-medium text-brand transition-colors hover:underline" @click="openProModal('general', 'pricing_plan_card')">
                             Already have a license key? Activate it
                         </button>
@@ -341,7 +341,7 @@ onMounted(() => {
 const freeFeatures = [
     "Up to 10,000 characters per share",
     "Files up to 10 MB (PNG, JPEG, WebP, MP4, WebM)",
-    "Expiry: 10 minutes, 30 minutes or 1 hour",
+    "Expiry: 10 minutes, 30 minutes or 1 hour (single-use codes)",
     "Single-use codes — deleted after one read",
     "QR code and shareable link for every code",
     "Optional Private mode — text and file contents encrypted in your browser",
@@ -351,14 +351,13 @@ const freeFeatures = [
 
 const proFeatures = [
     "Everything in Free, plus:",
-    "Encrypted file transfers (contents end-to-end encrypted)",
     "Up to 100,000 characters per share (10×)",
     "Up to 20 files, 100 MB total — any non-executable type",
-    "Expiry: 1 day, 7 days, 30 days — or never",
-    "Read limits: 1, 5, 10 or unlimited reads",
+    "Expiry: 1 day, 7 days, 30 days — or never (text only)",
+    "Read limits: 5, 10 or unlimited reads",
     "Password-protect any share",
     "Custom share codes (e.g. coffee-menu)",
-    "My Shares dashboard for active text links",
+    "My Shares dashboard for active shares and transfers",
     "Developer API and MCP server for AI agents",
 ];
 
@@ -369,8 +368,8 @@ const compareRows = [
     ["Text per share", ["text", "10,000 characters"], ["text", "100,000 characters"]],
     ["File size", ["text", "10 MB"], ["text", "100 MB total, up to 20 files"]],
     ["File types", ["text", "PNG, JPEG, WebP, MP4, WebM"], ["good", "Any non-executable type"]],
-    ["Share expiry", ["text", "10 min, 30 min, 1 h"], ["text", "10 min – 30 days, or never"]],
-    ["Reads per share", ["text", "1 (single-use)"], ["text", "1, 5, 10 or unlimited"]],
+    ["Share expiry", ["text", "10 min, 30 min, 1 h"], ["text", "10 min – 30 days, or never (text only)"]],
+    ["Reads per share", ["text", "1 (single-use)"], ["text", "5, 10 or unlimited"]],
     ["Password protection", ["bad", "Not included"], ["good", "Included"]],
     ["Private mode (E2E text + file contents)", ["good", "Included"], ["good", "Included"]],
     ["Custom code", ["text", "Random 5 characters"], ["good", "Any available name"]],
@@ -384,7 +383,7 @@ const compareRows = [
 const charts = [
     { label: "Text per share", free: "10,000 characters", freeWidth: 10, pro: "100,000 characters", proWidth: 100 },
     { label: "File upload size", free: "10 MB", freeWidth: 10, pro: "100 MB total", proWidth: 100 },
-    { label: "Share expiry", free: "Up to 1 hour", freeWidth: 5, pro: "Up to 30 days — or never", proWidth: 100 },
+    { label: "Share expiry", free: "Up to 1 hour", freeWidth: 5, pro: "Up to 30 days — or never (text)", proWidth: 100 },
     { label: "Reads before deletion", free: "1 read", freeWidth: 4, pro: "Unlimited reads", proWidth: 100 },
 ];
 
@@ -401,8 +400,8 @@ const proDetails = [
     },
     {
         icon: "clock",
-        title: "Expiry up to never",
-        desc: "Keep a code alive for 1 day, 7 days, 30 days — or never delete it. The same short code and QR flow, just without the clock running out mid-task.",
+        title: "Expiry up to never (text only)",
+        desc: "Keep a text share alive for 1 day, 7 days, 30 days — or never delete it. File transfers can be kept up to 30 days. The same short code and QR flow, just without the clock running out mid-task.",
     },
     {
         icon: "eye",
@@ -427,7 +426,7 @@ const proDetails = [
     {
         icon: "dashboard",
         title: "My Shares dashboard",
-        desc: "See every active text share tied to your license, how many reads are left, and when each link expires. Copy a link or delete a share without hunting through old tabs. No account needed — the license key is the login.",
+        desc: "See every active text share and multi-file transfer tied to your license, how many reads are left, and when each link expires. Copy a link or delete a share without hunting through old tabs. No account needed — the license key is the login.",
     },
 ];
 
@@ -452,7 +451,7 @@ const faqs = [
     },
     {
         q: "What exactly do I get with Pro?",
-        a: "100,000 characters per share (10× the free limit), up to 20 files and 100 MB total per transfer for any non-executable file type, expiry choices of 1 day, 7 days, 30 days or never, read limits of 1, 5, 10 or unlimited, password protection for any share, custom share codes, a My Shares dashboard, and a developer API plus MCP server.",
+        a: "100,000 characters per share (10× the free limit), up to 20 files and 100 MB total per transfer for any non-executable file type, expiry choices of 1 day, 7 days, 30 days or never (text only), read limits of 5, 10 or unlimited, password protection for any share, custom share codes, a My Shares dashboard, and a developer API plus MCP server.",
     },
     {
         q: "How do I activate my license key?",
