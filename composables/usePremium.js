@@ -20,6 +20,8 @@ export function usePremium() {
     const renewalAt = useState("premium-renewal-at", () => null);
     const endsAt = useState("premium-ends-at", () => null);
     const email = useState("premium-email", () => null);
+    // Auto-activation memory: set after successful activate, cleared after 30 days
+    const activatedAt = useState("premium-activated-at", () => null);
 
     function applyEntitlement(data) {
         plan.value = data?.plan || null;
@@ -50,6 +52,22 @@ export function usePremium() {
         });
     }
 
+    // Remember that Pro was activated, so future visits can skip the modal.
+    function rememberActivation() {
+        if (!import.meta.client) return;
+        try {
+            localStorage.setItem("tsn_pro_activated", Date.now().toString());
+        } catch {}
+    }
+
+    // Clear the activation memory after the session cookie expires (30 days).
+    function clearActivationMemory() {
+        if (!import.meta.client) return;
+        try {
+            localStorage.removeItem("tsn_pro_activated");
+        } catch {}
+    }
+
     async function checkStatus(force = false) {
         if (checked.value && !force) return;
         const wasPro = isPro.value;
@@ -60,6 +78,9 @@ export function usePremium() {
             if (nextPro) {
                 applyEntitlement(res);
                 maybeTrackRenewalDue();
+                // If we just re-verified Pro after a manual activation in this session,
+                // remember it so the receipt page can skip the modal.
+                if (activatedAt.value) rememberActivation();
             } else {
                 applyEntitlement(null);
                 // A verified "no" after previously being pro means the
@@ -88,6 +109,7 @@ export function usePremium() {
             isPro.value = true;
             checked.value = true;
             applyEntitlement(res);
+            rememberActivation();
             trackEvent(ANALYTICS_EVENTS.ACTIVATION_SUCCESS, {
                 source,
                 plan: res?.plan || "unknown",
@@ -114,6 +136,7 @@ export function usePremium() {
         isPro.value = false;
         checked.value = true;
         applyEntitlement(null);
+        clearActivationMemory();
         trackEvent(ANALYTICS_EVENTS.PRO_DEACTIVATED, { reason });
     }
 
@@ -125,6 +148,7 @@ export function usePremium() {
         renewalAt,
         endsAt,
         email,
+        activatedAt,
         checkStatus,
         activate,
         deactivate,

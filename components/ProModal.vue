@@ -141,7 +141,13 @@ import { proCheckoutPath } from "~/utils/checkout.js";
 import { trackProEvent } from "~/composables/useProTracking.js";
 
 const { isOpen, copy, reason, placement, close } = useProModal();
-const { isPro, activating, activate, deactivate, plan: proPlan, renewalAt, endsAt } = usePremium();
+const { isPro, activating, activate, deactivate, plan: proPlan, renewalAt, endsAt, activatedAt } = usePremium();
+
+// Pre-fill license key from localStorage memory if present (client-only)
+let storedKey = null;
+if (import.meta.client) {
+    storedKey = localStorage.getItem("tsn_pro_activated");
+}
 
 const FEATURES = [
     "Up to 100,000 characters per share",
@@ -187,7 +193,9 @@ function onBuyClick() {
 }
 
 const showKey = ref(false);
-const licenseKey = ref("");
+// Try to pre-fill from localStorage memory (set after a successful activate)
+const storedActivated = import.meta.client ? localStorage.getItem("tsn_pro_activated") : null;
+const licenseKey = ref(storedActivated ? "Already activated — check your Pro status" : "");
 const feedback = ref("");
 const feedbackOk = ref(false);
 
@@ -201,6 +209,10 @@ async function onActivate() {
     if (res.ok) {
         trackProEvent("pro_activated", { source: "modal" });
         licenseKey.value = "";
+        // Remember that Pro was activated so future visits can skip the modal (client-only)
+        if (import.meta.client) {
+            try { localStorage.setItem("tsn_pro_activated", Date.now().toString()); } catch {}
+        }
         setTimeout(() => {
             feedback.value = "";
             close();
