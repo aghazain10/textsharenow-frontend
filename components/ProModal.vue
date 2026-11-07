@@ -89,15 +89,13 @@
                                 Start 7-day free trial
                             </a>
 
-                            <a
-                                :href="checkoutHref"
-                                class="btn-ghost mt-2 flex w-full items-center justify-center"
-                                @click="onBuyClick"
-                            >
-                                Get Pro — {{ planDisplay.cta }}
-                            </a>
+                            <p class="mt-2 text-center text-[12px] text-muted">
+                                No charge for 7 days · Then {{ planDisplay.afterTrial }} · Cancel anytime · Instant license key
+                            </p>
 
-                            <p class="mt-2 text-center text-[12px] text-muted">No charge for 7 days · Cancel anytime · Instant license key</p>
+                            <NuxtLink to="/pricing" class="btn-ghost mt-2 flex w-full items-center justify-center" @click="close">
+                                See what Pro includes
+                            </NuxtLink>
 
                             <button
                                 type="button"
@@ -106,6 +104,10 @@
                             >
                                 {{ showKey ? "Hide license key entry" : "I already have a license key" }}
                             </button>
+
+                            <p v-if="hasActivationMemory && !showKey" class="mt-2 text-center text-[12px] text-muted">
+                                You activated Pro on this device before. Re-enter your key to unlock it again.
+                            </p>
 
                             <div v-if="showKey" class="mt-2 flex gap-2">
                                 <input
@@ -151,13 +153,13 @@ import { proCheckoutPath } from "~/utils/checkout.js";
 import { trackProEvent } from "~/composables/useProTracking.js";
 
 const { isOpen, copy, reason, placement, close } = useProModal();
-const { isPro, activating, activate, deactivate, plan: proPlan, renewalAt, endsAt, activatedAt } = usePremium();
+const { isPro, activating, activate, deactivate, plan: proPlan, renewalAt, endsAt } = usePremium();
 
-// Pre-fill license key from localStorage memory if present (client-only)
-let storedKey = null;
-if (import.meta.client) {
-    storedKey = localStorage.getItem("tsn_pro_activated");
-}
+// Activation memory: reminds returning users to re-enter their key, but never
+// puts placeholder text in the license-key field itself.
+const hasActivationMemory = ref(
+    import.meta.client ? Boolean(localStorage.getItem("tsn_pro_activated")) : false,
+);
 
 const FEATURES = [
     "Up to 100,000 characters per share",
@@ -173,8 +175,8 @@ const FEATURES = [
 const plan = ref("monthly");
 const planDisplay = computed(() =>
     plan.value === "annual"
-        ? { price: "$50", period: "/ year", cta: "$50/year (save 17%)" }
-        : { price: "$5", period: "/ month", cta: "$5/month" },
+        ? { price: "$50", period: "/ year", afterTrial: "$50/year" }
+        : { price: "$5", period: "/ month", afterTrial: "$5/month" },
 );
 
 const checkoutHref = computed(() => proCheckoutPath({ plan: plan.value, location: "pro_modal" }));
@@ -197,20 +199,13 @@ const planLabel = computed(() => {
     return "";
 });
 
-function onBuyClick() {
-    trackProEvent("pro_cta_click", { location: "pro_modal", plan: plan.value, reason: reason.value, placement: placement.value });
-    trackProEvent("checkout_started", { location: "pro_modal", plan: plan.value, reason: reason.value, placement: placement.value });
-}
-
 function onTrialClick() {
     trackProEvent("pro_cta_click", { location: "pro_modal", plan: plan.value, reason: reason.value, placement: placement.value, trial: true });
     trackProEvent("checkout_started", { location: "pro_modal", plan: plan.value, reason: reason.value, placement: placement.value, trial: true });
 }
 
 const showKey = ref(false);
-// Try to pre-fill from localStorage memory (set after a successful activate)
-const storedActivated = import.meta.client ? localStorage.getItem("tsn_pro_activated") : null;
-const licenseKey = ref(storedActivated ? "Already activated — check your Pro status" : "");
+const licenseKey = ref("");
 const feedback = ref("");
 const feedbackOk = ref(false);
 
