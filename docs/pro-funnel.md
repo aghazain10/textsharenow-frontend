@@ -103,3 +103,30 @@ Only non-PII properties are forwarded (plan, value, currency, reason).
 - `stats:funnel:<event>:<YYYY-MM-DD>` — daily, 400-day TTL
 - `stats:pro:total` and `stats:pro:daily:<YYYY-MM-DD>` — existing `/go/pro`
   checkout click counters
+
+## Receipts v1: transfers + new-activity badges
+
+Receipts now cover multi-file transfers as well as text shares.
+
+| Key | Purpose |
+|---|---|
+| `receipt:<code>` | Metadata, including `kind: "text" \| "transfer"` |
+| `receipt:events:<code>` | Timeline (`created`, `opened`, `read`, `download`, `exhausted`, `deleted`) |
+| `receipt:downloads:<code>` | Files downloaded (transfers only) |
+| `receipt:seen:<licHash>` | Last time the owner opened My Shares |
+
+Writers:
+
+- `POST /api/pro/transfers/register` creates the transfer receipt.
+- `POST /api/pro/transfers/sync` records download deltas from the files
+  service's remaining-count callbacks, and closes the receipt when the last
+  file leaves. It also backfills a receipt for transfers created before this
+  release.
+- `DELETE /api/pro/transfers/:code` closes the receipt as `deleted`.
+- `POST /api/transfers/:code/open` is a public, rate-limited beacon fired by
+  `/r` when a transfer link loads. It only writes an `opened` event.
+- `POST /api/pro/shares/seen` advances the owner's read marker. The dashboard
+  still shows this visit's badges, then clears them next visit.
+
+No IP address, user agent, or file content is stored in any receipt.
+

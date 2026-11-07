@@ -3,7 +3,7 @@
         <PageHero
             meta="Private receipt"
             title="Share receipt"
-            lead="A private timeline of opens and reads for one text share. Only the Pro license that created it can see this receipt."
+            lead="A private timeline of opens, reads and downloads for one share. Only the Pro license that created it can see this receipt."
             :back="{ to: '/my-shares', label: 'Back to My Shares' }"
         />
 
@@ -45,10 +45,10 @@
                                 <div class="min-w-0">
                                     <div class="flex flex-wrap items-center gap-2">
                                         <code class="font-mono text-[26px] font-semibold tracking-wide text-ink">{{ receipt.code }}</code>
-                                        <span class="rounded-full border px-2.5 py-1 text-[11px] font-semibold" :class="statusClass(receipt.status)">{{ statusLabel(receipt.status) }}</span>
+                                        <span class="rounded-full border px-2.5 py-1 text-[11px] font-semibold" :class="statusClass(receipt.status)">{{ statusLabel(receipt) }}</span>
                                     </div>
                                     <div class="mt-2 flex flex-wrap items-center gap-2 text-[12px] text-muted">
-                                        <span class="rounded-full border border-line bg-surface-2 px-2 py-0.5 font-medium">Text share</span>
+                                        <span class="rounded-full border border-line bg-surface-2 px-2 py-0.5 font-medium">{{ receipt.kind === "transfer" ? "File transfer" : "Text share" }}</span>
                                         <span v-if="receipt.custom" class="rounded-full border border-line bg-surface-2 px-2 py-0.5 font-medium">Custom code</span>
                                         <span v-if="receipt.passwordRequired" class="inline-flex items-center gap-1 rounded-full border border-line bg-surface-2 px-2 py-0.5 font-medium">
                                             <TsnIcon name="lock" class="h-3 w-3" stroke="2" />Password
@@ -59,18 +59,34 @@
                             </div>
 
                             <div class="mt-6 grid gap-3 sm:grid-cols-3">
-                                <div class="rounded-lg border border-line bg-bg px-4 py-3">
-                                    <p class="text-[12px] font-medium text-muted">Opened</p>
-                                    <p class="mt-1 text-[26px] font-semibold tracking-[-0.04em] text-ink">{{ receipt.opens }}</p>
-                                </div>
-                                <div class="rounded-lg border border-line bg-bg px-4 py-3">
-                                    <p class="text-[12px] font-medium text-muted">Reads</p>
-                                    <p class="mt-1 text-[26px] font-semibold tracking-[-0.04em] text-ink">{{ receipt.reads }}</p>
-                                </div>
-                                <div class="rounded-lg border border-line bg-bg px-4 py-3">
-                                    <p class="text-[12px] font-medium text-muted">Reads left</p>
-                                    <p class="mt-1 text-[26px] font-semibold tracking-[-0.04em] text-ink">{{ readsLeftText }}</p>
-                                </div>
+                                <template v-if="receipt.kind === 'transfer'">
+                                    <div class="rounded-lg border border-line bg-bg px-4 py-3">
+                                        <p class="text-[12px] font-medium text-muted">Opened</p>
+                                        <p class="mt-1 text-[26px] font-semibold tracking-[-0.04em] text-ink">{{ receipt.opens }}</p>
+                                    </div>
+                                    <div class="rounded-lg border border-line bg-bg px-4 py-3">
+                                        <p class="text-[12px] font-medium text-muted">Files downloaded</p>
+                                        <p class="mt-1 text-[26px] font-semibold tracking-[-0.04em] text-ink">{{ receipt.downloads }}</p>
+                                    </div>
+                                    <div class="rounded-lg border border-line bg-bg px-4 py-3">
+                                        <p class="text-[12px] font-medium text-muted">Files left</p>
+                                        <p class="mt-1 text-[26px] font-semibold tracking-[-0.04em] text-ink">{{ receipt.filesLeft ?? "—" }}</p>
+                                    </div>
+                                </template>
+                                <template v-else>
+                                    <div class="rounded-lg border border-line bg-bg px-4 py-3">
+                                        <p class="text-[12px] font-medium text-muted">Opened</p>
+                                        <p class="mt-1 text-[26px] font-semibold tracking-[-0.04em] text-ink">{{ receipt.opens }}</p>
+                                    </div>
+                                    <div class="rounded-lg border border-line bg-bg px-4 py-3">
+                                        <p class="text-[12px] font-medium text-muted">Reads</p>
+                                        <p class="mt-1 text-[26px] font-semibold tracking-[-0.04em] text-ink">{{ receipt.reads }}</p>
+                                    </div>
+                                    <div class="rounded-lg border border-line bg-bg px-4 py-3">
+                                        <p class="text-[12px] font-medium text-muted">Reads left</p>
+                                        <p class="mt-1 text-[26px] font-semibold tracking-[-0.04em] text-ink">{{ readsLeftText }}</p>
+                                    </div>
+                                </template>
                             </div>
 
                             <dl class="mt-5 grid gap-x-6 gap-y-3 border-t border-line pt-5 text-[13px] sm:grid-cols-2">
@@ -82,7 +98,11 @@
                                     <dt class="text-muted">{{ expiryLabel }}</dt>
                                     <dd class="text-right font-medium text-ink">{{ expiryText }}</dd>
                                 </div>
-                                <div class="flex items-baseline justify-between gap-4">
+                                <div v-if="receipt.kind === 'transfer'" class="flex items-baseline justify-between gap-4">
+                                    <dt class="text-muted">Size</dt>
+                                    <dd class="text-right font-medium text-ink">{{ formatBytes(receipt.bytes) }}</dd>
+                                </div>
+                                <div v-else class="flex items-baseline justify-between gap-4">
                                     <dt class="text-muted">Read limit</dt>
                                     <dd class="text-right font-medium text-ink">{{ readLimitText }}</dd>
                                 </div>
@@ -100,12 +120,12 @@
                                     {{ copied ? "Copied" : "Copy share link" }}
                                 </button>
                                 <button type="button" class="btn-ghost !h-9 !px-3 text-bad" @click="confirming = true">
-                                    <TsnIcon name="trash" class="h-4 w-4" stroke="1.8" />Delete share
+                                    <TsnIcon name="trash" class="h-4 w-4" stroke="1.8" />{{ receipt.kind === "transfer" ? "Delete transfer" : "Delete share" }}
                                 </button>
                             </div>
 
                             <div v-if="confirming" class="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line bg-surface-2 px-4 py-3">
-                                <p class="text-[13px] text-ink">Delete this share? The link stops working immediately, but the receipt stays for 90 days.</p>
+                                <p class="text-[13px] text-ink">{{ receipt.kind === "transfer" ? "Delete this transfer? Every remaining file is removed and the link stops working. The receipt stays for 90 days." : "Delete this share? The link stops working immediately, but the receipt stays for 90 days." }}</p>
                                 <div class="flex gap-2">
                                     <button type="button" class="btn-ghost !h-8 !px-3 !text-[13px]" @click="confirming = false">Cancel</button>
                                     <button type="button" class="btn-primary !h-8 !bg-bad !px-3 !text-[13px] hover:!bg-bad/90" :disabled="removing" @click="remove">
@@ -152,7 +172,7 @@ const route = useRoute();
 
 useSeo({
     title: "Share Receipt",
-    description: "A private receipt of opens, reads, and activity for a TextShareNow Pro text share.",
+    description: "A private receipt of opens, reads, downloads, and activity for a TextShareNow Pro share.",
     pagePath: `/receipts/${String(route.params.code || "")}`,
 });
 useHead({ meta: [{ name: "robots", content: "noindex, nofollow" }] });
@@ -206,10 +226,12 @@ async function load() {
     }
 }
 
-const statusLabel = (status) => {
-    if (status === "exhausted") return "Read limit reached";
-    if (status === "deleted") return "Deleted";
-    if (status === "expired") return "Expired";
+const statusLabel = (receipt) => {
+    if (receipt?.status === "exhausted") {
+        return receipt?.kind === "transfer" ? "All files downloaded" : "Read limit reached";
+    }
+    if (receipt?.status === "deleted") return "Deleted";
+    if (receipt?.status === "expired") return "Expired";
     return "Active";
 };
 
@@ -221,6 +243,7 @@ const statusClass = (status) => {
 
 const readsLeftText = computed(() => {
     if (!receipt.value) return "—";
+    if (receipt.value.kind === "transfer") return "—";
     if (receipt.value.status !== "active") return receipt.value.maxReads === 0 ? "—" : "0";
     if (receipt.value.maxReads === 0) return "Unlimited";
     return String(receipt.value.readsLeft ?? 0);
@@ -263,38 +286,65 @@ function formatDateTime(value) {
 
 function eventLabel(event) {
     if (event.e === "created") return "Receipt created";
-    if (event.e === "opened") return "Share opened";
+    if (event.e === "opened") return "Link opened";
     if (event.e === "read") return "Text read";
-    if (event.e === "exhausted") return "Read limit reached";
+    if (event.e === "download") return "File downloaded";
+    if (event.e === "exhausted") return receipt.value?.kind === "transfer" ? "All files downloaded" : "Read limit reached";
     if (event.e === "deleted") return event.reason === "password" ? "Deleted after too many password attempts" : "Share deleted";
     return "Activity";
 }
 
 function eventDetail(event) {
-    if (event.e === "created" && event.m !== undefined) {
-        if (event.m === 0) return "Unlimited reads allowed.";
-        return `${event.m} read${event.m === 1 ? "" : "s"} allowed.`;
+    if (event.e === "created") {
+        if (typeof event.k === "number") {
+            return `${event.k} file${event.k === 1 ? "" : "s"} · ${formatBytes(event.b)}.`;
+        }
+        if (event.m !== undefined) {
+            if (event.m === 0) return "Unlimited reads allowed.";
+            return `${event.m} read${event.m === 1 ? "" : "s"} allowed.`;
+        }
     }
     if (event.e === "read") {
         if (event.m === 0) return "Read on an unlimited-read share.";
         if (event.r === 0) return "This was the final allowed read.";
         if (typeof event.r === "number") return `${event.r} read${event.r === 1 ? "" : "s"} left after this.`;
     }
-    if (event.e === "exhausted") return "The share was removed after its final read.";
+    if (event.e === "download") {
+        const files = Number(event.n) || 1;
+        const left = Number(event.k);
+        const head = `${files} file${files === 1 ? "" : "s"} downloaded`;
+        if (!Number.isFinite(left)) return `${head}.`;
+        return left === 0
+            ? `${head} — that was the last one.`
+            : `${head} · ${left} file${left === 1 ? "" : "s"} left.`;
+    }
+    if (event.e === "exhausted") {
+        return receipt.value?.kind === "transfer"
+            ? "The transfer was removed after its last file was downloaded."
+            : "The share was removed after its final read.";
+    }
     return "";
 }
 
 function eventDotClass(event) {
-    if (event.e === "read") return "bg-ok";
+    if (event.e === "read" || event.e === "download") return "bg-ok";
     if (event.e === "opened") return "bg-brand";
     if (event.e === "deleted" || event.e === "exhausted") return "bg-bad";
     return "bg-muted";
 }
 
+function formatBytes(bytes) {
+    const value = Number(bytes) || 0;
+    if (value < 1024) return `${value} B`;
+    if (value < 1048576) return `${(value / 1024).toFixed(1)} KB`;
+    return `${(value / 1048576).toFixed(1)} MB`;
+}
+
 async function copyLink() {
     if (!receipt.value) return;
+    const param = receipt.value.kind === "transfer" ? "tcode" : "code";
     try {
-        await navigator.clipboard.writeText(`${window.location.origin}/r?code=${encodeURIComponent(receipt.value.code)}`);
+        await navigator.clipboard.writeText(`${window.location.origin}/r?${param}=${encodeURIComponent(receipt.value.code)}`);
         copied.value = true;
         clearTimeout(copiedTimer);
         copiedTimer = setTimeout(() => (copied.value = false), 1600);
@@ -307,8 +357,9 @@ async function remove() {
     if (!receipt.value || removing.value) return;
     removing.value = true;
     error.value = "";
+    const endpoint = receipt.value.kind === "transfer" ? "/api/pro/transfers" : "/api/share";
     try {
-        await $fetch(`/api/share/${encodeURIComponent(receipt.value.code)}`, { method: "DELETE" });
+        await $fetch(`${endpoint}/${encodeURIComponent(receipt.value.code)}`, { method: "DELETE" });
         confirming.value = false;
         notice.value = "Share deleted. The receipt will remain for 90 days.";
         await load();

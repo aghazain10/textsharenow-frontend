@@ -9,12 +9,16 @@
  * Each item: {
  *   kind: 'text' | 'transfer',
  *   code, custom, ttl, expiresAt, maxReads, readsLeft, passwordRequired,
- *   receipt, opens, reads, fileCount?, bytes?
+ *   receipt, opens, reads, downloads, lastEventAt, fileCount?, bytes?
  * }
- *  - receipt: true when a private receipt exists for this text share
- *  - opens/reads: receipt counters, or null when no receipt is available
+ *  - receipt: true when a private receipt exists for this share
+ *  - opens/reads/downloads: receipt counters, or null when no receipt exists
+ *  - lastEventAt: newest receipt event (seconds), used for "new activity" badges
  *  - ttl: seconds left, or null for a never-expiring text share
  *  - readsLeft: null when reads are unlimited
+ *
+ * The response also includes `seenAt`, the last time the owner marked the
+ * dashboard as read (0 when they never have).
  *
  * 403 — not Pro
  * 429 — more than 30 dashboard loads per minute per IP
@@ -33,13 +37,34 @@ import {
   transferSummaryKey,
 } from '../../utils/proTransfers'
 import {
+  RECEIPT_DOWNLOADS_PREFIX,
+  RECEIPT_EVENTS_PREFIX,
   RECEIPT_OPENS_PREFIX,
   RECEIPT_PREFIX,
   RECEIPT_READS_PREFIX,
+  receiptSeenKey,
 } from '../../utils/receipts'
 import { decryptAtRest } from '../../utils/cipher'
 
 const MAX_SHARES = 100
+
+/**
+ * The newest receipt event is stored at the head of the events list. Returns
+ * its timestamp (seconds) so the dashboard can flag unread activity.
+ */
+function headEventAt(raw: unknown): number | null {
+  if (!Array.isArray(raw) || !raw.length) return null
+  try {
+    const event = JSON.parse(String(raw[0]))
+    // "created" is not activity from the recipient — a fresh share should not
+    // show up as unread the next time the owner visits the dashboard.
+    if (event?.e === 'created') return null
+    const t = Number(event?.t)
+    return Number.isFinite(t) ? t : null
+  } catch {
+    return null
+  }
+}
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
@@ -64,11 +89,14 @@ export default defineEventHandler(async (event) => {
   const customOwnerKey = `custom:owner:${licHash}`
   const transferOwner = transferOwnerKey(licHash)
 
-  const [membersRes, customRes, transferRes] = await Promise.all([
+  const [membersRes, customRes, transferRes, seenRes] = await Promise.all([
     upstash(config, ['SMEMBERS', ownerKey]),
     upstash(config, ['SMEMBERS', customOwnerKey]),
     upstash(config, ['SMEMBERS', transferOwner]),
+    upstash(config, ['GET', receiptSeenKey(licHash)]),
   ])
+
+  const seenAt = Number.parseInt(String(seenRes.result ?? '0'), 10) || 0
 
   const allCodes: string[] = Array.isArray(membersRes.result) ? membersRes.result : []
   const customCodes = new Set<string>(
@@ -89,6 +117,7 @@ export default defineEventHandler(async (event) => {
             ['EXISTS', RECEIPT_PREFIX + code],
             ['GET', RECEIPT_OPENS_PREFIX + code],
             ['GET', RECEIPT_READS_PREFIX + code],
+            ['LRANGE', RECEIPT_EVENTS_PREFIX + code, 0, 0],
           ]),
         )
       : Promise.resolve([]),
@@ -98,6 +127,10 @@ export default defineEventHandler(async (event) => {
           transferCodes.flatMap((code) => [
             ['GET', transferSummaryKey(code)],
             ['TTL', transferSummaryKey(code)],
+            ['EXISTS', RECEIPT_PREFIX + code],
+            ['GET', RECEIPT_OPENS_PREFIX + code],
+            ['GET', RECEIPT_DOWNLOADS_PREFIX + code],
+            ['LRANGE', RECEIPT_EVENTS_PREFIX + code, 0, 0],
           ]),
         )
       : Promise.resolve([]),
@@ -108,13 +141,14 @@ export default defineEventHandler(async (event) => {
   const staleTransfers: string[] = []
 
   codes.forEach((code, i) => {
-    const offset = i * 6
+    const offset = i * 7
     const raw = results[offset]?.result
     const ttl = results[offset + 1]?.result
     const reads = results[offset + 2]?.result
     const receipt = results[offset + 3]?.result === 1
     const opens = Number.parseInt(String(results[offset + 4]?.result ?? '0'), 10) || 0
     const receiptReads = Number.parseInt(String(results[offset + 5]?.result ?? '0'), 10) || 0
+    const lastEventAt = headEventAt(results[offset + 6]?.result)
 
     if (typeof raw !== 'string' || !raw || ttl === -2) {
       stale.push(code)
@@ -150,12 +184,14 @@ export default defineEventHandler(async (event) => {
       receipt,
       opens: receipt ? opens : null,
       reads: receipt ? receiptReads : null,
+      lastEventAt,
     })
   })
 
   transferCodes.forEach((code, i) => {
-    const raw = transferResults[i * 2]?.result
-    const ttl = transferResults[i * 2 + 1]?.result
+    const offset = i * 6
+    const raw = transferResults[offset]?.result
+    const ttl = transferResults[offset + 1]?.result
     if (typeof raw !== 'string' || !raw || ttl === -2) {
       staleTransfers.push(code)
       return
@@ -172,6 +208,11 @@ export default defineEventHandler(async (event) => {
     }
 
     const seconds = typeof ttl === 'number' ? ttl : -1
+    const receipt = transferResults[offset + 2]?.result === 1
+    const opens = Number.parseInt(String(transferResults[offset + 3]?.result ?? '0'), 10) || 0
+    const downloads = Number.parseInt(String(transferResults[offset + 4]?.result ?? '0'), 10) || 0
+    const lastEventAt = headEventAt(transferResults[offset + 5]?.result)
+
     shares.push({
       kind: 'transfer',
       code,
@@ -183,9 +224,11 @@ export default defineEventHandler(async (event) => {
       passwordRequired: false,
       fileCount: count,
       bytes,
-      receipt: false,
-      opens: null,
+      receipt,
+      opens: receipt ? opens : null,
       reads: null,
+      downloads: receipt ? downloads : null,
+      lastEventAt,
     })
   })
 
@@ -215,5 +258,6 @@ export default defineEventHandler(async (event) => {
   return {
     shares: shares.slice(0, MAX_SHARES),
     truncated: shares.length > MAX_SHARES,
+    seenAt,
   }
 })

@@ -18,6 +18,11 @@ import {
   TRANSFER_SUMMARY_PREFIX,
   transferOwnerKey,
 } from '../../../utils/proTransfers'
+import {
+  closeReceipt,
+  createTransferReceipt,
+  recordTransferDownload,
+} from '../../../utils/receipts'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
@@ -75,7 +80,7 @@ export default defineEventHandler(async (event) => {
   const ownerKey = transferOwnerKey(owner)
 
   const existingRes = await redisCommand(config, ['GET', summaryKey])
-  let existing: { owner?: string; createdAt?: string } = {}
+  let existing: { owner?: string; createdAt?: string; count?: number; bytes?: number } = {}
   if (existingRes.result) {
     try {
       existing = JSON.parse(existingRes.result)
@@ -87,7 +92,29 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  const previousCount = Number.isInteger(existing.count) ? Number(existing.count) : 0
+  const downloaded = previousCount > count ? previousCount - count : 0
+
   if (count === 0) {
+    // Keep the receipt timeline before the dashboard summary disappears.
+    try {
+      await createTransferReceipt(config, {
+        code,
+        owner,
+        ttl: Math.floor(ttl),
+        expiresAt: ea,
+        fileCount: maxFiles,
+        bytes: total,
+      })
+      await recordTransferDownload(config, code, downloaded || previousCount, 0, 0)
+    } catch {
+      // Non-critical: the transfer still completes.
+    }
+    try {
+      await closeReceipt(config, code, 'exhausted', 'downloaded')
+    } catch {
+      // Non-critical.
+    }
     await redisCommand(config, ['DEL', summaryKey])
     await redisCommand(config, ['SREM', ownerKey, code])
     return { ok: true }
@@ -120,6 +147,22 @@ export default defineEventHandler(async (event) => {
     }),
   ])
   await redisCommand(config, ['SADD', ownerKey, code])
+
+  if (downloaded > 0) {
+    try {
+      await createTransferReceipt(config, {
+        code,
+        owner,
+        ttl: Math.floor(ttl),
+        expiresAt: ea,
+        fileCount: maxFiles,
+        bytes: total,
+      })
+      await recordTransferDownload(config, code, downloaded, count, bytes)
+    } catch {
+      // Non-critical: the dashboard summary is already accurate.
+    }
+  }
 
   return { ok: true }
 })

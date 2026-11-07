@@ -196,6 +196,8 @@ const props = defineProps({
 
 const config = useRuntimeConfig();
 const FILES_API = config.public.FILES_API_URL;
+// Fire the "link opened" beacon at most once per code per page load.
+const openedTransfers = new Set();
 
 const value = ref("");
 const focused = ref(false);
@@ -390,6 +392,14 @@ async function getTransfer(code, strict = false) {
         const err = new Error("no key");
         err.code = "NOKEY";
         throw err;
+    }
+
+    if (!openedTransfers.has(code)) {
+        openedTransfers.add(code);
+        fetch(`/api/transfers/${encodeURIComponent(code)}/open`, {
+            method: "POST",
+            keepalive: true,
+        }).catch(() => {});
     }
 
     return {

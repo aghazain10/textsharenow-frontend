@@ -14,6 +14,7 @@ import { createHmac } from 'node:crypto'
 import { resolvePro } from '../../../utils/pro'
 import { licenseHash, redisCommand } from '../../../utils/proStorage'
 import { transferOwnerKey, transferSummaryKey } from '../../../utils/proTransfers'
+import { closeReceipt } from '../../../utils/receipts'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
@@ -80,6 +81,12 @@ export default defineEventHandler(async (event) => {
 
   await redisCommand(config, ['DEL', transferSummaryKey(code)])
   await redisCommand(config, ['SREM', ownerKey, code])
+
+  try {
+    await closeReceipt(config, code, 'deleted')
+  } catch {
+    // Non-critical: the transfer is already gone.
+  }
 
   return { ok: true }
 })

@@ -2,10 +2,10 @@
  * GET /api/pro/receipts
  * Response: { receipts: [...] }
  *
- * Lists recent text-share receipts for the signed Pro license, including
- * shares that have expired, been used up, or been deleted. Receipts are kept
- * for 90 days after the share closes, so this is how the dashboard exposes
- * that history after the live share disappears.
+ * Lists recent receipts for the signed Pro license — text shares and
+ * multi-file transfers, including shares that have expired, been used up, or
+ * been deleted. Receipts are kept for 90 days after the share closes, so this
+ * is how the dashboard exposes that history after the live share disappears.
  *
  * 403 — not Pro
  * 429 — more than 30 receipt loads per minute per IP

@@ -376,6 +376,7 @@ const compareRows = [
     ["Custom code", ["text", "Random 5 characters"], ["good", "Any available name"]],
     ["API & MCP", ["text", "Free-plan limits only"], ["good", "Full Pro limits + MCP server"]],
     ["My Shares dashboard", ["bad", "Not included"], ["good", "List, copy and delete active links"]],
+    ["Open & download receipts", ["bad", "Not included"], ["good", "See opens, reads and file downloads"]],
     ["QR code + share link", ["good", "Included"], ["good", "Included"]],
     ["Malware scanning (standard uploads)", ["good", "Included"], ["good", "Included"]],
     ["Manage or cancel", ["text", "Nothing to manage"], ["good", "Cancel anytime"]],

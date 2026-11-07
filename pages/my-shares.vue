@@ -3,7 +3,7 @@
         <PageHero
             meta="Pro dashboard"
             title="My shares"
-            lead="Manage the text shares and multi-file transfers created with your Pro license. See what is still live, open a private receipt for opens and reads, copy a link, or delete it. No account needed — your license key is the credential."
+            lead="Manage the text shares and multi-file transfers created with your Pro license. See what is still live, open a private receipt for opens, reads and downloads, or delete it. New activity is flagged when you come back. No account needed — your license key is the credential."
         />
 
         <section class="section">
@@ -51,6 +51,22 @@
                         {{ notice }}
                     </p>
 
+                    <div
+                        v-if="newCodes.size"
+                        class="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-brand/30 bg-brand/5 px-4 py-3"
+                        role="status"
+                    >
+                        <p class="flex flex-wrap items-center gap-2 text-[14px] font-medium text-ink">
+                            <span class="inline-flex items-center gap-1 rounded-full bg-brand px-2 py-0.5 text-[11px] font-semibold text-on-brand">
+                                <span class="h-1.5 w-1.5 rounded-full bg-on-brand" aria-hidden="true" />New
+                            </span>
+                            {{ newCodes.size }} share{{ newCodes.size === 1 ? "" : "s" }} opened or downloaded since your last visit
+                        </p>
+                        <button type="button" class="text-[13px] font-medium text-muted underline decoration-line underline-offset-4 hover:text-ink" @click="dismissNew">
+                            Dismiss
+                        </button>
+                    </div>
+
                     <div v-if="loading && !shares.length" class="tile mt-6 flex items-center gap-3 text-[14px] text-muted">
                         <span class="h-2 w-2 animate-pulse rounded-full bg-brand" aria-hidden="true" />
                         Loading your shares…
@@ -73,6 +89,9 @@
                                 <div class="min-w-0">
                                     <div class="flex flex-wrap items-center gap-2">
                                         <code class="font-mono text-[17px] font-semibold tracking-wide text-ink">{{ s.code }}</code>
+                                        <span v-if="hasNew(s)" class="inline-flex items-center gap-1 rounded-full border border-brand/40 bg-brand/10 px-2 py-0.5 text-[11px] font-semibold text-brand">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-brand" aria-hidden="true" />New
+                                        </span>
                                         <span v-if="s.kind === 'transfer'" class="rounded-full border border-line bg-surface-2 px-2 py-0.5 text-[11px] font-medium text-muted">Files</span>
                                         <span v-if="s.custom" class="rounded-full border border-line bg-surface-2 px-2 py-0.5 text-[11px] font-medium text-muted">Custom</span>
                                         <span v-if="s.passwordRequired" class="inline-flex items-center gap-1 rounded-full border border-line bg-surface-2 px-2 py-0.5 text-[11px] font-medium text-muted">
@@ -129,7 +148,7 @@
                         <div class="flex flex-wrap items-end justify-between gap-3">
                             <div>
                                 <h2 class="text-[22px] font-semibold tracking-[-0.03em] text-ink">Receipt history</h2>
-                                <p class="mt-1 text-[14px] text-muted">Expired, used-up, and deleted text shares from the last 90 days.</p>
+                                <p class="mt-1 text-[14px] text-muted">Expired, used-up, and deleted shares from the last 90 days.</p>
                             </div>
                         </div>
                         <ul class="mt-4 grid gap-2">
@@ -137,7 +156,10 @@
                                 <div class="min-w-0">
                                     <div class="flex flex-wrap items-center gap-2">
                                         <code class="font-mono text-[15px] font-semibold tracking-wide text-ink">{{ r.code }}</code>
-                                        <span class="rounded-full border px-2 py-0.5 text-[11px] font-medium" :class="statusClass(r.status)">{{ statusLabel(r.status) }}</span>
+                                        <span v-if="hasNew(r)" class="inline-flex items-center gap-1 rounded-full border border-brand/40 bg-brand/10 px-2 py-0.5 text-[11px] font-semibold text-brand">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-brand" aria-hidden="true" />New
+                                        </span>
+                                        <span class="rounded-full border px-2 py-0.5 text-[11px] font-medium" :class="statusClass(r.status)">{{ statusLabel(r) }}</span>
                                         <span v-if="r.passwordRequired" class="inline-flex items-center gap-1 rounded-full border border-line bg-surface-2 px-2 py-0.5 text-[11px] font-medium text-muted">
                                             <TsnIcon name="lock" class="h-3 w-3" stroke="2" />Password
                                         </span>
@@ -169,7 +191,7 @@
 <script setup>
 useSeo({
     title: "My Shares",
-    description: "Manage text shares and multi-file transfers, and view private open and read receipts for your TextShareNow Pro license.",
+    description: "Manage text shares and multi-file transfers, and view private open, read and download receipts for your TextShareNow Pro license.",
     pagePath: "/my-shares",
 });
 useHead({ meta: [{ name: "robots", content: "noindex, nofollow" }] });
@@ -185,6 +207,8 @@ const notice = ref("");
 const truncated = ref(false);
 const copied = ref("");
 const confirming = ref("");
+const seenAt = ref(0);
+const newCodes = ref(new Set());
 let noticeTimer;
 
 const history = computed(() => {
@@ -214,11 +238,35 @@ async function load() {
     if (sharesResult.status === "fulfilled") {
         shares.value = sharesResult.value?.shares || [];
         truncated.value = !!sharesResult.value?.truncated;
+        seenAt.value = Number(sharesResult.value?.seenAt) || 0;
     } else {
         error.value = sharesResult.reason?.data?.message || "Could not load your shares. Please try again.";
     }
     receipts.value = receiptsResult.status === "fulfilled" ? receiptsResult.value?.receipts || [] : [];
+    newCodes.value = new Set(
+        [...shares.value, ...receipts.value].filter(activitySinceSeen).map((item) => item.code),
+    );
+    if (newCodes.value.size) markSeen();
     loading.value = false;
+}
+
+function activitySinceSeen(share) {
+    const last = Number(share?.lastEventAt) || 0;
+    return last > 0 && last > (Number(seenAt.value) || 0);
+}
+
+function hasNew(share) {
+    return newCodes.value.has(share?.code);
+}
+
+function markSeen() {
+    // Advance the server marker without clearing this visit's badges — the
+    // owner should still see what changed when they land on the page.
+    $fetch("/api/pro/shares/seen", { method: "POST" }).catch(() => {});
+}
+
+function dismissNew() {
+    newCodes.value = new Set();
 }
 
 async function loadReceipts() {
@@ -272,13 +320,20 @@ function readsText(s) {
 }
 
 function activityText(item) {
+    if (item.kind === "transfer") {
+        const downloads = Number(item.downloads) || 0;
+        const total = Number(item.fileCount) || 0;
+        if (!total) return `${downloads} file${downloads === 1 ? "" : "s"} downloaded`;
+        return `${downloads} of ${total} file${total === 1 ? "" : "s"} downloaded`;
+    }
     const opens = Number(item.opens) || 0;
     const reads = Number(item.reads) || 0;
     return `${opens} open${opens === 1 ? "" : "s"} · ${reads} read${reads === 1 ? "" : "s"}`;
 }
 
-function statusLabel(status) {
-    if (status === "exhausted") return "Read limit reached";
+function statusLabel(item) {
+    const status = item?.status;
+    if (status === "exhausted") return item?.kind === "transfer" ? "All files downloaded" : "Read limit reached";
     if (status === "deleted") return "Deleted";
     if (status === "expired") return "Expired";
     return "Active";

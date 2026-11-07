@@ -19,6 +19,7 @@ import {
   TRANSFER_SUMMARY_PREFIX,
   transferOwnerKey,
 } from '../../../utils/proTransfers'
+import { createTransferReceipt } from '../../../utils/receipts'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
@@ -104,6 +105,21 @@ export default defineEventHandler(async (event) => {
     }),
   ])
   await redisCommand(config, ['SADD', transferOwnerKey(owner), code])
+
+  // Best-effort: the receipt is what powers "did they download it?" in the
+  // dashboard, but a Redis hiccup must never fail the upload registration.
+  try {
+    await createTransferReceipt(config, {
+      code,
+      owner,
+      ttl: Math.floor(ttl),
+      expiresAt: ea,
+      fileCount: count,
+      bytes,
+    })
+  } catch {
+    // Non-critical.
+  }
 
   return { ok: true }
 })
