@@ -289,6 +289,7 @@ function eventLabel(event) {
     if (event.e === "opened") return "Link opened";
     if (event.e === "read") return "Text read";
     if (event.e === "download") return "File downloaded";
+    if (event.e === "updated") return "Link updated";
     if (event.e === "exhausted") return receipt.value?.kind === "transfer" ? "All files downloaded" : "Read limit reached";
     if (event.e === "deleted") return event.reason === "password" ? "Deleted after too many password attempts" : "Share deleted";
     return "Activity";
@@ -318,6 +319,11 @@ function eventDetail(event) {
             ? `${head} — that was the last one.`
             : `${head} · ${left} file${left === 1 ? "" : "s"} left.`;
     }
+    if (event.e === "updated") {
+        const labels = { text: "text", expiry: "expiry", reads: "read limit", password: "password" };
+        const fields = Array.isArray(event.fields) ? event.fields.map((f) => labels[f] || f) : [];
+        return fields.length ? `Changed: ${fields.join(", ")}.` : "The owner changed this link.";
+    }
     if (event.e === "exhausted") {
         return receipt.value?.kind === "transfer"
             ? "The transfer was removed after its last file was downloaded."
@@ -328,6 +334,7 @@ function eventDetail(event) {
 
 function eventDotClass(event) {
     if (event.e === "read" || event.e === "download") return "bg-ok";
+    if (event.e === "updated") return "bg-ink";
     if (event.e === "opened") return "bg-brand";
     if (event.e === "deleted" || event.e === "exhausted") return "bg-bad";
     return "bg-muted";

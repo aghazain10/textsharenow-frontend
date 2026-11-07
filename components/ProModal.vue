@@ -169,6 +169,7 @@ const FEATURES = [
     "Password-protect any share",
     "Custom share codes (e.g. coffee-menu)",
     "My Shares dashboard for active links",
+    "Edit a live link — change text, expiry, reads or password",
     "Open, read and download receipts for every share",
     "API & MCP access for scripts and AI agents",
 ];

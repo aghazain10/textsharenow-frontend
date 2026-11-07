@@ -6,9 +6,10 @@
  * for 90 days after the share expires; never-expiring shares keep a rolling
  * one-year window.
  *
- * Text shares record opens, reads, and exhaustion. Transfers record link
- * opens, per-file downloads (from the aggregate counts the files service
- * syncs back), and exhaustion when the last file leaves.
+ * Text shares record opens, reads, owner edits to a live link, and
+ * exhaustion. Transfers record link opens, per-file downloads (from the
+ * aggregate counts the files service syncs back), and exhaustion when the
+ * last file leaves.
  *
  * Redis layout:
  *   receipt:<code>            JSON metadata (owner hash, kind, expiry, limits)
@@ -50,6 +51,7 @@ export type ReceiptEventType =
   | 'opened'
   | 'read'
   | 'download'
+  | 'updated'
   | 'exhausted'
   | 'deleted'
 
@@ -80,6 +82,8 @@ export type ReceiptEvent = {
   k?: number
   /** Bytes remaining after this sync (transfer only). */
   b?: number
+  /** Which fields changed (updated only): text | expiry | reads | password. */
+  fields?: string[]
 }
 
 export type ReceiptSummary = {
@@ -306,6 +310,69 @@ export async function recordReceiptRead(
   })
 }
 
+export type ReceiptUpdateInput = {
+  /** New expiry from now (seconds). 0 = never. Omit to keep the current one. */
+  ttl?: number
+  /** New total read limit. Omit to keep the current one. */
+  maxReads?: number
+  /** Whether the share requires a password after the edit. */
+  passwordRequired?: boolean
+  /** Which fields changed, e.g. ['text', 'expiry', 'reads', 'password']. */
+  fields: string[]
+}
+
+/**
+ * Record that the owner edited a live link: updates the receipt metadata
+ * (expiry, read limit, password flag) and appends an "updated" event. The
+ * receipt stays active for as long as the share lives. Never records what
+ * was inside the share.
+ */
+export async function recordReceiptUpdate(
+  config: UpstashConfig,
+  rawInput: string,
+  input: ReceiptUpdateInput,
+): Promise<boolean> {
+  const resolved = await resolveReceiptCode(config, rawInput)
+  if (!resolved) return false
+
+  const { code, meta } = resolved
+  const now = nowSeconds()
+
+  if (input.ttl !== undefined) {
+    meta.expiresAt = input.ttl > 0 ? now + input.ttl : null
+  }
+  if (input.maxReads !== undefined) meta.maxReads = input.maxReads
+  if (input.passwordRequired !== undefined) meta.passwordRequired = input.passwordRequired
+
+  const eventsKey = RECEIPT_EVENTS_PREFIX + code
+  const ttl =
+    input.ttl !== undefined
+      ? receiptTtlForShare(input.ttl)
+      : await receiptTtlRemaining(config, code)
+
+  const event: ReceiptEvent = { t: now, e: 'updated', fields: input.fields }
+  const metaJson = JSON.stringify(meta)
+
+  const commands: unknown[][] = []
+  if (input.ttl !== undefined && typeof ttl === 'number') {
+    commands.push(['SET', RECEIPT_PREFIX + code, metaJson, 'EX', ttl])
+    commands.push(['EXPIRE', RECEIPT_OPENS_PREFIX + code, ttl])
+    commands.push(['EXPIRE', RECEIPT_READS_PREFIX + code, ttl])
+    commands.push(['EXPIRE', RECEIPT_DOWNLOADS_PREFIX + code, ttl])
+    commands.push(['LPUSH', eventsKey, JSON.stringify(event)])
+    commands.push(['LTRIM', eventsKey, 0, MAX_RECEIPT_EVENTS - 1])
+    commands.push(['EXPIRE', eventsKey, ttl])
+  } else {
+    commands.push(['SET', RECEIPT_PREFIX + code, metaJson, 'KEEPTTL'])
+    commands.push(['LPUSH', eventsKey, JSON.stringify(event)])
+    commands.push(['LTRIM', eventsKey, 0, MAX_RECEIPT_EVENTS - 1])
+    if (ttl) commands.push(['EXPIRE', eventsKey, ttl])
+  }
+
+  await upstashPipeline(config, commands)
+  return true
+}
+
 /**
  * Record files downloaded from a transfer. The files service reports the
  * remaining file count/bytes after each download, so the delta is what we
@@ -494,14 +561,20 @@ function parseEvents(raw: unknown): ReceiptEvent[] {
 }
 
 /**
- * Newest non-creation event timestamp, for "new activity" badges. A fresh
- * share is not unread just because it exists.
+ * Timestamp of the newest event a recipient triggered, for "new activity"
+ * badges. Owner-initiated events (created, updated) and system events the
+ * recipient can't trigger are not "activity" from the owner's point of view.
  */
+const OWNER_EVENTS = new Set(['created', 'updated'])
+
 function eventHeadAt(raw: unknown): number | null {
-  if (!Array.isArray(raw) || !raw.length) return null
-  const event = parseJson<ReceiptEvent>(raw[0])
-  if (!event || event.e === 'created') return null
-  return Number.isFinite(event.t) ? Number(event.t) : null
+  if (!Array.isArray(raw)) return null
+  for (const entry of raw.slice(0, 5)) {
+    const event = parseJson<ReceiptEvent>(entry)
+    if (!event || OWNER_EVENTS.has(event.e)) continue
+    return Number.isFinite(event.t) ? Number(event.t) : null
+  }
+  return null
 }
 
 export async function listReceipts(
@@ -524,7 +597,7 @@ export async function listReceipts(
       ['GET', RECEIPT_DOWNLOADS_PREFIX + code],
       ['EXISTS', KEY_PREFIX + code],
       ['EXISTS', transferSummaryKey(code)],
-      ['LRANGE', RECEIPT_EVENTS_PREFIX + code, 0, 0],
+      ['LRANGE', RECEIPT_EVENTS_PREFIX + code, 0, 4],
     ]),
   )
 

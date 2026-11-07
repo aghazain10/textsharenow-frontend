@@ -359,6 +359,8 @@ const proFeatures = [
     "Password-protect any share",
     "Custom share codes (e.g. coffee-menu)",
     "My Shares dashboard for active shares and transfers",
+    "Edit a live link — change text, expiry, reads or password",
+    "Open, read and download receipts for every share",
     "Developer API and MCP server for AI agents",
 ];
 
@@ -377,6 +379,7 @@ const compareRows = [
     ["API & MCP", ["text", "Free-plan limits only"], ["good", "Full Pro limits + MCP server"]],
     ["My Shares dashboard", ["bad", "Not included"], ["good", "List, copy and delete active links"]],
     ["Open & download receipts", ["bad", "Not included"], ["good", "See opens, reads and file downloads"]],
+    ["Edit live links in place", ["bad", "Not included"], ["good", "Text, expiry, reads and password — same code"]],
     ["QR code + share link", ["good", "Included"], ["good", "Included"]],
     ["Malware scanning (standard uploads)", ["good", "Included"], ["good", "Included"]],
     ["Manage or cancel", ["text", "Nothing to manage"], ["good", "Cancel anytime"]],
@@ -428,7 +431,12 @@ const proDetails = [
     {
         icon: "dashboard",
         title: "My Shares dashboard",
-        desc: "See every active text share and multi-file transfer tied to your license, how many reads are left, and when each link expires. Copy a link or delete a share without hunting through old tabs. No account needed — the license key is the login.",
+        desc: "See every active text share and multi-file transfer tied to your license, how many reads are left, and when each link expires. Copy a link, open a private receipt, or delete a share without hunting through old tabs. No account needed — the license key is the login.",
+    },
+    {
+        icon: "edit",
+        title: "Edit a live link",
+        desc: "Sent the wrong text, or the deadline moved? Edit the text, extend the expiry, raise the read limit, change or remove the password — all while keeping the same 5-character code and link. The receipt shows what changed and when.",
     },
 ];
 

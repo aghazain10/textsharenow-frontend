@@ -130,3 +130,25 @@ Writers:
 
 No IP address, user agent, or file content is stored in any receipt.
 
+## Editable & extendable links v1
+
+Pro owners can edit a live text link instead of deleting and resending it.
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /api/pro/shares/:code` | Ownership-checked content source for the editor (text, ttl, reads, password state). Never returns hashes or encrypted content. |
+| `PUT /api/pro/shares/:code` | Edit in place: `text`, `ttl` (600–2592000, 0 = never), `maxReads` (1, 5, 10, 0 = unlimited), `passwordHash` (set, `null` to remove). |
+
+Rules:
+
+- Only the creating license can edit (same `share:owner:<licHash>` check as delete).
+- Private-mode (encrypted) shares are rejected — the server never sees the
+  key — and the UI offers a replacement link instead.
+- Read limits are a TOTAL, not a top-up; a new limit at or below the reads
+  already used is rejected. Switching to 1 read clears the counter so one
+  final read is allowed.
+- Changing the expiry resets the share TTL and aligns the reads-counter
+  TTL; changing the password resets the wrong-attempt counter.
+- Each edit appends an `updated` receipt event (`fields`: `text`, `expiry`,
+  `reads`, `password`) and never stores the new content.
+

@@ -3,7 +3,7 @@
         <PageHero
             meta="Pro dashboard"
             title="My shares"
-            lead="Manage the text shares and multi-file transfers created with your Pro license. See what is still live, open a private receipt for opens, reads and downloads, or delete it. New activity is flagged when you come back. No account needed — your license key is the credential."
+            lead="Manage the text shares and multi-file transfers created with your Pro license. Edit a live link instead of sending a new one — change the text, extend the expiry, top up reads or remove the password. Open a private receipt for opens, reads and downloads, or delete it. No account needed — your license key is the credential."
         />
 
         <section class="section">
@@ -111,6 +111,9 @@
                                     </div>
                                 </div>
                                 <div class="flex shrink-0 flex-wrap items-center gap-2">
+                                    <button v-if="s.kind === 'text'" type="button" :disabled="!s.editable" class="btn-ghost !h-9 !px-3" :title="s.editable ? 'Edit this link in place' : 'Private-mode shares can’t be edited — create a replacement link'" :aria-label="s.editable ? `Edit share ${s.code}` : 'Private-mode shares can’t be edited'" @click="editing = s.code">
+                                        <TsnIcon name="edit" class="h-4 w-4" stroke="1.8" />Edit
+                                    </button>
                                     <NuxtLink v-if="s.receipt" :to="`/receipts/${encodeURIComponent(s.code)}`" class="btn-ghost !h-9 !px-3">
                                         <TsnIcon name="receipt" class="h-4 w-4" stroke="1.8" />
                                         Receipt
@@ -129,6 +132,8 @@
                                     </button>
                                 </div>
                             </div>
+
+                            <ShareEditor v-if="editing === s.code" :share="s" @close="editing = ''" @saved="onEditSaved" />
 
                             <div v-if="confirming === s.code" class="flex flex-wrap items-center justify-between gap-3 border-t border-line bg-surface-2 px-5 py-3">
                                 <p class="text-[13px] text-ink">{{ s.kind === "transfer" ? "Delete this transfer? The link stops working and all remaining files are removed." : "Delete this share? The link stops working immediately." }}</p>
@@ -191,7 +196,7 @@
 <script setup>
 useSeo({
     title: "My Shares",
-    description: "Manage text shares and multi-file transfers, and view private open, read and download receipts for your TextShareNow Pro license.",
+    description: "Edit live text links in place, manage transfers, and view private open, read and download receipts for your TextShareNow Pro license.",
     pagePath: "/my-shares",
 });
 useHead({ meta: [{ name: "robots", content: "noindex, nofollow" }] });
@@ -207,6 +212,7 @@ const notice = ref("");
 const truncated = ref(false);
 const copied = ref("");
 const confirming = ref("");
+const editing = ref("");
 const seenAt = ref(0);
 const newCodes = ref(new Set());
 let noticeTimer;
@@ -350,6 +356,19 @@ function formatDate(value) {
     const date = new Date(Number(value) * 1000);
     if (Number.isNaN(date.getTime())) return "";
     return date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+}
+
+async function onEditSaved(changed) {
+    editing.value = "";
+    clearTimeout(noticeTimer);
+    const labels = { text: "text", expiry: "expiry", reads: "read limit", password: "password" };
+    const parts = changed.map((field) => labels[field] || field);
+    notice.value = parts.length
+        ? `Link updated — ${parts.join(", ")} changed. Existing links now show the new version.`
+        : "Link updated.";
+    noticeTimer = setTimeout(() => (notice.value = ""), 5000);
+    await load();
+    await loadReceipts();
 }
 
 async function remove(share) {

@@ -8,14 +8,19 @@
  *
  * Each item: {
  *   kind: 'text' | 'transfer',
- *   code, custom, ttl, expiresAt, maxReads, readsLeft, passwordRequired,
+ *   code, custom, ttl, expiresAt, maxReads, readsLeft, readsUsed,
+ *   passwordRequired, encrypted?, editable,
  *   receipt, opens, reads, downloads, lastEventAt, fileCount?, bytes?
  * }
  *  - receipt: true when a private receipt exists for this share
  *  - opens/reads/downloads: receipt counters, or null when no receipt exists
- *  - lastEventAt: newest receipt event (seconds), used for "new activity" badges
+ *  - lastEventAt: newest recipient event (seconds), used for "new activity" badges
  *  - ttl: seconds left, or null for a never-expiring text share
  *  - readsLeft: null when reads are unlimited
+ *  - readsUsed: reads consumed so far, or null when reads are unlimited
+ *  - editable: false for Private-mode (encrypted) shares, transfers and
+ *    unreadable payloads — the owner can still see them but must create a
+ *    replacement link to change the contents
  *
  * The response also includes `seenAt`, the last time the owner marked the
  * dashboard as read (0 when they never have).
@@ -49,21 +54,25 @@ import { decryptAtRest } from '../../utils/cipher'
 const MAX_SHARES = 100
 
 /**
- * The newest receipt event is stored at the head of the events list. Returns
- * its timestamp (seconds) so the dashboard can flag unread activity.
+ * Timestamp of the newest event a recipient triggered, for "new activity"
+ * badges. Owner-initiated events (created, updated) are not activity from
+ * the owner's point of view — they should not flag the share as unread.
  */
+const OWNER_EVENTS = new Set(['created', 'updated'])
+
 function headEventAt(raw: unknown): number | null {
-  if (!Array.isArray(raw) || !raw.length) return null
-  try {
-    const event = JSON.parse(String(raw[0]))
-    // "created" is not activity from the recipient — a fresh share should not
-    // show up as unread the next time the owner visits the dashboard.
-    if (event?.e === 'created') return null
-    const t = Number(event?.t)
-    return Number.isFinite(t) ? t : null
-  } catch {
-    return null
+  if (!Array.isArray(raw)) return null
+  for (const entry of raw.slice(0, 5)) {
+    try {
+      const event = JSON.parse(String(entry))
+      if (!event || OWNER_EVENTS.has(event?.e)) continue
+      const t = Number(event?.t)
+      return Number.isFinite(t) ? t : null
+    } catch {
+      continue
+    }
   }
+  return null
 }
 
 export default defineEventHandler(async (event) => {
@@ -117,7 +126,7 @@ export default defineEventHandler(async (event) => {
             ['EXISTS', RECEIPT_PREFIX + code],
             ['GET', RECEIPT_OPENS_PREFIX + code],
             ['GET', RECEIPT_READS_PREFIX + code],
-            ['LRANGE', RECEIPT_EVENTS_PREFIX + code, 0, 0],
+            ['LRANGE', RECEIPT_EVENTS_PREFIX + code, 0, 4],
           ]),
         )
       : Promise.resolve([]),
@@ -130,7 +139,7 @@ export default defineEventHandler(async (event) => {
             ['EXISTS', RECEIPT_PREFIX + code],
             ['GET', RECEIPT_OPENS_PREFIX + code],
             ['GET', RECEIPT_DOWNLOADS_PREFIX + code],
-            ['LRANGE', RECEIPT_EVENTS_PREFIX + code, 0, 0],
+            ['LRANGE', RECEIPT_EVENTS_PREFIX + code, 0, 4],
           ]),
         )
       : Promise.resolve([]),
@@ -158,17 +167,19 @@ export default defineEventHandler(async (event) => {
     let decoded: string
     try { decoded = decryptAtRest(raw) } catch { return } // unreadable — leave ownership intact
     const payload = parseSharePayload(decoded)
+    const encrypted = !!payload && payload.enc === 1
     const maxReads = payload && typeof payload.mr === 'number' ? payload.mr : 1
+    const used = Number.parseInt(reads ?? '0', 10) || 0
 
     let readsLeft: number | null
     if (maxReads === 0) {
       readsLeft = null
     } else if (maxReads > 1) {
-      const used = Number.parseInt(reads ?? '0', 10) || 0
       readsLeft = Math.max(0, maxReads - used)
     } else {
       readsLeft = 1
     }
+    const readsUsed = maxReads > 1 ? used : maxReads === 0 ? null : 0
 
     const seconds = typeof ttl === 'number' ? ttl : -1
 
@@ -180,7 +191,10 @@ export default defineEventHandler(async (event) => {
       expiresAt: seconds > 0 ? new Date(Date.now() + seconds * 1000).toISOString() : null,
       maxReads,
       readsLeft,
+      readsUsed,
       passwordRequired: !!payload?.pw,
+      encrypted,
+      editable: !encrypted,
       receipt,
       opens: receipt ? opens : null,
       reads: receipt ? receiptReads : null,
@@ -222,6 +236,8 @@ export default defineEventHandler(async (event) => {
       maxReads: null,
       readsLeft: null,
       passwordRequired: false,
+      editable: false,
+      readsUsed: null,
       fileCount: count,
       bytes,
       receipt,
