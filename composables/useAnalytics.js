@@ -22,6 +22,7 @@ export const ANALYTICS_EVENTS = {
     TOOL_VIEW: "tool_view",
     TOOL_COMPLETE: "tool_complete",
     TOOL_TO_SHARE: "tool_to_share",
+    TOOL_LINK_CLICK: "tool_link_click",
     // SEO / content
     PRICING_SCROLL: "pricing_scroll",
     PRICING_FAQ_OPEN: "pricing_faq_open",
@@ -69,4 +70,8 @@ export function trackToolComplete(tool, props = {}) {
 }
 export function trackToolToShare(tool) {
     trackEvent(ANALYTICS_EVENTS.TOOL_TO_SHARE, { tool });
+}
+/** A promo link to a free browser tool was clicked. */
+export function trackToolLinkClick(tool, placement = "home_hero") {
+    trackEvent(ANALYTICS_EVENTS.TOOL_LINK_CLICK, { tool, placement });
 }

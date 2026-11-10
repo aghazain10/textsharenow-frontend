@@ -1,10 +1,12 @@
 <template>
     <div>
         <!-- Hero -->
-        <section class="relative isolate overflow-hidden px-4 pb-16 pt-14 sm:pb-20 sm:pt-20" aria-labelledby="hero-title">
+        <section class="relative isolate overflow-hidden px-4 pb-16 pt-6 sm:pb-20 sm:pt-8" aria-labelledby="hero-title">
             <div class="hero-grid absolute inset-0 -z-10" aria-hidden="true" />
 
             <div class="mx-auto max-w-6xl text-center">
+                <FreeToolsRail />
+
                 <p class="inline-flex items-center gap-2 rounded-full border border-line bg-bg px-3 py-1 text-[13px] font-medium text-ink shadow-card">
                     <i class="live-dot" aria-hidden="true" />No account · No app · Free to start
                 </p>
