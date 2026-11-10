@@ -250,9 +250,13 @@ async function pasteCode() {
 }
 
 // Random codes are uppercase; custom codes lowercase with - and _ allowed.
-// Case is preserved as typed — the server tries both storage forms.
+// Case is preserved as typed — the share API tries both storage forms.
+// Text shares handle case server-side (the /api/share routes try both the
+// uppercase random-code form and the lowercase custom-code form); only the
+// files service is case-sensitive (its generated 5-character codes are stored
+// uppercase), so file/transfer lookups normalise through fileCode() below.
 const clean = (s) => s.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 30);
-
+const fileCode = (code) => String(code || "").trim().toUpperCase();
 function onInput(e) {
     const before = e.target.value;
     value.value = clean(before);
@@ -355,9 +359,10 @@ async function getText(code, pwHash) {
     }
 }
 async function getTransfer(code, strict = false) {
+    const lookup = fileCode(code);
     let res;
     try {
-        res = await fetch(`${FILES_API}/transfer/${encodeURIComponent(code)}`, {
+        res = await fetch(`${FILES_API}/transfer/${encodeURIComponent(lookup)}`, {
             headers: { Accept: "application/json" },
             cache: "no-store",
         });
@@ -377,7 +382,7 @@ async function getTransfer(code, strict = false) {
         throw new Error("Couldn't load that transfer. Please try again.");
     }
 
-    const encrypted = data?.enc === true || data?.enc === 1 || data?.enc === "1" || !!shareKeyFor(code);
+    const encrypted = data?.enc === true || data?.enc === 1 || data?.enc === "1" || !!shareKeyFor(lookup);
     const files = (Array.isArray(data?.files) ? data.files : [])
         .filter((file) => file && file.id && file.name)
         .map((file) => ({
@@ -388,15 +393,15 @@ async function getTransfer(code, strict = false) {
             csize: Number(file.csize) || 0,
         }));
     if (!files.length) return null;
-    if (encrypted && !shareKeyFor(code)) {
+    if (encrypted && !shareKeyFor(lookup)) {
         const err = new Error("no key");
         err.code = "NOKEY";
         throw err;
     }
 
-    if (!openedTransfers.has(code)) {
-        openedTransfers.add(code);
-        fetch(`/api/transfers/${encodeURIComponent(code)}/open`, {
+    if (!openedTransfers.has(lookup)) {
+        openedTransfers.add(lookup);
+        fetch(`/api/transfers/${encodeURIComponent(lookup)}/open`, {
             method: "POST",
             keepalive: true,
         }).catch(() => {});
@@ -404,7 +409,7 @@ async function getTransfer(code, strict = false) {
 
     return {
         type: "transfer",
-        code: String(data.code || code),
+        code: fileCode(data.code || lookup),
         encrypted,
         files,
         count: files.length,
@@ -413,30 +418,31 @@ async function getTransfer(code, strict = false) {
 }
 
 async function getFile(code) {
-    const head = await fetch(`${FILES_API}/download/${code}`, { method: "HEAD" }).catch(() => null);
+    const lookup = fileCode(code);
+    const head = await fetch(`${FILES_API}/download/${encodeURIComponent(lookup)}`, { method: "HEAD" }).catch(() => null);
     if (!head) throw new Error("Couldn't reach TextShareNow. Check your internet connection and try again.");
     if (head.status === 404) return null;
     if (!head.ok) throw new Error("The download didn't start. Please try again.");
 
     const marker = head.headers.get("x-tsn-encrypted");
-    const encrypted = marker ? marker === "1" || marker.toLowerCase() === "true" : !!shareKeyFor(code);
+    const encrypted = marker ? marker === "1" || marker.toLowerCase() === "true" : !!shareKeyFor(lookup);
     if (encrypted) {
-        if (!shareKeyFor(code)) {
+        if (!shareKeyFor(lookup)) {
             const err = new Error("no key");
             err.code = "NOKEY";
             throw err;
         }
         // Never navigate straight to the ciphertext: decrypt and save in the
         // browser, then acknowledge so the server can delete its copy.
-        return { type: "file", code, encrypted: true };
+        return { type: "file", code: lookup, encrypted: true };
     }
 
-    window.location.href = `${FILES_API}/download/${code}`;
-    return { type: "file", code };
+    window.location.href = `${FILES_API}/download/${encodeURIComponent(lookup)}`;
+    return { type: "file", code: lookup };
 }
 
 async function receive(kind, pwHash) {
-    const code = value.value;
+    const code = value.value.trim();
     if (code.length < 3 || loading.value) return;
     loading.value = true;
     error.value = null;
