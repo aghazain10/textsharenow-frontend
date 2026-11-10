@@ -53,6 +53,13 @@ const TOOLS = [
         desc: "Compress or convert a photo to an exact size — right in your browser.",
     },
     {
+        name: "qr-code-generator",
+        label: "QR Generator",
+        icon: "qr",
+        path: "/qr-code-generator",
+        desc: "Make a QR code for a link, Wi-Fi network, contact card or message.",
+    },
+    {
         name: "pdf-tools",
         label: "Combine PDF",
         icon: "pdf",

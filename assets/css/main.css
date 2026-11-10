@@ -109,6 +109,8 @@
 @utility section-lead { @apply mt-4 max-w-[54ch] text-[17px] leading-relaxed text-muted; }
 @utility tile { @apply rounded-xl border border-line bg-surface p-6 shadow-card; }
 @utility text-link { @apply font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-ink; }
+@utility field { @apply w-full rounded-md border border-line bg-bg px-3 py-2 text-[14px] text-ink placeholder:text-muted/70 !outline-none focus-visible:!ring-2 focus-visible:!ring-brand/40; }
+@utility field-label { @apply mb-1.5 block text-[13px] font-medium text-muted; }
 @utility section { @apply border-t border-line px-4 py-20 sm:py-24; }
 @utility wrap { @apply mx-auto max-w-6xl; }
 /* Tool landing pages use a slightly narrower column so the tool, the

@@ -10,7 +10,7 @@
                             Free tools that never upload your files
                         </h1>
                         <p class="mt-3 max-w-[60ch] text-[15px] leading-relaxed text-muted">
-                            Compress an image, combine PDFs, or strip a photo's metadata — right here in the browser.
+                            Compress an image, combine PDFs, strip a photo's metadata, or make a QR code — right here in the browser.
                             No account, no install, no copy on a server.
                         </p>
                     </div>
@@ -33,7 +33,7 @@
                     <p class="hidden text-[12px] text-muted sm:block">Files are processed on your device</p>
                 </div>
 
-                <div class="mt-4 grid gap-px overflow-hidden rounded-xl border border-line bg-line shadow-card md:grid-cols-3">
+                <div class="mt-4 grid gap-px overflow-hidden rounded-xl border border-line bg-line shadow-card sm:grid-cols-2 lg:grid-cols-4">
                     <NuxtLink
                         v-for="t in live"
                         :key="t.path"
@@ -145,16 +145,24 @@
 
 <script setup>
 useSeo({
-    title: "Free Browser Tools — Images, PDF & EXIF",
+    title: "Free Browser Tools — QR, Images, PDF & EXIF",
     description:
-        "Free browser-based tools that never upload your files. Compress images to a target size, combine and split PDFs, strip photo GPS and EXIF metadata — no account, no install.",
+        "Free browser-based tools that never upload your files. Make QR codes, compress images to a target size, combine and split PDFs, and strip photo GPS and EXIF metadata — no account, no install.",
     pagePath: "/tools",
 });
 
 // Target queries these tool pages are built around (kept out of the UI on purpose):
 // /image-compressor → "compress image to 100KB"; /pdf-tools → "combine pdf";
-// /exif-remover → "remove location from photo".
+// /exif-remover → "remove location from photo"; /qr-code-generator → "wifi qr code generator".
 const live = [
+    {
+        title: "QR Code Generator",
+        path: "/qr-code-generator",
+        icon: "qr",
+        tagline: "Make QR codes for links, Wi-Fi, contact cards and messages — generated in your browser.",
+        features: ["Links, Wi-Fi, vCard and messages", "PNG and print-ready SVG", "No watermark or sign-up"],
+        tags: ["Link", "Wi-Fi", "vCard"],
+    },
     {
         title: "Image Compressor & Converter",
         path: "/image-compressor",
@@ -184,7 +192,6 @@ const live = [
 const coming = [
     { title: "Webhook Tester", desc: "A public URL that captures live requests so you can inspect and replay payloads." },
     { title: "Domain & Email Health Check", desc: "DNS, SSL, headers, redirects and SPF/DKIM/DMARC in one report." },
-    { title: "QR Code Suite", desc: "WiFi, vCard, WhatsApp and menu QR codes, plus dynamic QRs with scan counts." },
     { title: "Time Zone Meeting Planner", desc: "Find a meeting time across time zones with DST handled correctly." },
     { title: "Secret Scanner", desc: "Scan .env files and logs for API keys before you share them." },
 ];

@@ -160,6 +160,7 @@ export default defineNuxtConfig({
         "/image-compressor": { prerender: true },
         "/pdf-tools": { prerender: true },
         "/exif-remover": { prerender: true },
+        "/qr-code-generator": { prerender: true },
         "/developers": { prerender: true },
         "/security": { prerender: true },
         "/r": { prerender: true },
