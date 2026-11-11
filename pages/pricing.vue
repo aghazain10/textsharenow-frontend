@@ -190,7 +190,7 @@
             <div class="wrap">
                 <div class="max-w-2xl">
                     <h2 id="features-title" class="section-title">What's Inside Pro</h2>
-                    <p class="section-lead">Eight power features, from bigger limits to a dashboard for managing every link you create.</p>
+                    <p class="section-lead">Eleven power features, from bigger limits to a dashboard for managing every link you create.</p>
                 </div>
 
                 <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -293,7 +293,7 @@ import { trackProEvent } from "~/composables/useProTracking.js";
 useSeo({
     title: "Pricing — Free Plan and Pro from $5/Month",
     description:
-        "TextShareNow is free forever — no sign-up, 10,000 characters, 10 MB files. Pro costs $5/month or $50/year (save 17%) and adds 100K characters, 100 MB files, expiry up to never, multi-reads, and password protection. Cancel anytime.",
+        "TextShareNow is free forever — no sign-up, 10,000 characters, 10 MB files. Pro costs $5/month or $50/year (save 17%) and adds 100K characters, 100 MB files, expiry up to never, multi-reads, password protection, and getting emailed when your link is read. Cancel anytime.",
     pagePath: "/pricing",
 });
 
@@ -361,6 +361,8 @@ const proFeatures = [
     "My Shares dashboard for active shares and transfers",
     "Edit a live link — change text, expiry, reads or password",
     "Open, read and download receipts for every share",
+    "Email me when my link is read (text) or downloaded (transfers)",
+    "Send the link by email to anyone — straight from the result screen",
     "Developer API and MCP server for AI agents",
 ];
 
@@ -379,6 +381,8 @@ const compareRows = [
     ["API & MCP", ["text", "Free-plan limits only"], ["good", "Full Pro limits + MCP server"]],
     ["My Shares dashboard", ["bad", "Not included"], ["good", "List, copy and delete active links"]],
     ["Open & download receipts", ["bad", "Not included"], ["good", "See opens, reads and file downloads"]],
+    ["Email me when it's read", ["bad", "Not included"], ["good", "Email the moment your text is read or files are downloaded"]],
+    ["Send the link by email", ["bad", "Not included"], ["good", "We email the link to their inbox, straight from the result screen"]],
     ["Edit live links in place", ["bad", "Not included"], ["good", "Text, expiry, reads and password — same code"]],
     ["QR code + share link", ["good", "Included"], ["good", "Included"]],
     ["Malware scanning (standard uploads)", ["good", "Included"], ["good", "Included"]],
@@ -438,6 +442,16 @@ const proDetails = [
         title: "Edit a live link",
         desc: "Sent the wrong text, or the deadline moved? Edit the text, extend the expiry, raise the read limit, change or remove the password — all while keeping the same 5-character code and link. The receipt shows what changed and when.",
     },
+    {
+        icon: "mail",
+        title: "Email me when it's read",
+        desc: "Tick one box and TextShareNow emails your Gumroad address the moment someone reads your text share or first downloads your transfer — so you know the link landed without asking.",
+    },
+    {
+        icon: "arrow",
+        title: "Send the link by email",
+        desc: "Don't read a code out over the phone. From the result screen, send the link straight to any inbox — they tap it and they're in. Private-mode links can't be emailed (the key stays in the link), and the template carries nothing but your link.",
+    },
 ];
 
 const activationSteps = [
@@ -461,7 +475,7 @@ const faqs = [
     },
     {
         q: "What exactly do I get with Pro?",
-        a: "100,000 characters per share (10× the free limit), up to 20 files and 100 MB total per transfer for any non-executable file type, expiry choices of 1 day, 7 days, 30 days or never (text only), read limits of 5, 10 or unlimited, password protection for any share, custom share codes, a My Shares dashboard, and a developer API plus MCP server.",
+        a: "100,000 characters per share (10× the free limit), up to 20 files and 100 MB total per transfer for any non-executable file type, expiry choices of 1 day, 7 days, 30 days or never (text only), read limits of 5, 10 or unlimited, password protection for any share, custom share codes, a My Shares dashboard, an email notification when your link is read or downloaded, email-the-link delivery from the result screen, and a developer API plus MCP server.",
     },
     {
         q: "How do I activate my license key?",
