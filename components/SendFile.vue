@@ -71,7 +71,7 @@
             </p>
 
             <div v-if="uploading" class="mt-3 rounded-lg border border-line p-4">
-                <div class="flex justify-between text-[13px] font-medium"><span>{{ phase === "encrypting" ? "Encrypting files" : isTransferSelection ? "Uploading files" : "Uploading" }}</span><span class="tabular-nums text-muted">{{ progress }}%</span></div>
+                <div class="flex justify-between text-[13px] font-medium"><span>{{ phase === "encrypting" ? "Encrypting files" : isProTransfer ? "Uploading files" : "Uploading" }}</span><span class="tabular-nums text-muted">{{ progress }}%</span></div>
                 <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-2">
                     <div class="h-full origin-left rounded-full bg-brand transition-transform" :style="{ transform: `scaleX(${progress / 100})` }" />
                 </div>
@@ -86,12 +86,12 @@
             </div>
 
             <div class="mt-3 flex flex-wrap items-center gap-3 pl-2">
-                <p class="text-[13px] text-muted lg:hidden">{{ isTransferSelection ? "Each file is deleted after its first download" : "Deleted after one download" }}, or after {{ expiryLabel(expires) }}.</p>
+                <p class="text-[13px] text-muted lg:hidden">{{ isProTransfer ? "Each file is deleted after its first download" : "Deleted after one download" }}, or after {{ expiryLabel(expires) }}.</p>
                 <div class="hidden items-center gap-3 lg:flex">
-                    <p class="text-[13px] text-muted">{{ isTransferSelection ? "Each file is deleted after its first download." : "Deleted after one download." }}</p>
+                    <p class="text-[13px] text-muted">{{ isProTransfer ? "Each file is deleted after its first download." : "Deleted after one download." }}</p>
                     <ExpirySelect v-model="expires" :options="FILE_EXPIRY_OPTIONS" placement="send_file" :free-limit="3600" />
                 </div>
-                <label v-if="isTransferSelection" class="inline-flex cursor-pointer items-center gap-1.5 text-[13px] text-muted" :title="isPro ? 'Email me the moment someone downloads this transfer' : 'Go Pro to get emailed when your files are downloaded'">
+                <label v-if="isProTransfer" class="inline-flex cursor-pointer items-center gap-1.5 text-[13px] text-muted" :title="isPro ? 'Email me the moment someone downloads this transfer' : 'Go Pro to get emailed when your files are downloaded'">
                     <input
                         type="checkbox"
                         class="h-4 w-4 accent-brand"
@@ -191,9 +191,10 @@ const totalBytes = computed(() => items.value.reduce((sum, item) => sum + item.f
 const maxSizeLabel = computed(() => (isPro.value ? "100 MB" : "10 MB"));
 const accept = computed(() => (isPro.value ? "" : FREE_FILE_ACCEPT));
 const typeLabel = computed(() => (isPro.value ? PRO_FILE_LABEL : FREE_FILE_LABEL));
-const isTransferSelection = computed(
-    () => isPro.value && (items.value.length > 1 || items.value.some((item) => item.path.includes("/"))),
-);
+// Pro single and multi-file uploads all use the transfer flow, so single
+// files get the same receipts, ownership, dashboard listing, notify and
+// email-the-link support. Free uploads stay on the /upload path.
+const isProTransfer = computed(() => isPro.value);
 const dropHint = computed(() =>
     isPro.value
         ? "Any non-executable files, up to 100 MB total, in original quality"
@@ -404,7 +405,7 @@ async function upload() {
     const encrypt = encryptFiles.value;
 
     try {
-        const transfer = isTransferSelection.value;
+        const transfer = isProTransfer.value;
         const shareKey = encrypt ? generateShareKey() : "";
         const prepared = [];
 
@@ -465,25 +466,15 @@ async function upload() {
             for (const file of prepared) form.append("files", file.blob, file.item.file.name);
             result = await sendForm(form, `${API_URL}/transfer`);
         } else {
+            // Free plan only: one file, no ticket unless encrypted. (Pro always
+            // goes through the transfer flow above, which registers receipts.)
             const file = prepared[0];
             const form = new FormData();
             form.append("file", file.blob, file.item.file.name);
             form.append("expires", String(expires.value));
             if (encrypt) form.append("enc", "1");
 
-            if (isPro.value) {
-                const ticket = await $fetch(`${config.public.API_BASE}/api/pro/upload-ticket`, {
-                    method: "POST",
-                    body: {
-                        expires: expires.value,
-                        size: file.csize,
-                        name: file.item.file.name,
-                        type: file.item.file.type,
-                        enc: encrypt,
-                    },
-                });
-                form.append("ticket", ticket.ticket);
-            } else if (encrypt) {
+            if (encrypt) {
                 // Free E2E still needs a server-issued ticket so the files
                 // service can trust the mode instead of the form field.
                 const ticket = await $fetch(`${config.public.API_BASE}/api/e2e-upload-ticket`, {
@@ -513,8 +504,8 @@ async function upload() {
             body: { count },
         }).catch(() => {});
     } catch (e) {
-        if (e?.status === 404 && isTransferSelection.value) {
-            error.value = "Multi-file transfers aren't available just yet. Try again shortly, or send one file for now.";
+        if (e?.status === 404 && isProTransfer.value) {
+            error.value = "Transfers aren't available just yet. Try again shortly.";
         } else {
             error.value = e?.data?.message || e?.message || "Upload failed. Please try again.";
         }

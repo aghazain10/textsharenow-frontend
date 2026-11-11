@@ -499,7 +499,7 @@ const faqs = [
     },
     {
         q: "Can I manage shares after creating them?",
-        a: "Yes. Pro includes a My Shares dashboard — linked from the header and footer — that lists every active text share and multi-file transfer tied to your license, shows remaining reads and expiry, and lets you copy the link or delete it. No account or extra password is needed beyond your license key. Single-file links are not listed yet.",
+        a: "Yes. Pro includes a My Shares dashboard — linked from the header and footer — that lists every active text share and file transfer tied to your license, shows remaining reads and expiry, and lets you copy the link or delete it. No account or extra password is needed beyond your license key. Single files are sent through the same transfer flow, so they show up there too.",
     },
 ];
 

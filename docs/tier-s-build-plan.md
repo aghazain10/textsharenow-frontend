@@ -145,7 +145,7 @@ Done & building cleanly:
 
 Limitations to be aware of:
 
-- **Single-file Pro shares have no receipts and no ownership tracking** — so no notify and no email-the-link for `/r?fcode=` links. Notify/email cover text shares and multi-file transfers.
+- ~~Single-file Pro shares have no receipts and no ownership tracking~~ **Fixed (2026-11-11):** single Pro uploads now route through the same transfer flow as multi-file transfers (1-file transfer, no files-service change needed) — they get receipts, My Shares listing, owner-based delete/email, download notify and email-the-link. Free single files are unchanged (still on `/upload`).
 - Transfer notify fires on the files-service callback (`transfers/sync`) — i.e., when the files service reports downloads.
 - `pro:notify` Redis keys are 30-day TTL refreshed on every Gumroad verify; if a user's email changes in Gumroad, the next verify updates it automatically.
 - Not deployed yet — needs `main` deploy + a live Pro-key test of both flows on production (create share → read from second device → expect one email).
