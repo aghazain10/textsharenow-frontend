@@ -65,7 +65,7 @@ async function upstash<T = any>(config: Upstash, command: unknown[]): Promise<T>
   return res.json()
 }
 
-export type ProPlan = 'monthly' | 'annual'
+export type ProPlan = 'monthly' | 'annual' | 'lifetime'
 
 /** Send S1 read/download notifications to the owner's Gumroad purchase mail. */
 const NOTIFY_PREFIX = 'pro:notify:'
@@ -149,12 +149,8 @@ function entitlementFrom(purchase: any): ProEntitlement {
   }
 }
 
-/**
- * Ask Gumroad whether a license key is valid and currently subscribed.
- * Distinguishes a definitive "invalid" answer from a network failure so
- * callers can fail closed on the former and keep the session on the latter.
- */
-export async function verifyGumroadLicense(licenseKey: string): Promise<LicenseCheck> {
+/** Verify a key against ONE Gumroad product (membership or lifetime). */
+async function verifyAgainstProduct(productId: string, licenseKey: string): Promise<LicenseCheck> {
   const config = useRuntimeConfig()
 
   try {
@@ -162,7 +158,7 @@ export async function verifyGumroadLicense(licenseKey: string): Promise<LicenseC
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
-        product_id: config.GUMROAD_PRODUCT_ID,
+        product_id: productId,
         license_key: licenseKey.trim(),
         increment_uses_count: 'false',
       }),
@@ -189,6 +185,44 @@ export async function verifyGumroadLicense(licenseKey: string): Promise<LicenseC
   } catch {
     return { valid: false, networkError: true, message: 'Could not reach the license server. Please try again.' }
   }
+}
+
+/**
+ * Ask Gumroad whether a license key is valid and currently subscribed.
+ * Distinguishes a definitive "invalid" answer from a network failure so
+ * callers can fail closed on the former and keep the session on the latter.
+ *
+ * A key may belong to either product:
+ *   1. TextShareNow Pro membership (monthly/annual subscription) — GUMROAD_PRODUCT_ID
+ *   2. TextShareNow Pro — Lifetime (one-time) — GUMROAD_LIFETIME_PRODUCT_ID (optional)
+ * The membership is tried first so existing customers are unaffected; lifetime
+ * wins only when the membership says the key is a no-go.
+ */
+export async function verifyGumroadLicense(licenseKey: string): Promise<LicenseCheck> {
+  const config = useRuntimeConfig()
+
+  const membershipId = String(config.GUMROAD_PRODUCT_ID || '')
+  const membership = await verifyAgainstProduct(membershipId, licenseKey)
+  if (membership.valid || membership.networkError) return membership
+
+  const lifetimeId = String(config.GUMROAD_LIFETIME_PRODUCT_ID || '')
+  if (lifetimeId && lifetimeId !== membershipId) {
+    const lifetime = await verifyAgainstProduct(lifetimeId, licenseKey)
+    if (lifetime.valid) {
+      return {
+        valid: true,
+        email: lifetime.email,
+        plan: 'lifetime',
+        renewsAt: null, // one-time purchase — never renews
+        endsAt: null,
+        subscriptionId: null,
+      }
+    }
+    if (lifetime.networkError) return lifetime
+  }
+
+  // Membership has the authoritative "this key doesn't belong" answer.
+  return membership
 }
 
 function cacheKey(licenseKey: string): string {

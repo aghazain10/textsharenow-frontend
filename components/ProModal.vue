@@ -195,6 +195,7 @@ function formatDate(iso) {
 
 const planLabel = computed(() => {
     if (!isPro.value) return "";
+    if (proPlan.value === "lifetime") return "Lifetime · yours forever";
     const name = proPlan.value === "annual" ? "Annual" : proPlan.value === "monthly" ? "Monthly" : "";
     const date = renewalAt.value || endsAt.value;
     const when = date ? formatDate(date) : "";

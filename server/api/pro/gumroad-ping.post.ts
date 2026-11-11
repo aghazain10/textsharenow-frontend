@@ -48,7 +48,9 @@ export default defineEventHandler(async (event) => {
 
   const body = await readPing(event);
   const productId = String(body.product_id || "");
-  if (productId && productId !== String(config.GUMROAD_PRODUCT_ID || "")) {
+  const membershipId = String(config.GUMROAD_PRODUCT_ID || "");
+  const lifetimeId = String(config.GUMROAD_LIFETIME_PRODUCT_ID || "");
+  if (productId && productId !== membershipId && (!lifetimeId || productId !== lifetimeId)) {
     throw createError({ statusCode: 400, message: "Unknown product." });
   }
 
@@ -59,7 +61,10 @@ export default defineEventHandler(async (event) => {
     if (!fresh) return { ok: true, duplicate: true };
   }
 
-  const plan = detectPlan(body);
+  // A lifetime sale is always 'lifetime' — never 'annual' (its $29 price is
+  // above Gumroad's monthly/yearly break-even heuristic).
+  const plan =
+    lifetimeId && productId === lifetimeId ? "lifetime" : detectPlan(body);
   const price = Number(body.price);
   const props = {
     plan,

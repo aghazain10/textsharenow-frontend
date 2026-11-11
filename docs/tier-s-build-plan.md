@@ -122,7 +122,7 @@ The sender shares that link any way they like. The public page is a minimal form
 | 2 | **S4** email-the-link (template, endpoint, ownership check, rate limits, UI) | 2–4 d | step 1 |
 | 3 | **S1** notify-on-read (checkbox, `ReceiptMeta.notify`, hooks, template, caps) | 2–3 d | step 1 |
 | 4 | **S3** text requests (create/submit/inbox/dashboard UI) | 4–6 d | step 1 (for submit email) |
-| 5 | S2 — lifetime deal + regional coupon (business config, from plan) | 0.5–1 d | Gumroad product |
+| 5 | S2 — lifetime deal + regional coupon (business config, from plan) | 0.5–1 d | ✅ Code wired 2026-11-11 (dual-product verify, /go/pro, pricing lifetime card). Waiting on: lifetime product published on Gumroad + `NUXT_GUMROAD_LIFETIME_PRODUCT_ID` in Vercel. |
 | 6 | S1 webhook variant / S3 file requests | 2d / 1–2 wks | after 1–4 ship |
 
 **Open decisions needed from you:**

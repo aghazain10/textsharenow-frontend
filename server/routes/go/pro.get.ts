@@ -37,8 +37,10 @@ export default defineEventHandler(async (event) => {
     const location = normalizeProLocation(String(query.loc ?? ""));
     const config = useRuntimeConfig();
 
+    // Lifetime licenses live in a separate Gumroad product with its own URL.
+    const base = plan === "lifetime" ? config.public.PRO_LIFETIME_URL : config.public.PRO_URL;
     const destination = proCheckoutUrl({
-        base: config.public.PRO_URL,
+        base,
         plan,
         location,
     });

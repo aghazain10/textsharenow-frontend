@@ -38,6 +38,9 @@ export default defineNuxtConfig({
         UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN || "",
         // Gumroad product behind Pro (license-key verification).
         GUMROAD_PRODUCT_ID: process.env.GUMROAD_PRODUCT_ID || "mxmFVLmVr5JZImT_nJazIw==",
+        // Lifetime digital product (one-time). Optional — when unset, lifetime
+        // keys are rejected and only memberships verify (current behavior).
+        GUMROAD_LIFETIME_PRODUCT_ID: process.env.NUXT_GUMROAD_LIFETIME_PRODUCT_ID || process.env.GUMROAD_LIFETIME_PRODUCT_ID || "",
         // Secret for signing the pro session cookie. Falls back to a value
         // derived from the Upstash token so no secret lives in the repo;
         // set explicitly in production if you prefer (PRO_SECRET=...).
@@ -63,6 +66,8 @@ export default defineNuxtConfig({
             FILES_API_URL: process.env.NUXT_PUBLIC_FILES_API_URL || "https://files.textsharenow.com",
             // Gumroad checkout page for the Pro membership.
             PRO_URL: process.env.NUXT_PUBLIC_PRO_URL || "https://textsharenow.gumroad.com/l/pro",
+            // Gumroad checkout page for the one-time Lifetime product.
+            PRO_LIFETIME_URL: process.env.NUXT_PUBLIC_PRO_LIFETIME_URL || "https://textsharenow.gumroad.com/l/almip",
             // Where /api/share and /api/stats live. Empty = this same server (production).
             // Set NUXT_PUBLIC_API_BASE=https://www.textsharenow.com locally to test against the live API.
             API_BASE: process.env.NUXT_PUBLIC_API_BASE || "",

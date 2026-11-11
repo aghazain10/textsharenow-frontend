@@ -101,6 +101,25 @@
                         </button>
                     </article>
                 </div>
+
+                <!-- Lifetime deal: one-time digital product, separate from the subscription -->
+                <div class="mt-6 grid gap-4 rounded-xl border border-brand/50 bg-brand-soft/30 p-5 shadow-[0_0_0_1px_var(--color-brand)] sm:grid-cols-[1fr_auto] sm:items-center sm:p-6">
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <TsnIcon name="shield" class="h-5 w-5 text-brand" stroke="1.8" />
+                            <p class="text-[16px] font-semibold text-ink">TextShareNow Pro — Lifetime</p>
+                            <span class="rounded-full bg-brand px-2.5 py-0.5 text-[11px] font-semibold text-on-brand">Only 20 keys</span>
+                        </div>
+                        <p class="mt-2 max-w-[62ch] text-[14px] leading-relaxed text-muted">Every Pro feature — bigger limits, multi-reads, passwords, receipts, email notifications, edit-my-link and the API &amp; MCP server — for one price, forever. No subscription, no renewal, no expiry.</p>
+                    </div>
+                    <div class="flex flex-col items-start gap-2 sm:items-end">
+                        <p class="flex items-baseline gap-2">
+                            <span class="text-[36px] font-bold leading-none tracking-[-0.04em] text-ink">$29</span>
+                            <span class="text-[14px] text-muted">one-time</span>
+                        </p>
+                        <a :href="lifetimeCheckoutPath('lifetime_card')" class="btn-primary" @click="onLifetimeCta('lifetime_card')">Get Lifetime Pro</a>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -293,7 +312,7 @@ import { trackProEvent } from "~/composables/useProTracking.js";
 useSeo({
     title: "Pricing — Free Plan and Pro from $5/Month",
     description:
-        "TextShareNow is free forever — no sign-up, 10,000 characters, 10 MB files. Pro costs $5/month or $50/year (save 17%) and adds 100K characters, 100 MB files, expiry up to never, multi-reads, password protection, and getting emailed when your link is read. Cancel anytime.",
+        "TextShareNow is free forever — no sign-up, 10,000 characters, 10 MB files. Pro costs $5/month or $50/year (save 17%) and adds 100K characters, 100 MB files, expiry up to never, multi-reads, password protection, and getting emailed when your link is read. Lifetime Pro available for $29 once. Cancel anytime.",
     pagePath: "/pricing",
 });
 
@@ -317,6 +336,13 @@ const checkoutHref = (location) => proCheckoutPath({ plan: plan.value, location 
 const onCtaClick = (location) => {
     trackProEvent("pro_cta_click", { location, plan: plan.value });
     trackProEvent("checkout_started", { location, plan: plan.value });
+};
+
+// Lifetime is a separate one-time Gumroad product behind /go/pro?plan=lifetime.
+const lifetimeCheckoutPath = (location) => proCheckoutPath({ plan: "lifetime", location });
+const onLifetimeCta = (location) => {
+    trackProEvent("pro_cta_click", { location, plan: "lifetime" });
+    trackProEvent("checkout_started", { location, plan: "lifetime" });
 };
 
 function onFaqToggle(index, event) {
@@ -464,6 +490,10 @@ const faqs = [
     {
         q: "Is TextShareNow still free?",
         a: "Yes. The free plan is unchanged and stays free forever: 10,000 characters per share, files up to 10 MB, expiry from 10 minutes to 1 hour, single-use codes, and no sign-up required. Pro is an optional upgrade — you never need it for everyday sharing.",
+    },
+    {
+        q: "Is there a lifetime option?",
+        a: "Yes. TextShareNow Pro — Lifetime is a one-time $29 purchase for the exact same Pro feature set — 100,000 characters, 100 MB files, multi-reads, receipts, email notifications, edit-my-link, My Shares and the API — that never renews and never expires. Limited to the first 20 keys. Your existing subscription keeps working if you have one; the lifetime key works the same way, so new customers can choose either.",
     },
     {
         q: "How much does TextShareNow Pro cost?",

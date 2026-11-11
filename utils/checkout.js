@@ -13,6 +13,7 @@
 export const PRO_PLANS = {
     monthly: { label: "Monthly", enabled: true, recurrence: "monthly", price: "$5/month" },
     annual: { label: "Annual", enabled: true, recurrence: "yearly", price: "$50/year", monthlyEquivalent: "$4.17/month", discount: "Save 17%" },
+    lifetime: { label: "Lifetime", enabled: true, recurrence: null, oneTime: true, price: "$29 once", blurb: "Pay once, keep Pro forever" },
 };
 
 // Where a CTA lives. Kept small and whitelisted so counts stay comparable.
@@ -37,8 +38,9 @@ export function proCheckoutUrl({ base, plan = "monthly", location = "pricing" } 
     const planKey = normalizeProPlan(plan);
 
     url.searchParams.set("wanted", "true");
-    if (PRO_PLANS[planKey].recurrence !== "monthly") {
-        url.searchParams.set(PRO_PLANS[planKey].recurrence, "true");
+    const recurrence = PRO_PLANS[planKey].recurrence;
+    if (recurrence) {
+        url.searchParams.set(recurrence, "true");
     }
     url.searchParams.set("utm_source", "textsharenow");
     url.searchParams.set("utm_medium", "pricing");
