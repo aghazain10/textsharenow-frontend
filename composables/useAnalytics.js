@@ -40,6 +40,8 @@ export const PRO_FEATURES = {
     PASSWORD: "password",
     EXPIRY: "expiry",
     CODE: "code",
+    NOTIFY: "notify",
+    EMAIL_LINK: "email_link",
 };
 
 export function trackEvent(name, props = {}) {

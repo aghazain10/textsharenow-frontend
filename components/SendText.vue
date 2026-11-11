@@ -99,6 +99,17 @@
                     <span v-else-if="customStatus === 'available'" class="shrink-0 text-[11px] font-semibold text-ok" role="status">free</span>
                     <span v-else-if="customStatus === 'invalid'" class="shrink-0 text-[11px] font-semibold text-bad" role="status">invalid</span>
                 </label>
+                <label class="inline-flex cursor-pointer items-center gap-1.5 text-[13px] text-muted" :title="isPro ? 'Get one email the moment someone reads this' : 'Go Pro to get emailed when your link is read'">
+                    <input
+                        type="checkbox"
+                        class="h-4 w-4 accent-brand"
+                        :checked="notify"
+                        aria-label="Email me when this link is read (Pro)"
+                        @click="onNotifyToggle"
+                    />
+                    <TsnIcon name="mail" class="h-3.5 w-3.5 shrink-0" stroke="1.8" />
+                    <span class="whitespace-nowrap">Email me on read</span>
+                </label>
             </div>
 
             <!-- Gentle nudge: custom codes are memorable (and guessable) -->
@@ -187,6 +198,7 @@ const area = ref(null);
 const pwInput = ref(null);
 const canPaste = ref(false);
 const pasteHint = ref("");
+const notify = ref(false); // "email me when it's read" (Pro)
 const route = useRoute();
 const limitModalShown = ref(false); // open the "Go Pro" modal only once per visit to the limit
 
@@ -234,6 +246,18 @@ function onPasswordFocus(e) {
     openProModal("password", "send_text");
 }
 
+// Same idea for the notify checkbox.
+function onNotifyToggle(e) {
+    if (isPro.value) {
+        notify.value = !!e.target.checked;
+        return;
+    }
+    e.preventDefault();
+    notify.value = false;
+    trackLimitHit(PRO_FEATURES.NOTIFY, { attempted: 1, limit: 0, placement: "send_text" });
+    openProModal("notify", "send_text");
+}
+
 // Same for the custom code field.
 function onCustomFocus(e) {
     if (isPro.value) return;
@@ -274,6 +298,7 @@ watch(isPro, (pro) => {
     password.value = "";
     customCode.value = "";
     customStatus.value = "";
+    notify.value = false;
     if (text.value.length > FREE_MAX_CHARS) text.value = text.value.slice(0, FREE_MAX_CHARS);
     limitModalShown.value = false;
 });
@@ -332,6 +357,7 @@ async function send() {
         let mix = null;
         if (isPro.value) {
             body.maxReads = maxReads.value;
+            if (notify.value) body.notify = true;
             if (password.value) {
                 if (encryptNow.value) {
                     // p3 verifier: the server stores sha256(mix), never the

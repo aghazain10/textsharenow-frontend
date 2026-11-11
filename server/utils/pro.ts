@@ -67,6 +67,10 @@ async function upstash<T = any>(config: Upstash, command: unknown[]): Promise<T>
 
 export type ProPlan = 'monthly' | 'annual'
 
+/** Send S1 read/download notifications to the owner's Gumroad purchase mail. */
+const NOTIFY_PREFIX = 'pro:notify:'
+const NOTIFY_TTL = 60 * 60 * 24 * 30 // 30 days, refreshed on every verify
+
 /** Everything we know about a verified purchase, cached alongside the key. */
 export type ProEntitlement = {
   email?: string
@@ -207,6 +211,19 @@ async function readCache(config: Upstash, licenseKey: string): Promise<CachedEnt
   return { hit: false }
 }
 
+/**
+ * Write the owner's notification email to `pro:notify:<licHash>` so receipt
+ * events (read/download) can mail them without per-share address storage.
+ * Best-effort and idempotent — called on every license verify, so existing
+ * Pro users self-heal on their next request.
+ */
+async function persistNotifyEmail(config: Upstash, licenseKey: string, email?: string): Promise<void> {
+  if (!email || typeof email !== 'string' || !email.includes('@')) return
+  try {
+    await upstash(config, ['SET', NOTIFY_PREFIX + sha256(licenseKey.trim()), email.trim(), 'EX', String(NOTIFY_TTL)])
+  } catch {}
+}
+
 async function writeCache(config: Upstash, licenseKey: string, entitlement: ProEntitlement = {}): Promise<void> {
   try {
     await upstash(config, ['SETEX', cacheKey(licenseKey), CACHE_TTL, JSON.stringify(entitlement)])
@@ -228,6 +245,7 @@ export async function setProSession(event: any, licenseKey: string, entitlement:
     path: '/',
   })
   await writeCache(config, licenseKey, entitlement)
+  await persistNotifyEmail(config, licenseKey, entitlement.email)
 }
 
 export function clearProSession(event: any): void {
@@ -350,6 +368,7 @@ export async function resolvePro(event: any): Promise<ProResolution> {
   if (bearerKey) {
     const cached = await readCache(config, bearerKey)
     if (cached.hit) {
+      await persistNotifyEmail(config, bearerKey, cached.email)
       return { pro: true, licenseKey: bearerKey, via: 'bearer', ...cachedEntitlement(cached) }
     }
 
@@ -361,6 +380,7 @@ export async function resolvePro(event: any): Promise<ProResolution> {
     if (check.valid) {
       const entitlement = checkEntitlement(check)
       await writeCache(config, bearerKey, entitlement)
+      await persistNotifyEmail(config, bearerKey, entitlement.email)
       return { pro: true, licenseKey: bearerKey, via: 'bearer', ...entitlement }
     }
     return { pro: false, licenseKey: null, via: 'bearer' }
@@ -371,6 +391,7 @@ export async function resolvePro(event: any): Promise<ProResolution> {
 
   const cached = await readCache(config, cookieKey)
   if (cached.hit) {
+    await persistNotifyEmail(config, cookieKey, cached.email)
     return { pro: true, licenseKey: cookieKey, via: 'cookie', ...cachedEntitlement(cached) }
   }
 
@@ -378,6 +399,7 @@ export async function resolvePro(event: any): Promise<ProResolution> {
   if (check.valid) {
     const entitlement = checkEntitlement(check)
     await writeCache(config, cookieKey, entitlement)
+    await persistNotifyEmail(config, cookieKey, entitlement.email)
     return { pro: true, licenseKey: cookieKey, via: 'cookie', ...entitlement }
   }
   if (check.networkError) {

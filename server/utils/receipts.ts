@@ -68,6 +68,8 @@ export type ReceiptMeta = {
   // Transfers only.
   fileCount?: number
   bytes?: number
+  /** Opt-in per-share notification ("email me when it's read/downloaded"). */
+  notify?: boolean
 }
 
 export type ReceiptEvent = {
@@ -118,6 +120,7 @@ export type CreateReceiptInput = {
   maxReads: number
   passwordRequired: boolean
   custom: boolean
+  notify?: boolean
 }
 
 export type CreateTransferReceiptInput = {
@@ -127,6 +130,7 @@ export type CreateTransferReceiptInput = {
   expiresAt: number | null
   fileCount: number
   bytes: number
+  notify?: boolean
 }
 
 export function receiptOwnerKey(owner: string): string {
@@ -182,6 +186,7 @@ export async function createReceipt(
     maxReads: input.maxReads,
     passwordRequired: input.passwordRequired,
     custom: input.custom,
+    ...(input.notify ? { notify: true } : {}),
   }
   const event: ReceiptEvent = { t: createdAt, e: 'created', m: input.maxReads }
   await writeNewReceipt(config, meta, event, ttl)
@@ -221,6 +226,7 @@ export async function createTransferReceipt(
     custom: false,
     fileCount: input.fileCount,
     bytes: input.bytes,
+    ...(input.notify ? { notify: true } : {}),
   }
   const event: ReceiptEvent = {
     t: createdAt,

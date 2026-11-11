@@ -23,6 +23,7 @@ import {
   createTransferReceipt,
   recordTransferDownload,
 } from '../../../utils/receipts'
+import { notifyOnDownload } from '../../../utils/notify'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
@@ -107,6 +108,7 @@ export default defineEventHandler(async (event) => {
         bytes: total,
       })
       await recordTransferDownload(config, code, downloaded || previousCount, 0, 0)
+      try { await notifyOnDownload(config, code, downloaded || previousCount) } catch {}
     } catch {
       // Non-critical: the transfer still completes.
     }
@@ -159,6 +161,7 @@ export default defineEventHandler(async (event) => {
         bytes: total,
       })
       await recordTransferDownload(config, code, downloaded, count, bytes)
+      try { await notifyOnDownload(config, code, downloaded) } catch {}
     } catch {
       // Non-critical: the dashboard summary is already accurate.
     }

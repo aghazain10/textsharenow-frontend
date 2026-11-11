@@ -26,6 +26,14 @@ const COPY = {
         title: "Custom codes are Pro",
         line: "Claim a memorable code like coffee-menu or invoice-2026 instead of 5 random characters.",
     },
+    notify: {
+        title: "Get emailed when it's read",
+        line: "Pro sends you a one-tap email the moment someone opens your link — so you always know it landed.",
+    },
+    email: {
+        title: "Email the link to them",
+        line: "Send the link straight to their inbox — no copy-paste, no typing codes over the phone.",
+    },
     general: {
         title: "Unlock TextShareNow Pro",
         line: "Everything in free, plus the power features:",

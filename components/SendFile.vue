@@ -91,6 +91,17 @@
                     <p class="text-[13px] text-muted">{{ isTransferSelection ? "Each file is deleted after its first download." : "Deleted after one download." }}</p>
                     <ExpirySelect v-model="expires" :options="FILE_EXPIRY_OPTIONS" placement="send_file" :free-limit="3600" />
                 </div>
+                <label v-if="isTransferSelection" class="inline-flex cursor-pointer items-center gap-1.5 text-[13px] text-muted" :title="isPro ? 'Email me the moment someone downloads this transfer' : 'Go Pro to get emailed when your files are downloaded'">
+                    <input
+                        type="checkbox"
+                        class="h-4 w-4 accent-brand"
+                        :checked="notify"
+                        aria-label="Email me when this transfer is first downloaded (Pro)"
+                        @click="onNotifyToggle"
+                    />
+                    <TsnIcon name="mail" class="h-3.5 w-3.5 shrink-0" stroke="1.8" />
+                    <span class="whitespace-nowrap">Email me on download</span>
+                </label>
                 <div class="ml-auto flex flex-wrap items-center justify-end gap-2.5">
                     <button
                         type="button"
@@ -164,6 +175,7 @@ const code = ref("");
 const qrUrl = ref("");
 const error = ref("");
 const expires = ref(DEFAULT_EXPIRY);
+const notify = ref(false); // "email me when it's first downloaded" (Pro transfers)
 const resultTtl = ref(DEFAULT_EXPIRY);
 const resultKind = ref("file");
 const resultCount = ref(1);
@@ -188,10 +200,23 @@ const dropHint = computed(() =>
         : "Screenshots, photos and short videos, in original quality",
 );
 
+// "Email me when it's downloaded" — transfers are Pro-only, same gate as the checkbox.
+function onNotifyToggle(e) {
+    if (isPro.value) {
+        notify.value = !!e.target.checked;
+        return;
+    }
+    e.preventDefault();
+    notify.value = false;
+    trackLimitHit(PRO_FEATURES.NOTIFY, { attempted: 1, limit: 0, placement: "send_file" });
+    openProModal("notify", "send_file");
+}
+
 watch(isPro, (pro) => {
     if (!pro && ![600, 1800, 3600].includes(expires.value)) {
         expires.value = DEFAULT_EXPIRY;
     }
+    if (!pro) notify.value = false;
     if (!pro && items.value.length > 1) {
         items.value = items.value.slice(0, 1);
         error.value = "Free shares one file at a time. Go Pro for up to 20 files in one transfer.";
@@ -429,7 +454,7 @@ async function upload() {
         if (transfer) {
             const ticket = await $fetch(`${config.public.API_BASE}/api/pro/transfer-ticket`, {
                 method: "POST",
-                body: { expires: expires.value, enc: encrypt, files: ticketManifest },
+                body: { expires: expires.value, enc: encrypt, files: ticketManifest, notify: isPro.value ? notify.value : false },
             });
 
             const form = new FormData();

@@ -171,6 +171,8 @@ const FEATURES = [
     "My Shares dashboard for active links",
     "Edit a live link — change text, expiry, reads or password",
     "Open, read and download receipts for every share",
+    "Email me when my link is read",
+    "Send the link by email to anyone",
     "API & MCP access for scripts and AI agents",
 ];
 

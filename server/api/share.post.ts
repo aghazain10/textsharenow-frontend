@@ -23,6 +23,8 @@
  *     p3$iterations$salt$sha256(mix) for end-to-end shares — p3 keeps the
  *     value used as the HKDF salt out of the database)
  *  - maxReads: 1 (burn after read), 5, 10, or 0 (unlimited)
+ *  - notify: true (Pro) — email the owner (Gumroad purchase address; stored
+ *    at activation as pro:notify:<licHash>) when the share is first read
  *
  * Everything stored in Redis is envelope-encrypted at rest (see
  * server/utils/cipher.ts). Shares that need metadata are stored as JSON
@@ -111,6 +113,8 @@ export default defineEventHandler(async (event) => {
   if (!pro && process.env.NODE_ENV !== 'production' && body?.pro === true) {
     pro = true
   }
+  // Opt-in "email me when it's read" — Pro-only, silently ignored otherwise.
+  const notify = pro && body?.notify === true
 
   const maxChars = pro ? PRO_MAX_CHARS : FREE_MAX_CHARS
   if (ct) {
@@ -290,6 +294,7 @@ export default defineEventHandler(async (event) => {
         maxReads,
         passwordRequired: !!passwordHash,
         custom: !!customCode,
+        notify,
       })
     } catch {}
   }

@@ -67,6 +67,29 @@
                         <button v-if="!encrypted" type="button" class="btn-ghost" @click="openBig">
                             <TsnIcon name="expand" class="h-[18px] w-[18px]" stroke="1.9" />Show big
                         </button>
+                        <button v-if="emailable" type="button" class="btn-ghost" :aria-expanded="emailOpen" @click="onEmailClick">
+                            <TsnIcon name="mail" class="h-[18px] w-[18px]" stroke="1.9" />{{ emailOpen ? "Hide email" : "Send by email" }}
+                        </button>
+                    </div>
+                    <div v-if="emailable && emailOpen" class="mt-3 rounded-lg border border-line bg-bg p-3">
+                        <label class="block text-[13px] font-medium text-ink" :for="`email-to-${code}`">Email this link to</label>
+                        <div class="mt-1.5 flex flex-wrap gap-2">
+                            <input
+                                :id="`email-to-${code}`"
+                                v-model="emailTo"
+                                type="email"
+                                inputmode="email"
+                                autocomplete="email"
+                                placeholder="someone@example.com"
+                                class="min-w-0 flex-1 rounded-md border border-line bg-surface px-3 py-2 text-[14px] text-ink placeholder:text-muted/70 !outline-none focus:!outline-none"
+                                :disabled="sendingEmail"
+                                @keydown.enter.prevent="sendEmail"
+                            />
+                            <button type="button" class="btn-primary !px-4" :disabled="sendingEmail || !emailTo.trim()" @click="sendEmail">
+                                {{ sendingEmail ? "Sending…" : "Send" }}
+                            </button>
+                        </div>
+                        <p v-if="emailNote" class="mt-2 text-[13px]" :class="emailNoteOk ? 'text-ok' : 'text-bad'" role="status">{{ emailNote }}</p>
                     </div>
                     <p v-if="encrypted && !expired" class="mt-3 flex items-start gap-1.5 text-[13px] text-muted">
                         <TsnIcon name="lock" class="mt-0.5 h-3.5 w-3.5 shrink-0" stroke="1.9" />
@@ -134,6 +157,56 @@ const props = defineProps({
     encrypted: { type: Boolean, default: false }, // E2E text/file: full link required
 });
 defineEmits(["reset"]);
+
+import { trackEvent, trackLimitHit, PRO_FEATURES } from "~/composables/useAnalytics.js";
+const API_BASE = useRuntimeConfig().public.API_BASE;
+const { isPro } = usePremium();
+const { open: openProModal } = useProModal();
+
+// "Send by email" — Pro only, and never for Private-mode (E2E) links, whose
+// decryption key this server has no way to reach. Single-file shares have no
+// ownership tracking, so we can't authorize emailing them either.
+const emailable = computed(() => props.kind !== "file" && !props.encrypted);
+const emailOpen = ref(false);
+const emailTo = ref("");
+const sendingEmail = ref(false);
+const emailNote = ref("");
+const emailNoteOk = ref(false);
+
+function onEmailClick() {
+    if (!isPro.value) {
+        trackLimitHit(PRO_FEATURES.EMAIL_LINK, { attempted: 1, limit: 0, placement: "share_result" });
+        openProModal("email", "share_result");
+        return;
+    }
+    emailNote.value = "";
+    emailOpen.value = !emailOpen.value;
+}
+
+async function sendEmail() {
+    if (sendingEmail.value) return;
+    sendingEmail.value = true;
+    emailNote.value = "";
+    try {
+        await $fetch(`${API_BASE}/api/pro/share/email`, {
+            method: "POST",
+            body: {
+                code: props.code,
+                to: emailTo.value.trim(),
+                kind: props.kind === "transfer" ? "transfer" : "text",
+            },
+        });
+        emailNoteOk.value = true;
+        emailNote.value = "Link on the way — tell them to check their inbox (and spam).";
+        trackEvent("pro_email_sent", { kind: props.kind, placement: "share_result" });
+        emailTo.value = "";
+    } catch (e) {
+        emailNoteOk.value = false;
+        emailNote.value = e?.data?.message || e?.statusMessage || "Couldn't send just now. Try again in a moment.";
+    } finally {
+        sendingEmail.value = false;
+    }
+}
 
 const CIRC = 2 * Math.PI * 18;
 const never = computed(() => props.ttl === 0);

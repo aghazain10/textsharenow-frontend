@@ -24,6 +24,7 @@
 import { timingSafeEqual } from 'node:crypto'
 import { P2_RE, P3_RE } from '~~/utils/hash'
 import { closeReceipt, recordReceiptRead } from '../../utils/receipts'
+import { notifyOnRead } from '../../utils/notify'
 import { decryptAtRest } from '../../utils/cipher'
 import { logSecurityEvent } from '../../utils/securityLog'
 
@@ -144,6 +145,7 @@ export default defineEventHandler(async (event) => {
       const tracked = await recordReceiptRead(config, code, 0, 1)
       if (tracked) await closeReceipt(config, code, 'exhausted')
     } catch {}
+    try { await notifyOnRead(config, code) } catch {}
     return { text: decoded }
   }
 
@@ -211,6 +213,7 @@ export default defineEventHandler(async (event) => {
   // Unlimited reads — never delete, just hand the content over
   if (maxReads === 0) {
     try { await recordReceiptRead(config, code, null, 0) } catch {}
+    try { await notifyOnRead(config, code) } catch {}
     return { ...contentOf(payload), readsLeft: null }
   }
 
@@ -239,10 +242,12 @@ export default defineEventHandler(async (event) => {
         const tracked = await recordReceiptRead(config, code, 0, maxReads)
         if (tracked) await closeReceipt(config, code, 'exhausted')
       } catch {}
+      try { await notifyOnRead(config, code) } catch {}
       return { ...contentOf(payload), readsLeft: 0 }
     }
 
     try { await recordReceiptRead(config, code, maxReads - reads, maxReads) } catch {}
+    try { await notifyOnRead(config, code) } catch {}
     return { ...contentOf(payload), readsLeft: maxReads - reads }
   }
 
@@ -252,5 +257,6 @@ export default defineEventHandler(async (event) => {
     const tracked = await recordReceiptRead(config, code, 0, 1)
     if (tracked) await closeReceipt(config, code, 'exhausted')
   } catch {}
+  try { await notifyOnRead(config, code) } catch {}
   return contentOf(payload)
 })

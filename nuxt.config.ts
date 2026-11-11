@@ -54,6 +54,10 @@ export default defineNuxtConfig({
         GA4_MEASUREMENT_ID: process.env.NUXT_GA4_MEASUREMENT_ID || process.env.GA4_MEASUREMENT_ID || "G-PXW7CX14YN",
         // Shared with the files service so dashboard deletes are authenticated.
         FILES_DELETE_SECRET: process.env.FILES_DELETE_SECRET || "",
+        // Resend (mail.textsharenow.com, verified). EMAIL_SENDING=disabled mutes everything.
+        RESEND_API_KEY: process.env.NUXT_RESEND_API_KEY || process.env.RESEND_API_KEY || "",
+        EMAIL_FROM: process.env.EMAIL_FROM || "TextShareNow <no-reply@mail.textsharenow.com>",
+        EMAIL_SENDING: process.env.EMAIL_SENDING || "",
         // Public (exposed to browser)
         public: {
             FILES_API_URL: process.env.NUXT_PUBLIC_FILES_API_URL || "https://files.textsharenow.com",

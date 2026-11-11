@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 403, message: 'Transfer registration has expired.' })
   }
 
-  let pending: { owner?: string; total?: number; maxFiles?: number; ttl?: number; ea?: number } = {}
+  let pending: { owner?: string; total?: number; maxFiles?: number; ttl?: number; ea?: number; notify?: boolean } = {}
   try {
     pending = JSON.parse(pendingRes.result)
   } catch {
@@ -116,6 +116,7 @@ export default defineEventHandler(async (event) => {
       expiresAt: ea,
       fileCount: count,
       bytes,
+      notify: pending.notify === true,
     })
   } catch {
     // Non-critical.

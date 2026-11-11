@@ -2,7 +2,8 @@
  * POST /api/pro/transfer-ticket
  * Body: {
  *   expires: number,
- *   files: Array<{ name: string, type?: string, size: number, path?: string }>
+ *   files: Array<{ name: string, type?: string, size: number, path?: string }>,
+ *   notify?: boolean  — email the owner (Gumroad address) on first download
  * }
  * Response: {
  *   ticket: string, maxBytes: number, maxTotal: number, maxFiles: number, ttl: number
@@ -142,6 +143,9 @@ export default defineEventHandler(async (event) => {
   const ticket = randomBytes(32).toString('hex')
   const transferId = randomBytes(16).toString('hex')
   const owner = licenseHash(licenseKey)
+  // Opt-in "email me when it's downloaded" — stored in the pending grant,
+  // flows to the transfer receipt at registration time.
+  const notify = body?.notify === true
 
   await redisCommand(config, [
     'SETEX',
@@ -169,6 +173,7 @@ export default defineEventHandler(async (event) => {
       maxFiles: files.length,
       ttl: expires,
       ea: Math.floor(Date.now() / 1000) + expires,
+      ...(notify ? { notify: true } : {}),
     }),
   ])
   await reserveLedger(config, licenseKey, total, expires)
