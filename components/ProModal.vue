@@ -64,6 +64,19 @@
                             <p v-if="plan === 'annual'" class="mt-1.5 text-[12px] text-muted">billed as $50/year — two months free</p>
                         </div>
 
+                        <!-- Lifetime upsell: one-time digital product -->
+                        <div class="mt-3 flex items-center justify-between gap-3 rounded-lg border border-dashed border-brand/60 bg-brand-soft/30 px-4 py-2.5">
+                            <p class="text-[13px] leading-snug text-ink">
+                                <span class="font-semibold">Prefer one payment?</span><br>
+                                <span class="text-muted">Lifetime — $29 once, forever · only 20 keys</span>
+                            </p>
+                            <a
+                                :href="lifetimeHref"
+                                class="btn-primary shrink-0 !px-3 !py-1.5 text-[13px]"
+                                @click="onLifetimeClick"
+                            >Get Lifetime</a>
+                        </div>
+
                         <!-- Already activated on this device -->
                         <div v-if="isPro" class="mt-4 rounded-lg border border-line bg-surface-2 p-4 text-center">
                             <p class="text-[14px] font-semibold text-ink">Pro is active on this device 🎉</p>
@@ -184,6 +197,13 @@ const planDisplay = computed(() =>
 );
 
 const checkoutHref = computed(() => proCheckoutPath({ plan: plan.value, location: "pro_modal" }));
+
+// Lifetime: separate one-time Gumroad product (/go/pro?plan=lifetime).
+const lifetimeHref = proCheckoutPath({ plan: "lifetime", location: "pro_modal" });
+function onLifetimeClick() {
+    trackProEvent("pro_cta_click", { location: "pro_modal", plan: "lifetime" });
+    trackProEvent("checkout_started", { location: "pro_modal", plan: "lifetime" });
+}
 
 function formatDate(iso) {
     try {
