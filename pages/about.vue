@@ -4,7 +4,13 @@
             meta="About"
             title="Built for the Frictionless Transfer"
             lead="TextShareNow was created to solve a single, frustrating problem — why is it so hard to move a piece of text from your phone to your laptop?"
-        />
+        >
+            <div class="mt-8 flex flex-wrap items-center gap-2">
+                <span v-for="chip in heroChips" :key="chip.label" class="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-[13px] font-medium text-ink shadow-card">
+                    <TsnIcon :name="chip.icon" class="h-3.5 w-3.5 text-muted" stroke="1.8" />{{ chip.label }}
+                </span>
+            </div>
+        </PageHero>
 
         <section class="section">
             <div class="wrap grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_300px]">
@@ -102,7 +108,11 @@
                         <strong class="font-semibold text-ink">Zain Rizvee</strong>, a web developer based in
                         Skardu, Pakistan, who runs several e-commerce businesses
                         and builds the custom storefronts and internal tools behind
-                        them himself.
+                        them himself. His main business is
+                        <a href="https://organicaprico.com" target="_blank" rel="noopener noreferrer" class="text-link">Organic Aprico</a>,
+                        a licensed extractor and online store for pure Himalayan
+                        shilajit — hand-harvested above 17,000 ft in Gilgit-Baltistan,
+                        eight-stage purified, lab tested, and shipped worldwide.
                         <NuxtLink to="/author/zain-rizvee" class="text-link">Read his full bio</NuxtLink>.
                     </p>
                     <p class="mt-4">
@@ -154,6 +164,11 @@
                             <NuxtLink to="/author/zain-rizvee" class="text-link">Zain Rizvee</NuxtLink> — web developer, Skardu, Pakistan.<br />
                             <span class="text-muted">Laravel · Nuxt · Vue</span>
                         </p>
+                        <p class="mt-3 border-t border-line pt-3 text-[13px] leading-5 text-muted">
+                            Main business:
+                            <a href="https://organicaprico.com" target="_blank" rel="noopener noreferrer" class="font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-ink">Organic Aprico</a>
+                            — lab-tested Himalayan shilajit, shipped worldwide.
+                        </p>
                         <NuxtLink to="/contact" class="btn-ghost mt-5 w-full">Get in Touch</NuxtLink>
                     </div>
 
@@ -165,6 +180,47 @@
                 </aside>
             </div>
         </section>
+
+        <!-- Free tools from the same workshop -->
+        <section class="border-t border-line px-4 py-16 sm:py-20" aria-labelledby="free-tools-title">
+            <div class="wrap">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                        <p class="text-[12px] font-semibold uppercase tracking-[0.14em] text-muted">Free tools</p>
+                        <h2 id="free-tools-title" class="mt-2 text-[clamp(1.6rem,3.4vw,2.4rem)] font-bold leading-[1.1] tracking-[-0.035em] text-ink">
+                            More free, browser-based tools
+                        </h2>
+                        <p class="mt-2 max-w-[56ch] text-[15px] leading-relaxed text-muted">
+                            TextShareNow is one of several tools built here. Everything below runs in your
+                            browser — no account, no upload to a server, no watermark.
+                        </p>
+                    </div>
+                    <NuxtLink to="/tools" class="inline-flex shrink-0 items-center gap-1.5 text-[14px] font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink">
+                        View all free tools
+                        <span aria-hidden="true">→</span>
+                    </NuxtLink>
+                </div>
+
+                <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <NuxtLink
+                        v-for="tool in freeTools"
+                        :key="tool.to"
+                        :to="tool.to"
+                        class="group tile flex flex-col transition-colors hover:bg-surface-2"
+                    >
+                        <span class="inline-grid h-11 w-11 place-items-center rounded-lg border border-line bg-bg text-ink shadow-card">
+                            <TsnIcon :name="tool.icon" class="h-5 w-5" stroke="1.8" />
+                        </span>
+                        <h3 class="mt-4 text-[17px] font-semibold tracking-[-0.02em] text-ink">{{ tool.title }}</h3>
+                        <p class="mt-1.5 text-[13px] leading-relaxed text-muted">{{ tool.desc }}</p>
+                        <span class="mt-auto inline-flex items-center gap-1.5 pt-4 text-[13px] font-semibold text-ink">
+                            Open tool
+                            <span class="transition-transform group-hover:translate-x-0.5" aria-hidden="true">→</span>
+                        </span>
+                    </NuxtLink>
+                </div>
+            </div>
+        </section>
     </div>
 </template>
 
@@ -172,9 +228,43 @@
 useSeo({
     title: "About — Why We Built TextShareNow",
     description:
-        "Learn why TextShareNow was built — to solve the frustrating problem of transferring text and files between phone and laptop without cables, apps, or accounts.",
+        "Learn why TextShareNow was built — to solve the frustrating problem of transferring text and files between phone and laptop without cables, apps, or accounts. Plus free browser-based tools: QR codes, image compressor, PDF combine, EXIF remover.",
     pagePath: "/about",
 });
+
+const heroChips = [
+    { icon: "lock", label: "AES-256-GCM private mode" },
+    { icon: "clock", label: "Average transfer under 8s" },
+    { icon: "user-x", label: "No account, ever" },
+    { icon: "check", label: "Free forever" },
+];
+
+const freeTools = [
+    {
+        to: "/qr-code-generator",
+        icon: "qr",
+        title: "QR Code Generator",
+        desc: "QR codes for links, Wi-Fi, vCards and messages — generated in your browser.",
+    },
+    {
+        to: "/image-compressor",
+        icon: "image",
+        title: "Image Compressor",
+        desc: "Hit an exact file size or convert photos — JPEG, PNG, WebP, HEIC.",
+    },
+    {
+        to: "/pdf-tools",
+        icon: "pdf",
+        title: "Combine PDF",
+        desc: "Combine, split and compress PDFs locally — files never leave your device.",
+    },
+    {
+        to: "/exif-remover",
+        icon: "map-pin",
+        title: "EXIF / Location Remover",
+        desc: "See and strip the GPS and camera metadata hidden in your photos.",
+    },
+];
 
 const principles = [
     {
