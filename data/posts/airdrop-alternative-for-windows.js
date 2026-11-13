@@ -76,7 +76,7 @@ export default {
         {
             "type": "callout",
             "icon": "",
-            "text": "TextShareNow now also supports file sharing — photos, videos, and documents up to 10 MB, with auto-delete after download. Try it at textsharenow.com/share-files-online."
+            "text": "TextShareNow now also supports file sharing — photos, videos, and documents up to 10 MB, with auto-delete after download. Try it at textsharenow.com."
         },
         {
             "type": "h2",
@@ -114,7 +114,7 @@ export default {
             "label": "Related reading",
             "items": [
                 {
-                    "to": "/share-files-online",
+                    "to": "/",
                     "text": "Share files online between devices — free, no sign-up"
                 },
                 {

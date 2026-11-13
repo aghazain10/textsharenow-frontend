@@ -240,7 +240,7 @@
                 </div>
 
                 <div class="mt-12 flex flex-wrap gap-3">
-                    <NuxtLink to="/share-files-online" class="btn-primary">Share a file now</NuxtLink>
+                    <NuxtLink to="/#tool" class="btn-primary">Share a file now</NuxtLink>
                     <NuxtLink to="/security" class="btn-ghost">How TextShareNow encryption works</NuxtLink>
                 </div>
             </div>

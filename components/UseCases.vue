@@ -59,7 +59,7 @@ const useCases = [
         title: "Sharing a Screenshot or Quick Photo",
         description:
             "Took a screenshot on your phone and need it on your laptop? Upload it, get a code, download on the other device — no WhatsApp compression, no email attachment limits, no cloud upload.",
-        to: "/share-files-online",
+        to: "/#tool",
         linkText: "Share a file online with a short code",
     },
 ];

@@ -15,7 +15,7 @@
                     Share Text and Files Between <br class="hidden md:block" />Any Devices In Seconds
                 </h1>
                 <p class="mx-auto mt-6 max-w-[68ch] text-[19px] leading-relaxed text-muted">
-                    Stop emailing yourself. Paste your link or note, get a short code, type it on your other device — done. Works phone to laptop, laptop to phone, across any network.
+                    Stop emailing yourself. Send text online: paste a link or note, get a short code, type it on your other device — done. Works phone to laptop, laptop to phone, across any network.
                 </p>
             </div>
 
@@ -48,23 +48,23 @@
         <FeaturesSection />
         <UseCases />
 
-        <!-- Guides: internal links to the dedicated landing pages -->
+        <!-- Guides: internal links to the step-by-step guides -->
         <section class="section" aria-labelledby="guides-title">
             <div class="wrap">
                 <div class="max-w-2xl">
                     <p class="text-[13px] font-medium text-muted">Guides</p>
                     <h2 id="guides-title" class="section-title mt-3">Learn the Flows</h2>
-                    <p class="section-lead">Step-by-step guides for the two most common transfers.</p>
+                    <p class="section-lead">How the short-code flow works, and how it compares with native clipboard tools.</p>
                 </div>
                 <div class="mt-10 grid gap-4 md:grid-cols-2">
-                    <NuxtLink to="/online-text-sharing" class="tile block transition-colors hover:border-muted">
-                        <h3 class="text-[19px] font-semibold tracking-[-0.02em]">Online Text Sharing</h3>
-                        <p class="mt-2 text-[15px] leading-relaxed text-muted">Move text, links, and notes between any devices with a 5-character code. No app, no sign-up, cross-platform.</p>
+                    <NuxtLink to="/how-it-works" class="tile block transition-colors hover:border-muted">
+                        <h3 class="text-[19px] font-semibold tracking-[-0.02em]">How It Works</h3>
+                        <p class="mt-2 text-[15px] leading-relaxed text-muted">The full flow for text and files: phone to laptop, laptop to phone, across any network — with device-specific tips.</p>
                         <p class="mt-3 text-[13px] font-medium text-brand">Read the guide →</p>
                     </NuxtLink>
-                    <NuxtLink to="/share-files-online" class="tile block transition-colors hover:border-muted">
-                        <h3 class="text-[19px] font-semibold tracking-[-0.025em]">Share Files Online</h3>
-                        <p class="mt-2 text-[15px] leading-relaxed text-muted">Send photos, screenshots, and short videos between devices. Files auto-delete after one download.</p>
+                    <NuxtLink to="/blog/copy-paste-between-phone-and-computer" class="tile block transition-colors hover:border-muted">
+                        <h3 class="text-[19px] font-semibold tracking-[-0.025em]">Copy & Paste Between Phone and Computer</h3>
+                        <p class="mt-2 text-[15px] leading-relaxed text-muted">Universal Clipboard, Phone Link, KDE Connect, and the browser share code — four methods compared.</p>
                         <p class="mt-3 text-[13px] font-medium text-brand">Read the guide →</p>
                     </NuxtLink>
                 </div>
@@ -80,7 +80,7 @@
 useSeo({
     title: "Share Text Online Free — Send Text Between Devices in Seconds",
     description:
-        "Share text, links, notes and files between devices using a short code. Free, no app, no sign-up. Works phone to laptop — files auto-delete after download.",
+        "Send text online free between phone and laptop using a short code. No app, no account, no sign-up. Works across any network — files auto-delete after download.",
     pagePath: "/",
 });
 

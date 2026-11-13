@@ -132,7 +132,7 @@ export default {
                     "text": "What happens to text after it is shared — and when it is deleted"
                 },
                 {
-                    "to": "/online-text-sharing",
+                    "to": "/",
                     "text": "Try free online text sharing — no app, no account"
                 }
             ]

@@ -115,7 +115,7 @@ export default {
             "type": "links",
             "items": [
                 {
-                    "to": "/share-files-online",
+                    "to": "/",
                     "text": "Send a screenshot now — free, no sign-up, original quality"
                 },
                 {

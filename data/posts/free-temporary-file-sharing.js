@@ -134,7 +134,7 @@ export default {
             "type": "links",
             "items": [
                 {
-                    "to": "/share-files-online",
+                    "to": "/",
                     "text": "Try free temporary file sharing — no sign-up, auto-delete"
                 },
                 {
@@ -146,7 +146,7 @@ export default {
                     "text": "How to send a small video without email attachment limits"
                 },
                 {
-                    "to": "/online-text-sharing",
+                    "to": "/",
                     "text": "Also share text and links — free, no account"
                 }
             ]

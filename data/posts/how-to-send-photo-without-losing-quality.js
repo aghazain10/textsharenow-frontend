@@ -149,7 +149,7 @@ export default {
             "type": "links",
             "items": [
                 {
-                    "to": "/share-files-online",
+                    "to": "/",
                     "text": "Send a photo now — free, no sign-up, original quality"
                 },
                 {

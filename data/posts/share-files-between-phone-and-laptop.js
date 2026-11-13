@@ -144,11 +144,11 @@ export default {
             "type": "links",
             "items": [
                 {
-                    "to": "/share-files-online",
+                    "to": "/",
                     "text": "Share files between phone and laptop — free, no sign-up"
                 },
                 {
-                    "to": "/online-text-sharing",
+                    "to": "/",
                     "text": "Share text and links the same way"
                 },
                 {

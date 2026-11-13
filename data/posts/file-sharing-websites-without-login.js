@@ -119,7 +119,7 @@ export default {
             "type": "links",
             "items": [
                 {
-                    "to": "/share-files-online",
+                    "to": "/",
                     "text": "Share files online with a short code — free, no sign-up"
                 },
                 {
@@ -131,7 +131,7 @@ export default {
                     "text": "Four ways to share files between phone and laptop"
                 },
                 {
-                    "to": "/online-text-sharing",
+                    "to": "/",
                     "text": "Share text, links, and notes the same way"
                 }
             ]

@@ -110,7 +110,7 @@ export default {
             "label": "Related reading",
             "items": [
                 {
-                    "to": "/online-text-sharing",
+                    "to": "/",
                     "text": "Try free online text sharing — no app, no account"
                 },
                 {

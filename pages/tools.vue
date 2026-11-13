@@ -197,8 +197,7 @@ const coming = [
 ];
 
 const available = [
-    { title: "Online Text Sharing", to: "/online-text-sharing", desc: "Move text, links and notes between devices with a 5-character code." },
-    { title: "Share Files Online", to: "/share-files-online", desc: "Send photos, screenshots and short videos; files delete after download." },
+    { title: "Share Text & Files", to: "/", desc: "Move text, links, notes and files between devices — free, no sign-up." },
     { title: "How It Works", to: "/how-it-works", desc: "The full text and file flow, with device-specific tips." },
     { title: "Compare Tools", to: "/compare", desc: "How TextShareNow stacks up against OneTimeSecret, Privnote and others." },
 ];

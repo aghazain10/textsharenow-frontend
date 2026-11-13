@@ -33,6 +33,10 @@
 <script setup>
 const faqs = [
     {
+        question: "Can I send a text from my phone to my computer without an app?",
+        answer: "Yes. Open TextShareNow on your phone, paste the text you want to send into the Send tab, and tap Generate Code. On your computer, open the same website, go to Receive, and enter the 5-character code — no app, no account, and no email needed.",
+    },
+    {
         question: "How do I transfer text from my phone to my laptop without a cable?",
         answer: "Open TextShareNow on your phone, paste your text into the Send tab, and tap Generate Code. A short 5-character code appears. On your laptop, open the same website, go to the Receive tab, type the code, and your text shows up instantly — no cable, no app, no sign-up.",
     },

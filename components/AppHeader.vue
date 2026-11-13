@@ -64,7 +64,6 @@
 <script setup>
 const LINKS = [
     { to: "/", label: "Tool" },
-    { to: "/share-files-online", label: "Share Files" },
     { to: "/how-it-works", label: "How It Works" },
     { to: "/pricing", label: "Pricing" },
     { to: "/faq", label: "FAQ" },

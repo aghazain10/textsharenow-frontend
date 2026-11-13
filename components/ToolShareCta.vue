@@ -36,7 +36,7 @@ const props = defineProps({
 // Canonical origin on purpose: the prefilled link must work on the other
 // device, not point at a dev server or a preview host.
 const url = computed(() => `https://www.textsharenow.com${props.path}`);
-const sharePath = computed(() => `/online-text-sharing?text=${encodeURIComponent(url.value)}#tool`);
+const sharePath = computed(() => `/?text=${encodeURIComponent(url.value)}#tool`);
 const copied = ref(false);
 let timer;
 

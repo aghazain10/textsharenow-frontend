@@ -146,7 +146,7 @@ export default {
                     "text": "Handoff, clipboard, TTL — the terms, defined"
                 },
                 {
-                    "to": "/share-files-online",
+                    "to": "/",
                     "text": "Need to move a file instead of text? Start here"
                 },
                 {

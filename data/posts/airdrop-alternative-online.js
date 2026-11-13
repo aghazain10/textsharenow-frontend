@@ -105,7 +105,7 @@ export default {
             "type": "links",
             "items": [
                 {
-                    "to": "/share-files-online",
+                    "to": "/",
                     "text": "Share files online with a short code — free, no sign-up"
                 },
                 {

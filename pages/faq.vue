@@ -145,6 +145,11 @@ const categories = [
           'Open TextShareNow on your phone, paste your text into the Send tab, and tap Generate Code. A short 5-character code appears. On your laptop, open the site, go to Receive, type the code, and your text shows up instantly — no cable, no app, no sign-up.',
       },
       {
+        question: 'Can I send a text from my phone to my computer without an app?',
+        answer:
+          'Yes. Open TextShareNow on your phone, paste the text you want to send into the Send tab, and tap Generate Code. On your computer, open the same website, go to Receive, and enter the 5-character code — no app, no account, and no email needed.',
+      },
+      {
         question: 'Do I need to create an account?',
         answer:
           'No account required. There is no sign-up, no email, no password. You open the site and start using it immediately on any device.',
@@ -236,7 +241,7 @@ const categories = [
         answer:
           'TextShareNow supports PNG, JPEG, WebP, MP4, and WebM files. Standard images are re-encoded from raw pixels for security before being stored. If you turn on Private file mode, the contents are encrypted in your browser first and are never re-encoded. SVG files are explicitly rejected.',
         link: {
-          to: '/share-files-online',
+          to: '/#tool',
           text: 'Share files online — free, no sign-up',
         },
       },
@@ -325,7 +330,7 @@ const categories = [
         answer:
           'Yes. TextShareNow supports file sharing alongside text. You can upload PNG, JPEG, WebP, MP4, and WebM files up to 10 MB. Switch to the "Share Files" tab to send a file, and use the "Receive File" tab on the other device to download it with a short code.',
         link: {
-          to: '/share-files-online',
+          to: '/#tool',
           text: 'Open the file sharing tool',
         },
       },

@@ -59,7 +59,7 @@ export default {
         {
             "type": "callout",
             "icon": "",
-            "text": "TextShareNow now supports file sharing too — photos, videos, and documents up to 10 MB, with malware scanning and auto-delete after download. See the full guide at textsharenow.com/share-files-online."
+            "text": "TextShareNow now supports file sharing too — photos, videos, and documents up to 10 MB, with malware scanning and auto-delete after download. See the full guide at textsharenow.com."
         },
         {
             "type": "h2",
@@ -93,11 +93,11 @@ export default {
             "type": "links",
             "items": [
                 {
-                    "to": "/online-text-sharing",
+                    "to": "/",
                     "text": "Try free online text sharing — no app, no account"
                 },
                 {
-                    "to": "/share-files-online",
+                    "to": "/",
                     "text": "Share files online — free, no sign-up, auto-delete"
                 },
                 {

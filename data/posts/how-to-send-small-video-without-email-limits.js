@@ -113,7 +113,7 @@ export default {
             "type": "links",
             "items": [
                 {
-                    "to": "/share-files-online",
+                    "to": "/",
                     "text": "Send a video clip now — free, no sign-up, up to 10 MB"
                 },
                 {

@@ -28,9 +28,9 @@
           <section>
             <h2 class="text-[26px] font-semibold tracking-[-0.03em] text-ink">Online Text Sharing: The Browser-Based Alternative</h2>
             <p class="mt-4 text-[16px] leading-7 text-muted">
-              Looking for a deeper dive on <strong class="font-semibold text-ink">online text sharing</strong> — why browser-based tools
-              beat apps for cross-platform transfers, comparison tables, and more use cases?
-              <NuxtLink to="/online-text-sharing" class="text-link">Read our dedicated online text sharing guide</NuxtLink>.
+              Looking for <strong class="font-semibold text-ink">online text sharing</strong> — why browser-based tools
+              beat apps for cross-platform transfers?
+              <NuxtLink to="/" class="text-link">Open the tool and share text online</NuxtLink>.
             </p>
           </section>
 
@@ -39,8 +39,7 @@
             <p class="mt-4 text-[16px] leading-7 text-muted">
               The file flow works the same way: upload on one device, get a 5-character code, type it on the other device, download.
               Files are single-use, standard uploads are scanned for malware (Private file mode is browser-encrypted and cannot be scanned), and files are deleted after the first download (or decryption acknowledgement in Private mode) or when their timer ends — 10 minutes,
-              30 minutes or 1 hour on the free plan, up to 30 days with Pro. For supported formats, size limits, and a step-by-step walkthrough, see the
-              <NuxtLink to="/share-files-online" class="text-link">share files online guide</NuxtLink>.
+              30 minutes or 1 hour on the free plan, up to 30 days with Pro. For supported formats and a step-by-step walkthrough, <NuxtLink to="/" class="text-link">share files online</NuxtLink> — the same short-code flow, right on the homepage.
             </p>
           </section>
         </div>

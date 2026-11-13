@@ -56,9 +56,7 @@ The same short-code flow also handles files: upload a photo, screenshot, or shor
 
 ### Main Pages
 
-- `/` — Home page with interactive text sharing tool, how-it-works, features, use cases, FAQ, blog preview
-- `/online-text-sharing` — Dedicated landing page for online text sharing (concept, comparison table, FAQ)
-- `/share-files-online` — Dedicated landing page for file sharing: upload, get a code, download, auto-delete
+- `/` — Home page with the interactive text and file sharing tool (the primary entry point for online text sharing and file sharing), how-it-works, features, use cases, FAQ, blog preview
 - `/compare` — Comparison hub for TextShareNow, OneTimeSecret, Privnote, Password.link, Yopass, and Password Pusher, covering files, encryption, self-hosting, limits, and pricing
 - `/about` — About TextShareNow, technical details, team info, principles
 - `/how-it-works` — Complete step-by-step guide for phone-to-laptop and laptop-to-phone transfers, including the file flow

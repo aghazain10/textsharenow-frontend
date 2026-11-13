@@ -97,11 +97,11 @@ export default {
             "type": "links",
             "items": [
                 {
-                    "to": "/online-text-sharing",
+                    "to": "/",
                     "text": "Try TextShareNow — free online text sharing (no app, no account)"
                 },
                 {
-                    "to": "/share-files-online",
+                    "to": "/",
                     "text": "Also share files — free, no sign-up, auto-delete"
                 },
                 {
