@@ -10,6 +10,45 @@
         <div v-if="status === 'loading'" class="mx-auto mt-12 max-w-lg">
             <div class="rounded-xl border border-line p-10 text-center text-muted">Loading…</div>
         </div>
+        <div v-if="status === 'manage'" class="mx-auto mt-10 max-w-2xl">
+            <div class="tile">
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                        <h2 class="text-[20px] font-semibold tracking-[-0.02em] text-ink">Your private inbox</h2>
+                        <p class="mt-1 text-[13px] text-muted">
+                            <template v-if="inboxMeta.label">“{{ inboxMeta.label }}” · </template>
+                            {{ inboxMeta.left }} of {{ inboxMeta.max }} submissions left · {{ reqExpiryText }}
+                        </p>
+                    </div>
+                    <button type="button" class="btn-ghost shrink-0 !text-bad" :disabled="burning" @click="burn">{{ burning ? "Burning…" : "Burn link now" }}</button>
+                </div>
+                <p v-if="!inbox.length" class="mt-6 text-center text-[14px] text-muted">Nothing yet — share the send link and this page fills itself.</p>
+                <ul v-else class="mt-4 grid gap-2">
+                    <li v-for="sub in inbox" :key="sub.index" class="rounded-md border border-line bg-bg px-3 py-2.5">
+                        <div v-if="sub.kind === 'text'" class="flex items-start justify-between gap-3">
+                            <p class="whitespace-pre-wrap break-words text-[14px] leading-6 text-ink">{{ sub.text }}</p>
+                            <button type="button" class="btn-icon shrink-0 text-muted hover:!text-bad" aria-label="Delete this submission" @click="deleteSubmission(sub.index)"><TsnIcon name="x" class="h-4 w-4" stroke="2" /></button>
+                        </div>
+                        <div v-else-if="sub.kind === 'file'" class="flex flex-wrap items-center justify-between gap-3">
+                            <p class="text-[14px] text-ink"><TsnIcon name="file" class="mr-1.5 inline h-4 w-4 align-[-3px]" stroke="1.8" />File · {{ formatBytes(sub.bytes) }}</p>
+                            <div class="flex items-center gap-2">
+                                <NuxtLink :to="`/r?tcode=${encodeURIComponent(sub.code)}`" class="btn-ghost !h-8 !px-3 !text-[12px]">Download</NuxtLink>
+                                <button type="button" class="btn-icon text-muted hover:!text-bad" aria-label="Remove file entry" @click="deleteSubmission(sub.index)"><TsnIcon name="x" class="h-4 w-4" stroke="2" /></button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <p v-if="manageError" class="mt-4 flex items-center gap-2 text-[13px] text-bad" role="alert"><TsnIcon name="alert" class="h-4 w-4 shrink-0" stroke="1.8" />{{ manageError }}</p>
+            </div>
+            <p class="mt-4 text-center text-[13px] text-muted">Only this private link can see these messages — not even an account.</p>
+        </div>
+        <div v-else-if="status === 'burned'" class="mx-auto mt-12 max-w-lg">
+            <div class="rounded-xl border border-line p-10 text-center">
+                <TsnIcon name="trash" class="mx-auto h-8 w-8 text-muted" stroke="1.6" />
+                <p class="mt-3 text-[17px] font-semibold text-ink">Link burned</p>
+                <p class="mt-1 text-[15px] text-muted">Anyone holding this link now gets a dead page. Everything received was wiped with it.</p>
+            </div>
+        </div>
         <div v-else-if="status === 'gone'" class="mx-auto mt-12 max-w-lg">
             <div class="rounded-xl border border-line p-10 text-center">
                 <TsnIcon name="trash" class="mx-auto h-8 w-8 text-muted" stroke="1.6" />
@@ -106,7 +145,7 @@ const config = useRuntimeConfig();
 const FILES_API_URL = config.public.FILES_API_URL;
 const code = String(route.params.code || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 5);
 
-const status = ref("loading"); // loading | ready | complete | gone | sent
+const status = ref("loading"); // loading | ready | complete | gone | sent | manage | burned
 const label = ref("");
 const files = ref(false);
 const maxBytes = ref(25 * 1024 * 1024);
@@ -120,6 +159,86 @@ const uploading = ref(false);
 const progress = ref(0);
 const fileInput = ref(null);
 
+// ── Private manage mode (fragment #m=<token> or localStorage) ───────────────
+const managerToken = ref("");
+const inbox = ref([]);
+const inboxMeta = ref({ left: 0, max: 0, expiresAt: 0, label: "" });
+const manageError = ref("");
+const burning = ref(false);
+
+function readManageToken() {
+    try {
+        const h = window.location.hash || "";
+        const m = /[#&]m=([A-Za-z0-9_-]{16,80})/.exec(h);
+        if (m) return m[1];
+        return localStorage.getItem(`tsn-request-${code}`) || "";
+    } catch {
+        return "";
+    }
+}
+
+const reqExpiryText = computed(() => {
+    const exp = Number(inboxMeta.value.expiresAt) || 0;
+    const ms = exp * 1000 - Date.now();
+    if (ms <= 0) return "expired";
+    const days = Math.floor(ms / 86400000);
+    const hours = Math.floor((ms % 86400000) / 3600000);
+    if (days) return `expires in ${days}d ${hours}h`;
+    if (hours) return `expires in ${hours}h`;
+    return "expires within the hour";
+});
+
+const formatBytes = (b) => (b < 1024 ? `${b} B` : b < 1048576 ? `${(b / 1024).toFixed(1)} KB` : `${(b / 1048576).toFixed(1)} MB`);
+
+async function loadInbox() {
+    try {
+        const res = await $fetch(`/api/request/${encodeURIComponent(code)}/inbox`, {
+            method: "POST",
+            body: { token: managerToken.value },
+        });
+        inboxMeta.value = { left: Number(res.left) || 0, max: Number(res.max) || 0, expiresAt: Number(res.expiresAt) || 0, label: res.label || "" };
+        inbox.value = res.submissions || [];
+        status.value = "manage";
+    } catch {
+        status.value = "gone";
+    }
+}
+
+async function deleteSubmission(index) {
+    manageError.value = "";
+    try {
+        await $fetch(`/api/request/${encodeURIComponent(code)}/submissions/${index}`, {
+            method: "DELETE",
+            body: { token: managerToken.value },
+        });
+        inbox.value = inbox.value.filter((s) => s.index !== index);
+        if (inboxMeta.value.left > 0 || inbox.value.length === 0) {
+            inboxMeta.value.left = inboxMeta.value.max - inbox.value.length;
+        }
+    } catch (e) {
+        manageError.value = "Couldn't delete that one. Try again.";
+    }
+}
+
+async function burn() {
+    if (burning.value) return;
+    if (!confirm("Burn this link? Anyone holding it gets a dead page and everything received is wiped.")) return;
+    burning.value = true;
+    manageError.value = "";
+    try {
+        await $fetch(`/api/request/${encodeURIComponent(code)}/delete`, {
+            method: "POST",
+            body: { token: managerToken.value },
+        });
+        try { localStorage.removeItem(`tsn-request-${code}`); } catch {}
+        status.value = "burned";
+    } catch {
+        manageError.value = "Couldn't burn it just now. Try again.";
+    } finally {
+        burning.value = false;
+    }
+}
+
 const heading = computed(() => (label.value ? `They asked: “${label.value}”` : "They asked you for something"));
 const subline = computed(() =>
     status.value === "complete"
@@ -132,6 +251,13 @@ const maxLabel = computed(() => (maxBytes.value >= 1048576 ? `${Math.round(maxBy
 const size = (b) => (b < 1048576 ? (b / 1024).toFixed(1) + " KB" : (b / 1048576).toFixed(1) + " MB");
 
 onMounted(async () => {
+    // Private manage mode: a #m=<token> fragment (or this browser's saved
+    // token) opens the creator's inbox instead of the submit form.
+    managerToken.value = readManageToken();
+    if (managerToken.value) {
+        await loadInbox();
+        return;
+    }
     try {
         const res = await $fetch(`/api/request/${encodeURIComponent(code)}`);
         label.value = res?.label || "";

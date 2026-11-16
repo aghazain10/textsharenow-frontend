@@ -18,7 +18,7 @@
  * NOTE: array/object constants in this file use literal numbers — Nitro's
  * AST scan chokes on `N * IDENT` expressions and fails the build.
  */
-import { createHash } from 'node:crypto'
+import { createHash, randomBytes } from 'node:crypto'
 import { encryptAtRest, decryptAtRest } from './cipher'
 import { shareStorageForms, upstash } from './shareCode'
 import { licenseHash } from './proStorage'
@@ -53,6 +53,8 @@ export type RequestMeta = {
   maxBytes: number | null
   notify: boolean
   text: boolean
+  /** sha256 of the anonymous creator's manage token (raw token is never stored). */
+  manage: string | null
 }
 
 export function requestCode(): string {
@@ -61,6 +63,22 @@ export function requestCode(): string {
     code += REQUEST_CODE_CHARSET[Math.floor(Math.random() * REQUEST_CODE_CHARSET.length)]
   }
   return code
+}
+
+export function mintManageToken(): string {
+  return randomBytes(24).toString('base64url')
+}
+
+export function hashManageToken(token: string): string {
+  return createHash('sha256').update(String(token).trim()).digest('hex')
+}
+
+/** True when `token` matches the request's anonymous-creator manage hash. */
+export function manageTokenMatches(meta: RequestMeta | null, token: string): boolean {
+  if (!meta || !meta.manage) return false
+  const trimmed = typeof token === 'string' ? token.trim() : ''
+  if (trimmed.length < 16 || trimmed.length > 80) return false
+  return hashManageToken(trimmed) === meta.manage
 }
 
 export function canCreate(existingActive: number, pro: boolean): boolean {
@@ -93,6 +111,7 @@ export function parseRequestMeta(raw: unknown): RequestMeta | null {
       maxBytes: Number.isFinite(meta.maxBytes) ? Number(meta.maxBytes) : null,
       notify: meta.notify === true,
       text: meta.text !== false,
+      manage: typeof meta.manage === 'string' ? meta.manage : null,
     }
   } catch {
     return null
@@ -112,9 +131,10 @@ export async function createRequestRecord(
     notify: boolean
     text: boolean
   },
-): Promise<{ code: string }> {
+): Promise<{ code: string; manage: string }> {
   const ttl = Math.max(60, Math.min(input.ttl, 2592000))
   const now = Math.floor(Date.now() / 1000)
+  const manage = mintManageToken()
 
   for (let attempt = 0; attempt < 5; attempt++) {
     const code = requestCode()
@@ -132,6 +152,7 @@ export async function createRequestRecord(
       maxBytes: input.maxBytes,
       notify: input.notify,
       text: input.text,
+      manage: hashManageToken(manage),
     }
 
     await upstash(config, ['SET', REQUEST_PREFIX + code, encryptAtRest(JSON.stringify(meta)), 'EX', String(ttl + 86400)])
@@ -142,7 +163,7 @@ export async function createRequestRecord(
       await upstash(config, ['EXPIRE', REQUEST_OWNER_PREFIX + input.owner, 31968000])
     }
 
-    return { code }
+    return { code, manage }
   }
   throw createError({ statusCode: 500, message: 'Could not generate a unique code. Try again.' })
 }

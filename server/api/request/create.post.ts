@@ -80,7 +80,15 @@ export default defineEventHandler(async (event) => {
       text: true,
     })
     await upstash(config, ['SET', `request:active-ip:${ip}`, created.code, 'EX', DAY])
-    return { code: created.code, ttl: DAY, max: FREE_MAX_SUBMISSIONS, files: false, manageable: false }
+    return {
+      code: created.code,
+      ttl: DAY,
+      max: FREE_MAX_SUBMISSIONS,
+      files: false,
+      manageable: true,
+      // Raw token — only time it ever exists. Browser stores it in localStorage.
+      manage: created.manage,
+    }
   }
 
   // Pro path ---------------------------------------------------------------
@@ -111,5 +119,5 @@ export default defineEventHandler(async (event) => {
     text: true,
   })
 
-  return { code: created.code, ttl, max: maxSubmissions, files, manageable: true }
+  return { code: created.code, ttl, max: maxSubmissions, files, manageable: true, manage: created.manage }
 })

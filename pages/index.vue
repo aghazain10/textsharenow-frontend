@@ -43,6 +43,7 @@
             </dl>
         </section>
 
+        <RequestPanel />
         <HowItWorks />
         <AboutTool />
         <FeaturesSection />
