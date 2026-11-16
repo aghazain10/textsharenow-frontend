@@ -122,5 +122,37 @@ export default defineEventHandler(async (event) => {
     // Non-critical.
   }
 
+  // Tag file submissions back onto the originating request (inbox + a
+  // consumed submission slot). Never fails registration.
+  try {
+    const reqCode = typeof (pending as any).req === 'string' ? (pending as any).req.trim().toUpperCase() : ''
+    if (/^[A-Z0-9]{5}$/.test(reqCode)) {
+      const {
+        consumeSubmissionSlot,
+        inboxKey,
+        MAX_REQUEST_SUBMITS,
+        parseRequestMeta,
+      } = await import('../../../utils/requestStore')
+      const { decryptAtRest, encryptAtRest } = await import('../../../utils/cipher')
+
+      await consumeSubmissionSlot(config, reqCode)
+      const entry = encryptAtRest(
+        JSON.stringify({ t: Math.floor(Date.now() / 1000), kind: 'file', code, bytes, count }),
+      )
+      const inbox = inboxKey(reqCode)
+      await redisCommand(config, ['LPUSH', inbox, entry])
+      await redisCommand(config, ['LTRIM', inbox, 0, MAX_REQUEST_SUBMITS - 1])
+
+      const reqGet = await redisCommand(config, ['GET', `request:${reqCode}`])
+      if (reqGet?.result) {
+        const meta = parseRequestMeta(decryptAtRest(reqGet.result))
+        const inboxTtl = Math.max(86400, (meta?.expiresAt ?? 0) - Math.floor(Date.now() / 1000) + 30 * 86400)
+        await redisCommand(config, ['EXPIRE', inbox, inboxTtl])
+      }
+    }
+  } catch {
+    // Non-critical — the file is safe in the transfer; only the inbox tag is lost.
+  }
+
   return { ok: true }
 })

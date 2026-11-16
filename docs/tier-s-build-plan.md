@@ -134,7 +134,22 @@ The sender shares that link any way they like. The public page is a minimal form
 
 ---
 
-## Build status (2026-11-11)
+## Build status (2026-11-16)
+
+Done & building cleanly:
+
+- **S1** (email on first read/download): shipped. **S4** (send link by email): shipped.
+- **Single Pro files** ride the transfer flow (full receipts/ownership): shipped.
+- **S3 — incoming request links**: server + UI shipped.
+  - Free creators: 1 active request, 3 submissions, 24h TTL, text only.
+  - Pro creators: 10 parallel, 1/5/10/25 submissions, 7/30-day TTL, files (1 per submission, 5/25/100 MB, files-service `/transfer` flow), custom label, email-on-receive (notifyOnRequestSubmit).
+  - Notification: reuses `pro:notify:<licHash>` + 50/day cap.
+  - Dashboard ("Incoming requests" section in My Shares): create/list/expand/copy/delete + per-submission delete.
+  - Public page `/request/[code]`: text submit + file upload (Pro requests), no account needed for senders.
+  - Files-service **unchanged** — file submissions register as 1-file transfers with owner = requester's license, tagged back onto the request inbox via the `transfer:pending.req` field (register.post.ts).
+  - Smoke-tested: create → meta → 3 submits → 410 on 4th, files rejected for free, inbox decrypts in dashboard.
+- Note: free-form entry point for anonymous free creators is intentionally absent from UI for now — free creation works via API; it will get a homepage CTA when we build the front-end funnel for it.
+- Note: Nitro's AST scan chokes on literal `N * IDENT` expressions in exported constants — keep array literals numeric in server files.
 
 Done & building cleanly:
 

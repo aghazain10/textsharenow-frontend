@@ -149,6 +149,137 @@
                         Showing the first 100 shares on this license.
                     </p>
 
+                    <!-- Incoming requests -->
+                    <section class="mt-10">
+                        <div class="flex flex-wrap items-end justify-between gap-4">
+                            <div>
+                                <h2 class="text-[22px] font-semibold tracking-[-0.03em] text-ink">Incoming requests</h2>
+                                <p class="mt-1 text-[14px] text-muted">Ask anyone for something — text (or, for Pro, files) — and collect it here. No account needed for them.</p>
+                            </div>
+                            <button type="button" class="btn-primary" @click="createOpen = !createOpen">
+                                {{ createOpen ? "Close" : "New request" }}
+                            </button>
+                        </div>
+
+                        <!-- Create form -->
+                        <div v-if="createOpen" class="tile mt-5">
+                            <label class="text-[13px] font-medium text-muted" for="req-label">What do you need? (optional label)</label>
+                            <input id="req-label" v-model="newLabel" type="text" maxlength="80" placeholder="e.g. Send me the Wi-Fi password, your address, that invoice…" class="mt-1.5 block w-full rounded-md border border-line bg-bg px-3 py-2 text-[15px] text-ink placeholder:text-muted/60 !outline-none focus:!outline-none" />
+                            <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                                <label class="grid gap-1 text-[13px] font-medium text-muted">
+                                    Expiry
+                                    <select v-model="newTtl" class="rounded-md border border-line bg-bg px-3 py-2 text-[14px] text-ink">
+                                        <option :value="86400">24 hours</option>
+                                        <option :value="604800">7 days</option>
+                                        <option :value="2592000">30 days</option>
+                                    </select>
+                                </label>
+                                <label class="grid gap-1 text-[13px] font-medium text-muted">
+                                    Submissions allowed
+                                    <select v-model="newMax" class="rounded-md border border-line bg-bg px-3 py-2 text-[14px] text-ink">
+                                        <option :value="1">1</option>
+                                        <option :value="5">5</option>
+                                        <option :value="10">10</option>
+                                        <option :value="25">25</option>
+                                    </select>
+                                </label>
+                                <label class="grid gap-1 text-[13px] font-medium text-muted">
+                                    Files
+                                    <select v-model="newFiles" class="rounded-md border border-line bg-bg px-3 py-2 text-[14px] text-ink">
+                                        <option :value="false">Text only</option>
+                                        <option :value="true">Text + 1 file each</option>
+                                    </select>
+                                </label>
+                                <label v-if="newFiles" class="grid gap-1 text-[13px] font-medium text-muted">
+                                    Max file size
+                                    <select v-model="newMaxBytes" class="rounded-md border border-line bg-bg px-3 py-2 text-[14px] text-ink">
+                                        <option :value="5242880">5 MB</option>
+                                        <option :value="26214400">25 MB</option>
+                                        <option :value="104857600">100 MB</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <label class="mt-3 flex w-fit cursor-pointer items-center gap-2 text-[13px] text-muted">
+                                <input v-model="newNotify" type="checkbox" class="h-4 w-4 accent-brand" />
+                                Email me when something arrives
+                            </label>
+                            <p v-if="createError" class="mt-3 flex items-center gap-2 text-[13px] text-bad" role="alert"><TsnIcon name="alert" class="h-4 w-4 shrink-0" stroke="1.8" />{{ createError }}</p>
+                            <div class="mt-4 flex items-center gap-3">
+                                <button type="button" class="btn-primary" :disabled="creating" @click="createRequest">
+                                    {{ creating ? "Creating…" : "Create request link" }}
+                                </button>
+                                <p v-if="createSuccess" class="text-[13px] font-medium text-ok">{{ createSuccess }}</p>
+                            </div>
+                        </div>
+
+                        <p v-if="requestsError" class="mt-4 rounded-lg border border-bad/30 bg-bad/5 px-4 py-3 text-[13px] text-bad" role="alert">{{ requestsError }}</p>
+
+                        <div v-if="loading && !requests.length" class="tile mt-5 flex items-center gap-3 text-[13px] text-muted">
+                            <span class="h-2 w-2 animate-pulse rounded-full bg-brand" aria-hidden="true" />Loading requests…
+                        </div>
+
+                        <ul class="mt-5 grid gap-2">
+                            <li v-for="r in requests" :key="r.code" class="rounded-lg border border-line bg-surface px-4 py-3">
+                                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                    <div class="min-w-0">
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <code class="font-mono text-[15px] font-semibold tracking-wide text-ink">{{ r.code }}</code>
+                                            <span v-if="r.label" class="max-w-[34ch] truncate text-[13px] text-muted" :title="r.label">{{ r.label }}</span>
+                                            <span v-if="!r.live" class="rounded-full border border-line bg-surface-2 px-2 py-0.5 text-[11px] font-medium text-muted">Expired</span>
+                                            <span v-if="r.files" class="rounded-full border border-line bg-surface-2 px-2 py-0.5 text-[11px] font-medium text-muted">Files</span>
+                                        </div>
+                                        <p class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted">
+                                            <span>{{ r.submissions }} received · {{ r.left }} of {{ r.max }} left</span>
+                                            <span>{{ reqExpiryText(r) }}</span>
+                                            <span v-if="r.notify" class="inline-flex items-center gap-1"><TsnIcon name="mail" class="h-3.5 w-3.5" stroke="1.8" />Email on arrival</span>
+                                        </p>
+                                    </div>
+                                    <div class="flex shrink-0 flex-wrap items-center gap-2">
+                                        <button type="button" class="btn-ghost !h-9 !px-3" @click="copyRequestLink(r)">
+                                            <TsnIcon :name="copied === r.code ? 'check' : 'copy'" class="h-4 w-4" stroke="2" />
+                                            {{ copied === r.code ? "Copied" : "Copy link" }}
+                                        </button>
+                                        <button type="button" class="btn-ghost !h-9 !px-3" @click="toggleRequestDetail(r)">
+                                            <TsnIcon :name="expanded === r.code ? 'chevron-down' : 'arrow'" class="h-4 w-4" stroke="1.8" />
+                                            {{ expanded === r.code ? "Hide" : "Open" }}
+                                        </button>
+                                        <button type="button" class="btn-icon text-muted hover:!text-bad" :aria-label="`Delete request ${r.code}`" @click="deleteRequest(r)">
+                                            <TsnIcon name="trash" class="h-4 w-4" stroke="1.8" />
+                                        </button>
+                                    </div>
+                                </div>
+                                <div v-if="expanded === r.code" class="mt-3 border-t border-line pt-3">
+                                    <p v-if="!detailCache[r.code]" class="text-[13px] text-muted">Loading submissions…</p>
+                                    <p v-else-if="!detailCache[r.code].submissions.length" class="text-[13px] text-muted">Nothing received yet.</p>
+                                    <ul v-else class="grid gap-2">
+                                        <li v-for="sub in detailCache[r.code].submissions" :key="sub.index" class="rounded-md border border-line bg-bg px-3 py-2.5">
+                                            <div v-if="sub.kind === 'text'" class="flex items-start justify-between gap-3">
+                                                <p class="whitespace-pre-wrap break-words text-[14px] leading-6 text-ink">{{ sub.text }}</p>
+                                                <button type="button" class="btn-icon shrink-0 text-muted hover:!text-bad" :aria-label="`Delete submission ${sub.index + 1}`" @click="deleteSubmission(r.code, sub.index)">
+                                                    <TsnIcon name="x" class="h-4 w-4" stroke="2" />
+                                                </button>
+                                            </div>
+                                            <div v-else-if="sub.kind === 'file'" class="flex flex-wrap items-center justify-between gap-3">
+                                                <p class="text-[14px] text-ink">
+                                                    <TsnIcon name="file" class="mr-1.5 inline h-4 w-4 align-[-3px]" stroke="1.8" />File received · {{ formatBytes(sub.bytes) }}
+                                                </p>
+                                                <div class="flex items-center gap-2">
+                                                    <NuxtLink :to="`/r?tcode=${encodeURIComponent(sub.code)}`" class="btn-ghost !h-8 !px-3 !text-[12px]">Download</NuxtLink>
+                                                    <button type="button" class="btn-icon text-muted hover:!text-bad" :aria-label="`Dismiss file entry ${sub.index + 1}`" @click="deleteSubmission(r.code, sub.index)">
+                                                        <TsnIcon name="x" class="h-4 w-4" stroke="2" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        <p v-if="!requestsLoading && !requests.length" class="mt-4 text-center text-[13px] text-muted">
+                            No requests yet. Create one — "send me your address" — and share the link anywhere.
+                        </p>
+                    </section>
+
                     <section v-if="history.length" class="mt-10">
                         <div class="flex flex-wrap items-end justify-between gap-3">
                             <div>
@@ -182,7 +313,7 @@
                     </section>
 
                     <div class="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5 text-[13px] text-muted">
-                        <p>Text shares and multi-file transfers created with this license appear here. Single-file links are not listed yet. Receipts store event times only and are kept for 90 days after a share closes. Private-mode keys live only in the full link — we do not store them, so copy the full link from the share screen; it cannot be recovered here.</p>
+                        <p>Text shares and transfers created with this license appear here. Single files ride the transfer flow and show up too now. Receipts store event times only and are kept for 90 days after a share closes. Private-mode keys live only in the full link — we do not store them, so copy the full link from the share screen; it cannot be recovered here.</p>
                         <button type="button" class="font-medium text-muted underline decoration-line underline-offset-4 hover:text-ink" @click="deactivatePro">
                             Deactivate Pro on this device
                         </button>
@@ -222,6 +353,139 @@ const history = computed(() => {
     return receipts.value.filter((r) => r.status !== "active" && !active.has(r.code));
 });
 
+// ── Incoming requests ───────────────────────────────────────────────────────
+const requests = ref([]);
+const requestsError = ref("");
+const createOpen = ref(false);
+const creating = ref(false);
+const createError = ref("");
+const createSuccess = ref("");
+const newLabel = ref("");
+const newTtl = ref(604800);
+const newMax = ref(5);
+const newFiles = ref(false);
+const newMaxBytes = ref(26214400);
+const newNotify = ref(true);
+const expanded = ref("");
+const detailCache = ref({});
+
+function reqExpiryText(r) {
+    if (!r.expiresAt) return "";
+    const leftMs = Number(r.expiresAt) * 1000 - Date.now();
+    if (leftMs <= 0) return "Expired";
+    const days = Math.floor(leftMs / 86400000);
+    const hours = Math.floor((leftMs % 86400000) / 3600000);
+    if (days) return `Expires in ${days}d`;
+    if (hours) return `Expires in ${hours}h`;
+    return "Expires within the hour";
+}
+
+function requestUrl(r) {
+    return `${window.location.origin}/request/${encodeURIComponent(r.code)}`;
+}
+
+async function copyRequestLink(r) {
+    try {
+        await navigator.clipboard.writeText(requestUrl(r));
+        copied.value = r.code;
+        setTimeout(() => {
+            if (copied.value === r.code) copied.value = "";
+        }, 1600);
+    } catch {
+        requestsError.value = "Could not copy. Open the link from the list and copy it from the address bar.";
+    }
+}
+
+async function refreshRequests() {
+    requestsError.value = "";
+    try {
+        const res = await $fetch("/api/pro/requests");
+        requests.value = res?.requests || [];
+    } catch (e) {
+        requestsError.value = e?.data?.message || "Could not load requests.";
+    }
+}
+
+async function createRequest() {
+    if (creating.value) return;
+    creating.value = true;
+    createError.value = "";
+    createSuccess.value = "";
+    try {
+        const res = await $fetch("/api/request/create", {
+            method: "POST",
+            body: {
+                label: newLabel.value,
+                ttl: newTtl.value,
+                maxSubmissions: newMax.value,
+                files: !!newFiles.value,
+                maxBytes: Number(newMaxBytes.value),
+                notify: !!newNotify.value,
+            },
+        });
+        createSuccess.value = `Request ${res?.code} created — link copied!`;
+        try { await navigator.clipboard.writeText(`${window.location.origin}/request/${res?.code}`); } catch {}
+        newLabel.value = "";
+        newTtl.value = 604800;
+        newMax.value = 5;
+        newFiles.value = false;
+        newMaxBytes.value = 26214400;
+        newNotify.value = true;
+        createOpen.value = false;
+        await refreshRequests();
+    } catch (e) {
+        createError.value = e?.data?.message || "Could not create the request. Try again.";
+    } finally {
+        creating.value = false;
+    }
+}
+
+async function deleteRequest(r) {
+    if (!confirm(`Delete request ${r.code}? Anyone who opens the link will see it's gone.`)) return;
+    const prev = requests.value;
+    requests.value = requests.value.filter((x) => x.code !== r.code);
+    try {
+        await $fetch(`/api/pro/requests/${encodeURIComponent(r.code)}`, { method: "DELETE" });
+    } catch (e) {
+        requests.value = prev;
+        requestsError.value = e?.data?.message || "Could not delete that request.";
+    }
+}
+
+async function toggleRequestDetail(r) {
+    if (expanded.value === r.code) {
+        expanded.value = "";
+        return;
+    }
+    expanded.value = r.code;
+    if (!detailCache.value[r.code]) {
+        try {
+            detailCache.value = {
+                ...detailCache.value,
+                [r.code]: await $fetch(`/api/pro/requests/${encodeURIComponent(r.code)}`),
+            };
+        } catch (e) {
+            requestsError.value = e?.data?.message || "Could not load that request's submissions.";
+            expanded.value = "";
+        }
+    }
+}
+
+async function deleteSubmission(code, index) {
+    try {
+        const res = await $fetch(`/api/pro/requests/${encodeURIComponent(code)}/submissions/${index}`, { method: "DELETE" });
+        const detail = detailCache.value[code];
+        if (detail) {
+            detail.submissions = (detail.submissions || []).filter((s) => s.index !== index);
+            detailCache.value = { ...detailCache.value, [code]: detail };
+        }
+        const entry = requests.value.find((x) => x.code === code);
+        if (entry) entry.submissions = Math.max(0, (entry.submissions || 1) - 1);
+    } catch (e) {
+        requestsError.value = e?.data?.message || "Could not delete that submission.";
+    }
+}
+
 onMounted(async () => {
     await checkStatus();
     if (isPro.value) await load();
@@ -237,9 +501,10 @@ async function load() {
     if (loading.value) return;
     loading.value = true;
     error.value = "";
-    const [sharesResult, receiptsResult] = await Promise.allSettled([
+    const [sharesResult, receiptsResult, requestsResult] = await Promise.allSettled([
         $fetch("/api/pro/shares"),
         $fetch("/api/pro/receipts"),
+        $fetch("/api/pro/requests"),
     ]);
     if (sharesResult.status === "fulfilled") {
         shares.value = sharesResult.value?.shares || [];
@@ -249,6 +514,11 @@ async function load() {
         error.value = sharesResult.reason?.data?.message || "Could not load your shares. Please try again.";
     }
     receipts.value = receiptsResult.status === "fulfilled" ? receiptsResult.value?.receipts || [] : [];
+    if (requestsResult.status === "fulfilled") {
+        requests.value = requestsResult.value?.requests || [];
+    } else {
+        requestsError.value = requestsResult.reason?.data?.message || "Could not load requests.";
+    }
     newCodes.value = new Set(
         [...shares.value, ...receipts.value].filter(activitySinceSeen).map((item) => item.code),
     );

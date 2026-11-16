@@ -121,6 +121,39 @@ Manage your shares: https://www.textsharenow.com/my-shares`
   return { subject: 'Your TextShareNow files were just downloaded', html, text }
 }
 
+/** Someone submitted to a request link — one email per submission, capped. */
+export async function notifyOnRequestSubmit(
+  config: NotifyConfig,
+  licHash: string,
+  label: string,
+  kind: 'text' | 'file',
+): Promise<boolean> {
+  try {
+    const email = await notifyEmailFor(config, licHash)
+    if (!email) return false
+    if (!(await underCap(config, licHash))) return false
+
+    const safeLabel = escapeHtml((label || 'your request').slice(0, 80))
+    const stamp = escapeHtml(timeStamp())
+    const what = kind === 'file' ? 'sent you a file' : 'sent you some text'
+    const html = wrapEmail(`
+      <p style="margin:0 0 12px;">Good news — someone ${what} via your request link.</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 12px;background:#f6f6f6;border:1px solid #e5e5e5;border-radius:10px;">
+        <tr><td style="padding:14px 18px;font-size:14px;line-height:1.7;">
+          Request: <strong>${safeLabel}</strong><br>
+          Sent at: ${stamp}
+        </td></tr>
+      </table>
+      <p style="margin:0;"><a href="https://www.textsharenow.com/my-shares" style="display:inline-block;padding:10px 18px;background:#111;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;">Open My Shares</a></p>
+    `)
+    const text = `Someone ${what} via your request link (${label || 'your request'}) at ${timeStamp()}.\nManage your requests: https://www.textsharenow.com/my-shares`
+    const result = await sendMail({ to: email, subject: 'TextShareNow: new submission for your request', html, text })
+    return result.ok
+  } catch {
+    return false
+  }
+}
+
 export function buildLinkEmail(
   code: string,
   kind: 'text' | 'transfer',
