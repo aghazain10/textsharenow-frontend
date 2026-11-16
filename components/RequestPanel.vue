@@ -35,19 +35,19 @@
 
                     <!-- Share link (them) -->
                     <p class="mt-4 text-[13px] font-medium text-muted">For them — send this anywhere</p>
-                    <div class="mt-1 flex w-full items-center gap-2 rounded-lg border border-line bg-bg p-1.5 pl-3">
-                        <code class="min-w-0 flex-1 truncate font-mono text-[13px] text-ink">{{ shareLink }}</code>
-                        <button type="button" class="btn-ghost h-9 shrink-0 !px-3 text-[13px]" :aria-label="copied === 'share' ? 'Copied' : 'Copy request link'" @click="copy('share', shareLink)">
-                            <TsnIcon :name="copied === 'share' ? 'check' : 'copy'" class="h-4 w-4" stroke="2" />{{ copied === 'share' ? "Copied" : "Copy" }}
+                    <div class="mt-1 flex flex-col gap-2 rounded-lg border border-line bg-bg p-2 sm:flex-row sm:items-center sm:gap-2">
+                        <code class="block min-w-0 flex-1 truncate px-2 py-1.5 font-mono text-[12px] leading-5 text-ink sm:text-[13px]">{{ shareLink }}</code>
+                        <button type="button" class="btn-ghost h-10 w-full shrink-0 text-[14px] sm:h-9 sm:w-auto sm:text-[13px]" :aria-label="copied === 'share' ? 'Copied' : 'Copy request link'" @click="copy('share', shareLink)">
+                            <TsnIcon :name="copied === 'share' ? 'check' : 'copy'" class="h-4 w-4" stroke="2" />{{ copied === 'share' ? "Copied" : "Copy link" }}
                         </button>
                     </div>
 
                     <!-- Private link (you) -->
                     <p class="mt-4 text-[13px] font-medium text-muted">For you — opens the answers</p>
-                    <div class="mt-1 flex w-full items-center gap-2 rounded-lg border border-brand/40 bg-brand-soft/30 p-1.5 pl-3">
-                        <code class="min-w-0 flex-1 truncate font-mono text-[13px] text-ink">{{ privateLink }}</code>
-                        <button type="button" class="btn-primary h-9 shrink-0 !px-3 text-[13px]" :aria-label="copied === 'private' ? 'Copied' : 'Copy private link'" @click="copy('private', privateLink)">
-                            <TsnIcon :name="copied === 'private' ? 'check' : 'copy'" class="h-4 w-4" stroke="2" />{{ copied === 'private' ? "Copied" : "Copy" }}
+                    <div class="mt-1 flex flex-col gap-2 rounded-lg border border-brand/40 bg-brand-soft/30 p-2 sm:flex-row sm:items-center sm:gap-2">
+                        <code class="block min-w-0 flex-1 truncate px-2 py-1.5 font-mono text-[12px] leading-5 text-ink sm:text-[13px]">{{ privateLink }}</code>
+                        <button type="button" class="btn-primary h-10 w-full shrink-0 text-[14px] sm:h-9 sm:w-auto sm:text-[13px]" :aria-label="copied === 'private' ? 'Copied' : 'Copy private link'" @click="copy('private', privateLink)">
+                            <TsnIcon :name="copied === 'private' ? 'check' : 'copy'" class="h-4 w-4" stroke="2" />{{ copied === 'private' ? "Copied" : "Copy link" }}
                         </button>
                     </div>
                     <p class="mt-2 text-[13px] leading-relaxed text-muted">Keep the private link to yourself — it shows everything that arrives. The "send this" link is safe to paste in chat.</p>
