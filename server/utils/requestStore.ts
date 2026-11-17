@@ -12,7 +12,7 @@
  *   request:owner:<licHash> ZSET of codes created by a Pro license
  *   request:inbox:<code>    envelope-encrypted submission entries, capped at 25
  *
- * Free creators get one request, 3 submissions, 24h expiry. Pro creators
+ * Free creators get 3 requests per day, 5 submissions each, 48h expiry. Pro creators
  * get 10 parallel requests, 25 submissions each, 7/30-day expiry, files,
  * labels, and email notify.
  * NOTE: array/object constants in this file use literal numbers — Nitro's
@@ -28,8 +28,9 @@ export const REQUEST_LEFT_PREFIX = 'request:left:'
 export const REQUEST_OWNER_PREFIX = 'request:owner:'
 export const REQUEST_INBOX_PREFIX = 'request:inbox:'
 
-export const FREE_REQUEST_TTL = 86400
-export const FREE_MAX_SUBMISSIONS = 3
+export const FREE_REQUEST_TTL = 172800 // 48 hours
+export const FREE_MAX_SUBMISSIONS = 5
+export const FREE_REQUESTS_PER_DAY = 3
 export const PRO_MAX_SUBMISSIONS = 25
 export const PRO_MAX_REQUESTS = 10
 export const MAX_REQUEST_SUBMITS = 25

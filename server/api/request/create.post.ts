@@ -1,18 +1,20 @@
 /**
  * POST /api/request/create
  * Body (Pro):  { label?, ttl?, maxSubmissions?, files?, maxBytes?, notify? }
- * Body (free): {} — free callers get one request, 3 submissions, 24h, text only.
+ * Body (free): {} — free callers get 3 requests per day, 5 submissions, 48h, text only.
  * Response: { code, ttl, max, files, manageable }
  *
- * Free creators get the funnel: 1 active request / 3 submissions / 24h / no
- * files / no email. Pro creators get the workhorse: 10 parallel, 25 per
- * request, 7/30-day expiry, files, labels, notify.
+ * Free creators get the funnel: 3 requests per 24h / 5 submissions / 48h /
+ * text only, resets daily. Pro creators get the workhorse: 10 parallel,
+ * 25 per request, 7/30-day expiry, files, labels, notify.
  */
 import { resolvePro } from '../../utils/pro'
 import {
   REQUEST_TTLS,
   FILE_MAX_OPTIONS,
   FREE_MAX_SUBMISSIONS,
+  FREE_REQUEST_TTL,
+  FREE_REQUESTS_PER_DAY,
   PRO_MAX_SUBMISSIONS,
   sanitizeLabel,
   createRequestRecord,
@@ -22,7 +24,6 @@ import {
 import { upstash } from '../../utils/shareCode'
 import { licenseHash } from '../../utils/proStorage'
 
-const FREE_MAX_ACTIVE = 1
 const PRO_SUBMISSION_CHOICES = [1, 5, 10, 25]
 const DAY = 86400
 
@@ -60,35 +61,30 @@ export default defineEventHandler(async (event) => {
   }
 
   if (!pro) {
-    // Free: one request per active-window. Heap-verify there isn't one
-    // from this IP already active — soft but effective without accounts.
-    const activeIp = await upstash(config, ['GET', `request:active-ip:${ip}`])
-    if (activeIp.result) {
+    // Free: 3 request links per rolling 24h per IP — generous enough to
+    // actually feel the feature, resets daily.
+    const dayKey = `request:free-day:${ip}`
+    const dayCount = await upstash(config, ['INCR', dayKey])
+    await upstash(config, ['EXPIRE', dayKey, DAY])
+    if (Number(dayCount.result) > FREE_REQUESTS_PER_DAY) {
+      // Undo the extra increment so a rejected create doesn't burn the slot.
+      await upstash(config, ['DECR', dayKey])
       throw createError({
         statusCode: 429,
-        message: 'Free includes one active request at a time. Open Pro to run many in parallel.',
+        message: 'Free gives 3 request links per day. Open Pro to run many in parallel.',
       })
     }
     const created = await createRequestRecord(config, {
       owner: null,
       label: '',
-      ttl: DAY,
+      ttl: FREE_REQUEST_TTL,
       max: FREE_MAX_SUBMISSIONS,
       files: false,
       maxBytes: null,
       notify: false,
       text: true,
     })
-    await upstash(config, ['SET', `request:active-ip:${ip}`, created.code, 'EX', DAY])
-    return {
-      code: created.code,
-      ttl: DAY,
-      max: FREE_MAX_SUBMISSIONS,
-      files: false,
-      manageable: true,
-      // Raw token — only time it ever exists. Browser stores it in localStorage.
-      manage: created.manage,
-    }
+    return { code: created.code, ttl: FREE_REQUEST_TTL, max: FREE_MAX_SUBMISSIONS, files: false, manageable: true, manage: created.manage }
   }
 
   // Pro path ---------------------------------------------------------------

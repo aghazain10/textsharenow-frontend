@@ -15,7 +15,7 @@
                         {{ f }}
                     </li>
                 </ul>
-                <p class="mt-5 text-[13px] text-muted">Free: 3 submissions, expires after 24 hours. Pro adds file attachments, longer expiry, labels and an email the moment something arrives.</p>
+                <p class="mt-5 text-[13px] text-muted">Free: 3 links per day · 5 replies each · 48h expiry · files need Pro. Pro adds file attachments, longer expiry, labels and an email the moment something arrives.</p>
             </div>
 
             <div class="tile relative min-w-0">
@@ -66,7 +66,7 @@ const API_BASE = useRuntimeConfig().public.API_BASE;
 const points = [
     "Works for text, links, addresses, passwords and one-time secrets",
     "No account for either side — not even yours",
-    "3 submissions, then the link closes itself — or auto-expires after 24h",
+    "3 links per day · 5 replies each — free, forever; upgrade for files and volume",
     "Everything received is encrypted and only your private link can read it",
 ];
 
