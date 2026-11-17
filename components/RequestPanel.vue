@@ -1,7 +1,7 @@
 <template>
     <section class="section border-y border-line bg-surface-2/40" aria-labelledby="req-title">
-        <div class="wrap grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-14">
-            <div>
+        <div class="wrap grid min-w-0 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-14">
+            <div class="min-w-0">
                 <span class="inline-flex items-center gap-2 rounded-full border border-line bg-bg px-3 py-1 text-[13px] font-medium text-ink shadow-card">
                     <i class="live-dot" aria-hidden="true" />New — Incoming requests
                 </span>
@@ -18,7 +18,7 @@
                 <p class="mt-5 text-[13px] text-muted">Free: 3 submissions, expires after 24 hours. Pro adds file attachments, longer expiry, labels and an email the moment something arrives.</p>
             </div>
 
-            <div class="tile relative">
+            <div class="tile relative min-w-0">
                 <h3 class="text-[17px] font-semibold tracking-[-0.02em] text-ink">Create your private request link</h3>
 
                 <template v-if="state === 'idle'">
@@ -36,7 +36,7 @@
                     <!-- Share link (them) -->
                     <p class="mt-4 text-[13px] font-medium text-muted">For them — send this anywhere</p>
                     <div class="mt-1 flex flex-col gap-2 rounded-lg border border-line bg-bg p-2 sm:flex-row sm:items-center sm:gap-2">
-                        <code class="block min-w-0 flex-1 truncate px-2 py-1.5 font-mono text-[12px] leading-5 text-ink sm:text-[13px]">{{ shareLink }}</code>
+                        <code class="block min-w-0 break-all flex-1 px-2 py-1.5 font-mono text-[12px] leading-5 text-ink sm:text-[13px]">{{ shareLink }}</code>
                         <button type="button" class="btn-ghost h-10 w-full shrink-0 text-[14px] sm:h-9 sm:w-auto sm:text-[13px]" :aria-label="copied === 'share' ? 'Copied' : 'Copy request link'" @click="copy('share', shareLink)">
                             <TsnIcon :name="copied === 'share' ? 'check' : 'copy'" class="h-4 w-4" stroke="2" />{{ copied === 'share' ? "Copied" : "Copy link" }}
                         </button>
@@ -45,7 +45,7 @@
                     <!-- Private link (you) -->
                     <p class="mt-4 text-[13px] font-medium text-muted">For you — opens the answers</p>
                     <div class="mt-1 flex flex-col gap-2 rounded-lg border border-brand/40 bg-brand-soft/30 p-2 sm:flex-row sm:items-center sm:gap-2">
-                        <code class="block min-w-0 flex-1 truncate px-2 py-1.5 font-mono text-[12px] leading-5 text-ink sm:text-[13px]">{{ privateLink }}</code>
+                        <code class="block min-w-0 break-all flex-1 px-2 py-1.5 font-mono text-[12px] leading-5 text-ink sm:text-[13px]">{{ privateLink }}</code>
                         <button type="button" class="btn-primary h-10 w-full shrink-0 text-[14px] sm:h-9 sm:w-auto sm:text-[13px]" :aria-label="copied === 'private' ? 'Copied' : 'Copy private link'" @click="copy('private', privateLink)">
                             <TsnIcon :name="copied === 'private' ? 'check' : 'copy'" class="h-4 w-4" stroke="2" />{{ copied === 'private' ? "Copied" : "Copy link" }}
                         </button>
