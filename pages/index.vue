@@ -43,11 +43,18 @@
             </dl>
         </section>
 
+        <!-- Journey ad: directly below the tool -->
+        <AdSlot position="below-tool" />
+
         <RequestPanel />
         <HowItWorks />
+        <!-- Journey ad: below the How It Works section -->
+        <AdSlot position="below-how-it-works" />
         <AboutTool />
         <FeaturesSection />
         <UseCases />
+        <!-- Journey ad: mid-page, below the Use Cases section -->
+        <AdSlot position="mid-content" />
 
         <!-- Guides: internal links to the step-by-step guides -->
         <section class="section" aria-labelledby="guides-title">

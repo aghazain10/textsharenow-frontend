@@ -10,6 +10,9 @@
             <ExifCleaner />
         </ToolPageHero>
 
+        <!-- Journey ad: directly below the tool -->
+        <AdSlot position="below-tool" />
+
         <ToolCompare
             eyebrow="Why it matters"
             title="A photo can reveal where you live, work or shoot"

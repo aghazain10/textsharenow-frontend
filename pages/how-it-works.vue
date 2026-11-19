@@ -9,6 +9,9 @@
     <!-- Embeds the shared how-it-works component -->
     <HowItWorks />
 
+    <!-- Journey ad: below How It Works -->
+    <AdSlot position="below-how-it-works" />
+
     <!-- Extended written guide (for SEO) -->
     <section class="section">
       <div class="wrap">
@@ -45,6 +48,9 @@
         </div>
       </div>
     </section>
+
+    <!-- Journey ad: below the written guide -->
+    <AdSlot position="below-content" />
 
     <FaqSection />
   </div>

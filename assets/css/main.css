@@ -117,6 +117,14 @@
    comparison table and the copy all share one left edge. */
 @utility tool-wrap { @apply mx-auto max-w-5xl; }
 
+/* ---------- Journey (Mediavine) ad slots ----------
+   Empty containers the Journey script fills with a real ad once the
+   `.journey-ad-slot` selector is registered in the Journey dashboard.
+   Deliberately no min-height: while empty they take up no space at all
+   (no blank gap, no layout shift), and Journey injects the ad markup —
+   with its own sizing — straight into the container. Keep them empty. */
+.journey-ad-slot { display: block; width: 100%; }
+
 /* ---------- Base ---------- */
 html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
 body { background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }

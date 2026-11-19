@@ -10,6 +10,9 @@
             <ImageCompressor />
         </ToolPageHero>
 
+        <!-- Journey ad: directly below the tool -->
+        <AdSlot position="below-tool" />
+
         <ToolCompare
             eyebrow="Why this one"
             title="Compression without the upload step"

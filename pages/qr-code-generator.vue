@@ -10,6 +10,9 @@
             <QrStudio />
         </ToolPageHero>
 
+        <!-- Journey ad: directly below the tool -->
+        <AdSlot position="below-tool" />
+
         <!-- What you can make -->
         <section class="border-t border-line px-4 py-12 sm:py-16" aria-labelledby="qr-types-title">
             <div class="tool-wrap">

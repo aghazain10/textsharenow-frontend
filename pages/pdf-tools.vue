@@ -10,6 +10,9 @@
             <PdfToolkit />
         </ToolPageHero>
 
+        <!-- Journey ad: directly below the tool -->
+        <AdSlot position="below-tool" />
+
         <ToolCompare
             eyebrow="Why combine here"
             title="A PDF merger is often the last place you want a signed contract"

@@ -80,6 +80,9 @@
                             </template>
                         </div>
 
+                        <!-- Journey ad: in the article column, above the CTA -->
+                        <AdSlot position="in-content" class="mt-14 max-w-[68ch]" />
+
                         <!-- CTA -->
                         <div class="tile mt-16 max-w-[68ch] text-center sm:p-10">
                             <h3 class="text-[22px] font-semibold tracking-[-0.03em]">Ready to try it?</h3>
@@ -106,6 +109,9 @@
                                 </li>
                             </ul>
                         </div>
+
+                        <!-- Journey ad: sidebar rectangle -->
+                        <AdSlot position="sidebar" />
                     </aside>
                 </div>
             </section>
