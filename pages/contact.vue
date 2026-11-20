@@ -18,11 +18,11 @@
                     </p>
 
                     <div class="mt-8 grid gap-4 sm:grid-cols-2">
-                        <a href="mailto:aghazain10@gmail.com" class="tile flex items-center gap-4 !p-5 transition-colors hover:bg-surface-2">
+                        <a href="mailto:info@textsharenow.com" class="tile flex items-center gap-4 !p-5 transition-colors hover:bg-surface-2">
                             <span class="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-line bg-bg text-ink"><TsnIcon name="mail" class="h-5 w-5" stroke="1.8" /></span>
                             <span class="min-w-0">
                                 <span class="block text-[13px] font-medium text-muted">Email (Support)</span>
-                                <span class="block break-words text-[15px] font-medium text-ink">aghazain10@gmail.com</span>
+                                <span class="block break-words text-[15px] font-medium text-ink">info@textsharenow.com</span>
                             </span>
                         </a>
 
